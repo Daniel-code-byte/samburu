@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react'
 import { sendMessage } from '@/lib/supabase'
 
@@ -36,15 +35,10 @@ export default function ContactPage() {
 
   return (
     <>
-      {/* ── Header ──────────────────────────────────────── */}
       <section style={{ background: 'var(--teal-deep)', padding: '6rem 2rem 5rem' }}>
         <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
           <div style={{ fontSize: '0.68rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem' }}>Reach Out</div>
-          <h1 style={{
-            fontFamily: 'Cormorant Garamond, serif',
-            fontSize: 'clamp(2.8rem, 5vw, 4rem)',
-            fontWeight: 300, color: '#fff', lineHeight: 1.05, marginBottom: '1.5rem',
-          }}>
+          <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(2.8rem, 5vw, 4rem)', fontWeight: 300, color: '#fff', lineHeight: 1.05, marginBottom: '1.5rem' }}>
             Let&apos;s build<br /><em>something together</em>
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: 520, margin: '0 auto' }}>
@@ -53,11 +47,9 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* ── Contact grid ────────────────────────────────── */}
       <section className="section-pad">
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '5rem', alignItems: 'start' }}>
+        <div className="contact-layout" style={{ maxWidth: 1100, margin: '0 auto' }}>
 
-          {/* Left: info */}
           <div>
             <div className="eyebrow">Get in Touch</div>
             <div className="teal-rule" />
@@ -97,19 +89,11 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Email directory */}
             <div>
-              <div style={{ fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem', fontWeight: 600 }}>
-                Team Directory
-              </div>
+              <div style={{ fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem', fontWeight: 600 }}>Team Directory</div>
               <div style={{ border: '1px solid var(--border)', overflow: 'hidden' }}>
                 {TEAM_EMAILS.map((t, i) => (
-                  <div key={t.role} style={{
-                    padding: '0.9rem 1.1rem',
-                    borderBottom: i < TEAM_EMAILS.length - 1 ? '1px solid var(--border)' : 'none',
-                    background: i % 2 === 0 ? 'var(--white)' : 'var(--sand)',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem',
-                  }}>
+                  <div key={t.role} style={{ padding: '0.9rem 1.1rem', borderBottom: i < TEAM_EMAILS.length - 1 ? '1px solid var(--border)' : 'none', background: i % 2 === 0 ? 'var(--white)' : 'var(--sand)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                     <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--ink)', minWidth: 90 }}>{t.role}</div>
                     <a href={`mailto:${t.alias}`} style={{ fontSize: '0.78rem', color: 'var(--teal)', textDecoration: 'underline' }}>{t.alias}</a>
                   </div>
@@ -118,7 +102,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Right: form */}
           <div>
             {status === 'success' ? (
               <div style={{ textAlign: 'center', padding: '4rem 2rem', border: '1px solid var(--border)', background: 'var(--sage-pale)' }}>
@@ -141,7 +124,7 @@ export default function ContactPage() {
                 )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="contact-name-email" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
                       <label style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: '0.4rem' }}>Your Name *</label>
                       <input className="field" placeholder="Full name" value={form.name} onChange={(e) => set('name', e.target.value)} />
@@ -156,20 +139,7 @@ export default function ContactPage() {
                     <label style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: '0.6rem' }}>Subject</label>
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                       {SUBJECTS.map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => set('subject', s)}
-                          style={{
-                            padding: '0.38rem 0.9rem',
-                            fontSize: '0.78rem',
-                            fontFamily: 'DM Sans, sans-serif',
-                            border: `1.5px solid ${form.subject === s ? 'var(--teal)' : 'var(--border-md)'}`,
-                            background: form.subject === s ? 'var(--teal)' : 'transparent',
-                            color: form.subject === s ? '#fff' : 'var(--body)',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s',
-                          }}
-                        >
+                        <button key={s} onClick={() => set('subject', s)} style={{ padding: '0.38rem 0.9rem', fontSize: '0.78rem', fontFamily: 'DM Sans, sans-serif', border: `1.5px solid ${form.subject === s ? 'var(--teal)' : 'var(--border-md)'}`, background: form.subject === s ? 'var(--teal)' : 'transparent', color: form.subject === s ? '#fff' : 'var(--body)', cursor: 'pointer', transition: 'all 0.15s' }}>
                           {s}
                         </button>
                       ))}
@@ -178,22 +148,10 @@ export default function ContactPage() {
 
                   <div>
                     <label style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: '0.4rem' }}>Message *</label>
-                    <textarea
-                      className="field"
-                      rows={5}
-                      placeholder="Tell us how you'd like to get involved, or ask us anything..."
-                      value={form.body}
-                      onChange={(e) => set('body', e.target.value)}
-                      style={{ resize: 'vertical' }}
-                    />
+                    <textarea className="field" rows={5} placeholder="Tell us how you'd like to get involved, or ask us anything..." value={form.body} onChange={(e) => set('body', e.target.value)} style={{ resize: 'vertical' }} />
                   </div>
 
-                  <button
-                    onClick={submit}
-                    disabled={status === 'sending' || !form.name || !form.email || !form.body}
-                    className="btn-primary"
-                    style={{ justifyContent: 'center', opacity: (!form.name || !form.email || !form.body) ? 0.5 : 1 }}
-                  >
+                  <button onClick={submit} disabled={status === 'sending' || !form.name || !form.email || !form.body} className="btn-primary" style={{ justifyContent: 'center', opacity: (!form.name || !form.email || !form.body) ? 0.5 : 1 }}>
                     {status === 'sending' ? 'Sending…' : (<>Send Message <Send size={14} /></>)}
                   </button>
                 </div>
@@ -202,8 +160,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-
-
     </>
   )
 }
