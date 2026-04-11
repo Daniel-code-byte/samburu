@@ -1,18 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Heart, Shield, Smartphone, Globe, ArrowRight, CheckCircle } from 'lucide-react'
+import { Shield, Smartphone, Globe, CheckCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Donate — Samburu Mental Health Association',
+  title: 'Donate — Samburu Wellness & Resilience',
   description: 'Support mental health work in Samburu County through M-Pesa or PayPal.',
 }
-
-const IMPACT = [
-  { amount: 'KSh 500', label: 'Provides health supplies for one family for a month' },
-  { amount: 'KSh 1,500', label: 'Supports a girl\'s school fees for one term' },
-  { amount: 'KSh 5,000', label: 'Funds a community wellness workshop' },
-  { amount: 'KSh 10,000+', label: 'Sponsors a full youth mentorship program' },
-]
 
 export default function DonatePage() {
   return (
@@ -31,14 +24,14 @@ export default function DonatePage() {
             <a href="#mpesa" className="btn-rust" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               <Smartphone size={15} /> Donate via M-Pesa
             </a>
-            <a href="#paypal" className="btn-outline-white">
+            <a href="#paypal" className="btn-outline-white" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               <Globe size={15} /> Donate via PayPal
             </a>
           </div>
         </div>
       </section>
 
-      {/* Mission note */}
+      {/* Why it matters */}
       <section className="section-pad" style={{ background: 'var(--sand)' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
           <div className="eyebrow">Why It Matters</div>
@@ -54,47 +47,45 @@ export default function DonatePage() {
 
       {/* M-Pesa */}
       <section id="mpesa" className="section-pad">
-        <div style={{ maxWidth: 800, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'center' }}>
-            <div>
-              <div className="eyebrow">Local Giving</div>
-              <div className="teal-rule" />
-              <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 300, marginBottom: '1rem' }}>
-                Donate via<br /><em>M-Pesa</em>
-              </h2>
-              <p style={{ fontSize: '0.92rem', lineHeight: 1.75, color: 'var(--body)', marginBottom: '1.5rem' }}>
-                The fastest and easiest way to give if you're in Kenya. Send directly to our M-Pesa number — your donation is processed instantly.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {[
-                  'Open M-Pesa on your phone',
-                  'Select "Send Money" or "Lipa na M-Pesa"',
-                  'Enter the number below',
-                  'Enter your amount and confirm',
-                  'Use your name as the reference',
-                ].map((step, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                    <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                      <span style={{ fontSize: '0.68rem', color: '#fff', fontWeight: 700 }}>{i + 1}</span>
-                    </div>
-                    <span style={{ fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--body)' }}>{step}</span>
+        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+          <div>
+            <div className="eyebrow">Local Giving</div>
+            <div className="teal-rule" />
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 300, marginBottom: '1rem' }}>
+              Donate via <em>M-Pesa</em>
+            </h2>
+            <p style={{ fontSize: '0.92rem', lineHeight: 1.75, color: 'var(--body)', marginBottom: '1.5rem' }}>
+              The fastest and easiest way to give if you&apos;re in Kenya. Send directly to our M-Pesa number — your donation is processed instantly.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
+              {[
+                'Open M-Pesa on your phone',
+                'Select "Send Money" or "Lipa na M-Pesa"',
+                'Enter the number below',
+                'Enter your amount and confirm',
+                'Use your name as the reference',
+              ].map((step, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                  <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                    <span style={{ fontSize: '0.68rem', color: '#fff', fontWeight: 700 }}>{i + 1}</span>
                   </div>
-                ))}
-              </div>
+                  <span style={{ fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--body)' }}>{step}</span>
+                </div>
+              ))}
             </div>
+          </div>
 
-            <div style={{ background: 'var(--teal-deep)', padding: '2.5rem', textAlign: 'center' }}>
-              <div style={{ width: 60, height: 60, background: 'rgba(255,255,255,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-                <Smartphone size={28} color="#fff" />
-              </div>
-              <div style={{ fontSize: '0.68rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '0.75rem' }}>M-Pesa Number</div>
-              <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.5rem', fontWeight: 700, color: '#fff', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
-                0704 579 936
-              </div>
-              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem' }}>Samburu Mental Health Association</div>
-              <div style={{ background: 'rgba(255,255,255,0.08)', padding: '0.75rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
-                After sending, you'll receive an M-Pesa confirmation SMS. You can screenshot and send to us at chair@samburuwellness.org
-              </div>
+          <div style={{ background: 'var(--teal-deep)', padding: '2.5rem', textAlign: 'center' }}>
+            <div style={{ width: 60, height: 60, background: 'rgba(255,255,255,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+              <Smartphone size={28} color="#fff" />
+            </div>
+            <div style={{ fontSize: '0.68rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '0.75rem' }}>M-Pesa Number</div>
+            <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(2rem, 5vw, 2.5rem)', fontWeight: 700, color: '#fff', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
+              0704 579 936
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem' }}>Samburu Wellness & Resilience</div>
+            <div style={{ background: 'rgba(255,255,255,0.08)', padding: '0.75rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
+              After sending, screenshot your M-Pesa confirmation SMS and send to chair@samburuwellness.org
             </div>
           </div>
         </div>
@@ -102,45 +93,36 @@ export default function DonatePage() {
 
       {/* PayPal */}
       <section id="paypal" className="section-pad" style={{ background: 'var(--sand)' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'center' }}>
-            <div style={{ background: '#003087', padding: '2.5rem', textAlign: 'center' }}>
-              <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.2rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>PayPal</div>
-              <div style={{ fontSize: '0.68rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>International Donations</div>
-              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-                Send to our PayPal email address. Accepts all major cards and PayPal balance worldwide.
-              </div>
-              <div style={{ background: 'rgba(255,255,255,0.1)', padding: '1rem', marginBottom: '1.5rem' }}>
-                <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>PayPal Email</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff' }}>lepatidan5@gmail.com</div>
-              </div>
-              <a
-                href="https://paypal.me/samburuwellness"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#0070BA', color: '#fff', padding: '0.75rem 1.5rem', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, fontFamily: 'DM Sans, sans-serif', transition: 'opacity 0.2s' }}
-              >
-                <Globe size={15} /> Donate on PayPal
-              </a>
+        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+          <div>
+            <div className="eyebrow">International Giving</div>
+            <div className="teal-rule" />
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 300, marginBottom: '1rem' }}>
+              Donate via <em>PayPal</em>
+            </h2>
+            <p style={{ fontSize: '0.92rem', lineHeight: 1.75, color: 'var(--body)', marginBottom: '1.5rem' }}>
+              For international donors or anyone who prefers to give online. PayPal accepts credit/debit cards, bank transfers, and PayPal balance from anywhere in the world.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginBottom: '2rem' }}>
+              {['Accepted worldwide', 'Secure & encrypted', 'Instant confirmation', 'All major currencies accepted'].map((f) => (
+                <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.88rem', color: 'var(--body)' }}>
+                  <CheckCircle size={15} color="var(--sage)" /> {f}
+                </div>
+              ))}
             </div>
+          </div>
 
-            <div>
-              <div className="eyebrow">International Giving</div>
-              <div className="teal-rule" />
-              <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 300, marginBottom: '1rem' }}>
-                Donate via<br /><em>PayPal</em>
-              </h2>
-              <p style={{ fontSize: '0.92rem', lineHeight: 1.75, color: 'var(--body)', marginBottom: '1.5rem' }}>
-                For international donors or anyone who prefers to give online. PayPal accepts credit/debit cards, bank transfers, and PayPal balance from anywhere in the world.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                {['Accepted worldwide', 'Secure & encrypted', 'Instant confirmation', 'All major currencies accepted'].map((f) => (
-                  <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.88rem', color: 'var(--body)' }}>
-                    <CheckCircle size={15} color="var(--sage)" /> {f}
-                  </div>
-                ))}
-              </div>
+          <div style={{ background: '#003087', padding: '2.5rem', textAlign: 'center' }}>
+            <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.2rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>PayPal</div>
+            <div style={{ fontSize: '0.68rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>International Donations</div>
+            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>PayPal Email</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff' }}>lepatidan5@gmail.com</div>
             </div>
+            <a href="https://paypal.me/samburuwellness" target="_blank" rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#0070BA', color: '#fff', padding: '0.75rem 1.5rem', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, fontFamily: 'DM Sans, sans-serif' }}>
+              <Globe size={15} /> Donate on PayPal
+            </a>
           </div>
         </div>
       </section>
