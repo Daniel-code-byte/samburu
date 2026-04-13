@@ -91,41 +91,7 @@ export default function DonatePage() {
         </div>
       </section>
 
-      {/* PayPal */}
-      <section id="paypal" className="section-pad" style={{ background: 'var(--sand)' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-          <div>
-            <div className="eyebrow">International Giving</div>
-            <div className="teal-rule" />
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 300, marginBottom: '1rem' }}>
-              Donate via <em>PayPal</em>
-            </h2>
-            <p style={{ fontSize: '0.92rem', lineHeight: 1.75, color: 'var(--body)', marginBottom: '1.5rem' }}>
-              For international donors or anyone who prefers to give online. PayPal accepts credit/debit cards, bank transfers, and PayPal balance from anywhere in the world.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginBottom: '2rem' }}>
-              {['Accepted worldwide', 'Secure & encrypted', 'Instant confirmation', 'All major currencies accepted'].map((f) => (
-                <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.88rem', color: 'var(--body)' }}>
-                  <CheckCircle size={15} color="var(--sage)" /> {f}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ background: '#003087', padding: '2.5rem', textAlign: 'center' }}>
-            <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.2rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>PayPal</div>
-            <div style={{ fontSize: '0.68rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>International Donations</div>
-            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '1rem', marginBottom: '1.5rem' }}>
-              <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>PayPal Email</div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff' }}>treasurer@samburuwelness.org</div>
-            </div>
-            <a href="https://paypal.me/samburuwellness" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#0070BA', color: '#fff', padding: '0.75rem 1.5rem', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, fontFamily: 'DM Sans, sans-serif' }}>
-              <Globe size={15} /> Donate on PayPal
-            </a>
-          </div>
-        </div>
-      </section>
+   
 
       {/* Trust note */}
       <section style={{ background: 'var(--teal-deep)', padding: '4rem 2rem' }}>
