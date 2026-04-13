@@ -64,7 +64,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '0.2rem' }}>Phone</div>
-                  <div style={{ fontSize: '0.92rem', fontWeight: 500 }}>+254 704 579 936</div>
+                  <div style={{ fontSize: '0.92rem', fontWeight: 500 }}>+254 708588479</div>
                 </div>
               </a>
 
