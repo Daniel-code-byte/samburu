@@ -74,7 +74,7 @@ export default function Footer() {
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = '#fff')}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.6)')}
               >
-                <Phone size={13} /> +254 704 579 936
+                <Phone size={13} /> +254 708588479
               </a>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,0.6)', fontSize: '0.84rem' }}>
                 <MapPin size={13} /> Samburu County, Kenya
