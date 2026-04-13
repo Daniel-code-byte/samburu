@@ -1,7 +1,7 @@
 'use client'
 
 export default function WhatsAppButton() {
-  const phone = '254704579936'
+  const phone = '254708588479'
   const message = encodeURIComponent('Hello! I found you through the Samburu Wellness website and would like to learn more.')
   const url = `https://wa.me/${phone}?text=${message}`
 
