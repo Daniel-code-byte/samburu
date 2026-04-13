@@ -81,7 +81,7 @@ export default function DonatePage() {
             </div>
             <div style={{ fontSize: '0.68rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '0.75rem' }}>M-Pesa Number</div>
             <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(2rem, 5vw, 2.5rem)', fontWeight: 700, color: '#fff', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
-              0704 579 936
+              0708588479
             </div>
             <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem' }}>Samburu Wellness & Resilience</div>
             <div style={{ background: 'rgba(255,255,255,0.08)', padding: '0.75rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
@@ -117,7 +117,7 @@ export default function DonatePage() {
             <div style={{ fontSize: '0.68rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>International Donations</div>
             <div style={{ background: 'rgba(255,255,255,0.1)', padding: '1rem', marginBottom: '1.5rem' }}>
               <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>PayPal Email</div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff' }}>lepatidan5@gmail.com</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#fff' }}>treasurer@samburuwelness.org</div>
             </div>
             <a href="https://paypal.me/samburuwellness" target="_blank" rel="noopener noreferrer"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#0070BA', color: '#fff', padding: '0.75rem 1.5rem', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, fontFamily: 'DM Sans, sans-serif' }}>
