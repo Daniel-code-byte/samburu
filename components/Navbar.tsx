@@ -51,7 +51,7 @@ export default function Navbar() {
             />
             <div>
               <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '0.92rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.1 }}>
-                Samburu Mental Health
+                Samburu Wellness Resilience
               </div>
               <div style={{ fontSize: '0.57rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--muted)' }}>
                 Association
