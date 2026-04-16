@@ -4,7 +4,7 @@ import { ArrowRight, Calendar } from 'lucide-react'
 import { getPosts } from '@/lib/supabase'
 
 export const metadata: Metadata = {
-  title: 'News — Samburu Mental Health Association',
+  title: 'Events — Samburu Mental Health Association',
   description: 'Updates, stories, and insights from the Samburu Mental Health Association community.',
 }
 
@@ -16,16 +16,16 @@ export default async function NewsPage() {
       {/* ── Header ──────────────────────────────────────── */}
       <section style={{ background: 'var(--teal-deep)', padding: '6rem 2rem 5rem' }}>
         <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ fontSize: '0.68rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem' }}>Stories & Updates</div>
+          <div style={{ fontSize: '0.68rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem' }}>Events & Updates</div>
           <h1 style={{
             fontFamily: 'Cormorant Garamond, serif',
             fontSize: 'clamp(2.8rem, 5vw, 4rem)',
             fontWeight: 300, color: '#fff', lineHeight: 1.05, marginBottom: '1.5rem',
           }}>
-            News from the<br /><em>ground</em>
+            Events &<br /><em>Community Updates</em>
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: 520, margin: '0 auto' }}>
-            Read about program updates, community milestones, and stories of resilience from across Samburu.
+            Upcoming events, community activities, and mental health awareness campaigns across Samburu County.
           </p>
         </div>
       </section>
@@ -41,10 +41,10 @@ export default async function NewsPage() {
               textAlign: 'center',
             }}>
               <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.8rem', color: 'var(--muted)', marginBottom: '0.75rem' }}>
-                Stories coming soon
+                No events yet
               </div>
               <p style={{ fontSize: '0.9rem', color: 'var(--muted)', maxWidth: 400, margin: '0 auto', lineHeight: 1.7 }}>
-                News and updates will appear here. Posts can be added via the admin dashboard.
+                Events will appear here once added via the admin dashboard.
               </p>
             </div>
           ) : (
