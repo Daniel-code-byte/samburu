@@ -9,7 +9,7 @@ const NAV = [
   { label: 'About', href: '/about' },
   { label: 'Programs', href: '/programs' },
   { label: 'Gallery', href: '/gallery' },
-  { label: 'News', href: '/news' },
+  { label: 'Events', href: '/news' },
   { label: 'Donate', href: '/donate' },
   { label: 'Contact', href: '/contact' },
 ]
@@ -46,15 +46,15 @@ export default function Navbar() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://ovykholwoiqdaelgkvez.supabase.co/storage/v1/object/public/photos/icon.jpeg"
-              alt="Logo"
+              alt="SMHA Logo"
               style={{ width: 40, height: 40, objectFit: 'contain', borderRadius: 2 }}
             />
             <div>
               <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '0.92rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.1 }}>
-                Samburu Wellness
+                Samburu Mental Health
               </div>
               <div style={{ fontSize: '0.57rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--muted)' }}>
-                & Resilience
+                Association
               </div>
             </div>
           </Link>
