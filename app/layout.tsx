@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
 
 export const metadata: Metadata = {
-  title: 'Samburu Wellness & Resilience',
+  title: 'Samburu Wellness Resilience',
   description: 'Promoting mental wellbeing in Samburu County through awareness, community engagement, stigma reduction and linkage to appropriate mental health support services.',
 }
 
