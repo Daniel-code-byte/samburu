@@ -46,15 +46,15 @@ export default function Navbar() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://ovykholwoiqdaelgkvez.supabase.co/storage/v1/object/public/photos/icon.jpeg"
-              alt="SMHA Logo"
+              alt="SWR Logo"
               style={{ width: 40, height: 40, objectFit: 'contain', borderRadius: 2 }}
             />
             <div>
               <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '0.92rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.1 }}>
-                Samburu Wellness Resilience
+                Samburu Wellness
               </div>
               <div style={{ fontSize: '0.57rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--muted)' }}>
-                Association
+                Resilience
               </div>
             </div>
           </Link>
