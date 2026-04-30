@@ -15,17 +15,12 @@ const NAV = [
 ]
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 30)
-    window.addEventListener('scroll', fn, { passive: true })
-    return () => window.removeEventListener('scroll', fn)
-  }, [])
-
-  useEffect(() => { setOpen(false) }, [pathname])
+    setOpen(false)
+  }, [pathname])
 
   return (
     <>
@@ -57,7 +52,11 @@ export default function Navbar() {
           </nav>
 
           {/* BURGER */}
-          <button onClick={() => setOpen(!open)} className="burger">
+          <button
+            onClick={() => setOpen(!open)}
+            className="burger"
+            aria-label="Toggle menu"
+          >
             {open ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
@@ -74,7 +73,8 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
-          <Link href="/join" className="cta mobile-cta">
+
+          <Link href="/join" className="mobile-cta">
             Join Us
           </Link>
         </div>
@@ -86,7 +86,7 @@ export default function Navbar() {
         .nav-header {
           position: sticky;
           top: 0;
-          z-index: 90;
+          z-index: 100;
           background: var(--white);
           border-bottom: 1px solid var(--border);
         }
@@ -129,7 +129,7 @@ export default function Navbar() {
           color: var(--muted);
         }
 
-        /* DESKTOP */
+        /* DESKTOP NAV */
         .desktop-nav {
           display: flex;
           align-items: center;
@@ -145,10 +145,10 @@ export default function Navbar() {
         }
 
         .nav-link:hover {
-          color: #6C63FF; /* blue-purple */
+          color: #6C63FF;
         }
 
-        /* CTA */
+        /* CTA BUTTON */
         .cta {
           margin-left: 0.8rem;
           padding: 0.5rem 1.3rem;
@@ -157,12 +157,6 @@ export default function Navbar() {
           color: white;
           text-decoration: none;
           border-radius: 6px;
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .cta:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(108,99,255,0.3);
         }
 
         /* BURGER */
@@ -171,20 +165,25 @@ export default function Navbar() {
           background: none;
           border: none;
           cursor: pointer;
+          color: var(--ink);
         }
 
-        /* MOBILE MENU */
+        /* MOBILE MENU (FIXED COLORS) */
         .mobile-menu {
           position: absolute;
           top: 100%;
           left: 0;
           width: 100%;
-          background: #0D1B2A; /* deep premium dark */
+
+          background: #14263D; /* 🔥 bluish card */
+          border-top: 1px solid rgba(255,255,255,0.08);
+          box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+
           overflow: hidden;
 
           max-height: 0;
           opacity: 0;
-          transform: translateY(-12px);
+          transform: translateY(-10px);
 
           transition: all 0.35s ease;
         }
@@ -196,13 +195,15 @@ export default function Navbar() {
           padding: 1.2rem 2rem 1.5rem;
         }
 
-        /* LINKS */
+        /* MOBILE LINKS */
         .mobile-link {
           display: block;
           padding: 0.9rem 0;
-          color: rgba(255,255,255,0.85);
-          text-decoration: none;
           font-size: 1rem;
+
+          color: #EAF2FF; /* 🔥 readable */
+          text-decoration: none;
+
           border-bottom: 1px solid rgba(255,255,255,0.08);
 
           opacity: 0;
@@ -216,14 +217,23 @@ export default function Navbar() {
         }
 
         .mobile-link:hover {
-          color: #8A7CFF;
+          color: #8A7CFF; /* 🔥 purple highlight */
           padding-left: 6px;
         }
 
+        /* MOBILE CTA */
         .mobile-cta {
           display: block;
           text-align: center;
           margin-top: 1rem;
+
+          padding: 0.7rem;
+          font-size: 0.9rem;
+
+          background: linear-gradient(135deg, #6C63FF, #8A7CFF);
+          color: white;
+          text-decoration: none;
+          border-radius: 6px;
         }
 
         /* RESPONSIVE */
