@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://placeholder.supabase.co'
+const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'placeholder'
 
 export const supabase = createClient(url, key)
 
@@ -13,6 +13,11 @@ export type Post = {
   id: string; title: string; slug: string; excerpt: string
   content: string; cover_url: string | null; category: string
   published_at: string; created_at: string
+  event_type: 'public' | 'free_registration' | 'paid' | null
+  event_date: string | null
+  event_location: string | null
+  event_price: number | null
+  event_capacity: number | null
 }
 export type Program = {
   id: string; title: string; description: string; icon: string; order: number
@@ -20,6 +25,10 @@ export type Program = {
 export type Message = { name: string; email: string; subject: string; body: string }
 export type JoinRequest = {
   name: string; email: string; phone: string | null; interest: string; message: string | null
+}
+export type EventRegistration = {
+  id: string; event_id: string; name: string; email: string; phone: string | null
+  mpesa_code: string | null; ticket_number: string; status: string; created_at: string
 }
 
 export async function getPhotos(category?: string): Promise<Photo[]> {
@@ -34,9 +43,7 @@ export async function getPhotos(category?: string): Promise<Photo[]> {
 
 export async function getHeroPhotos(): Promise<Photo[]> {
   try {
-    const { data, error } = await supabase
-      .from('photos').select('*')
-      .order('created_at', { ascending: false }).limit(8)
+    const { data, error } = await supabase.from('photos').select('*').order('created_at', { ascending: false }).limit(8)
     if (error) { console.error('getHeroPhotos error:', error); return [] }
     return data ?? []
   } catch (e) { console.error('getHeroPhotos catch:', e); return [] }
@@ -44,23 +51,16 @@ export async function getHeroPhotos(): Promise<Photo[]> {
 
 export async function getCommunityPhotos(): Promise<Photo[]> {
   try {
-    const { data: community } = await supabase
-      .from('photos').select('*')
-      .eq('category', 'community')
-      .order('created_at', { ascending: false }).limit(6)
+    const { data: community } = await supabase.from('photos').select('*').eq('category', 'community').order('created_at', { ascending: false }).limit(6)
     if (community && community.length > 0) return community
-    const { data: anyPhotos } = await supabase
-      .from('photos').select('*')
-      .order('created_at', { ascending: false }).limit(6)
-    return anyPhotos ?? []
+    const { data: any } = await supabase.from('photos').select('*').order('created_at', { ascending: false }).limit(6)
+    return any ?? []
   } catch (e) { console.error('getCommunityPhotos catch:', e); return [] }
 }
 
 export async function getPosts(): Promise<Post[]> {
   try {
-    const { data, error } = await supabase
-      .from('posts').select('*')
-      .order('published_at', { ascending: false })
+    const { data, error } = await supabase.from('posts').select('*').order('published_at', { ascending: false })
     if (error) { console.error('getPosts error:', error); return [] }
     return data ?? []
   } catch (e) { console.error('getPosts catch:', e); return [] }
@@ -68,16 +68,14 @@ export async function getPosts(): Promise<Post[]> {
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
-    const { data } = await supabase
-      .from('posts').select('*').eq('slug', slug).single()
+    const { data } = await supabase.from('posts').select('*').eq('slug', slug).single()
     return data ?? null
   } catch { return null }
 }
 
 export async function getPrograms(): Promise<Program[]> {
   try {
-    const { data } = await supabase
-      .from('programs').select('*').order('order', { ascending: true })
+    const { data } = await supabase.from('programs').select('*').order('order', { ascending: true })
     return data ?? []
   } catch { return [] }
 }
@@ -90,6 +88,17 @@ export async function sendMessage(msg: Message): Promise<void> {
 export async function submitJoinRequest(req: JoinRequest): Promise<void> {
   const { error } = await supabase.from('join_requests').insert([req])
   if (error) throw error
+}
+
+export async function registerForEvent(reg: Omit<EventRegistration, 'id' | 'created_at'>): Promise<EventRegistration> {
+  const { data, error } = await supabase.from('event_registrations').insert([reg]).select().single()
+  if (error) throw error
+  return data
+}
+
+export async function getEventRegistrations(eventId: string): Promise<EventRegistration[]> {
+  const { data } = await supabase.from('event_registrations').select('*').eq('event_id', eventId).order('created_at', { ascending: false })
+  return data ?? []
 }
 
 export async function adminGetMessages() {
