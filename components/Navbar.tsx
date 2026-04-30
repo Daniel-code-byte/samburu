@@ -52,33 +52,35 @@ export default function Navbar() {
           </nav>
 
           {/* BURGER */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="burger"
-            aria-label="Toggle menu"
-          >
+          <button onClick={() => setOpen(!open)} className="burger">
             {open ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
-
-        {/* MOBILE MENU */}
-        <div className={`mobile-menu ${open ? 'open' : ''}`}>
-          {NAV.map((item, i) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="mobile-link"
-              style={{ transitionDelay: `${i * 0.05}s` }}
-            >
-              {item.label}
-            </Link>
-          ))}
-
-          <Link href="/join" className="mobile-cta">
-            Join Us
-          </Link>
-        </div>
       </header>
+
+      {/* 🔥 OVERLAY */}
+      <div
+        className={`overlay ${open ? 'show' : ''}`}
+        onClick={() => setOpen(false)}
+      />
+
+      {/* 🔥 MOBILE MENU */}
+      <div className={`mobile-menu ${open ? 'open' : ''}`}>
+        {NAV.map((item, i) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="mobile-link"
+            style={{ transitionDelay: `${i * 0.05}s` }}
+          >
+            {item.label}
+          </Link>
+        ))}
+
+        <Link href="/join" className="mobile-cta">
+          Join Us
+        </Link>
+      </div>
 
       <style>{`
 
@@ -86,7 +88,7 @@ export default function Navbar() {
         .nav-header {
           position: sticky;
           top: 0;
-          z-index: 100;
+          z-index: 1000;
           background: var(--white);
           border-bottom: 1px solid var(--border);
         }
@@ -112,7 +114,6 @@ export default function Navbar() {
         .logo img {
           width: 40px;
           height: 40px;
-          border-radius: 3px;
         }
 
         .logo-title {
@@ -129,10 +130,9 @@ export default function Navbar() {
           color: var(--muted);
         }
 
-        /* DESKTOP NAV */
+        /* DESKTOP */
         .desktop-nav {
           display: flex;
-          align-items: center;
           gap: 0.3rem;
         }
 
@@ -141,22 +141,20 @@ export default function Navbar() {
           font-size: 0.85rem;
           color: var(--body);
           text-decoration: none;
-          transition: color 0.2s;
         }
 
         .nav-link:hover {
-          color: #6C63FF;
+          color: var(--teal);
         }
 
-        /* CTA BUTTON */
         .cta {
           margin-left: 0.8rem;
           padding: 0.5rem 1.3rem;
           font-size: 0.8rem;
-          background: linear-gradient(135deg, #6C63FF, #8A7CFF);
+          background: var(--rust);
           color: white;
+          border-radius: 4px;
           text-decoration: none;
-          border-radius: 6px;
         }
 
         /* BURGER */
@@ -164,26 +162,45 @@ export default function Navbar() {
           display: none;
           background: none;
           border: none;
-          cursor: pointer;
-          color: var(--ink);
         }
 
-        /* MOBILE MENU (FIXED COLORS) */
+        /* 🔥 OVERLAY */
+        .overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.25);
+          backdrop-filter: blur(4px);
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+          z-index: 998;
+        }
+
+        .overlay.show {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        /* 🔥 MOBILE MENU */
         .mobile-menu {
-          position: absolute;
-          top: 100%;
+          position: fixed;
+          top: 66px;
           left: 0;
           width: 100%;
+          z-index: 999;
 
-          background: #14263D; /* 🔥 bluish card */
-          border-top: 1px solid rgba(255,255,255,0.08);
-          box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+          background: linear-gradient(
+            180deg,
+            var(--teal-deep),
+            #123944
+          );
 
-          overflow: hidden;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 
           max-height: 0;
+          overflow: hidden;
           opacity: 0;
-          transform: translateY(-10px);
+          transform: translateY(-12px);
 
           transition: all 0.35s ease;
         }
@@ -192,18 +209,16 @@ export default function Navbar() {
           max-height: 520px;
           opacity: 1;
           transform: translateY(0);
-          padding: 1.2rem 2rem 1.5rem;
+          padding: 1.2rem 2rem 1.6rem;
         }
 
-        /* MOBILE LINKS */
+        /* LINKS */
         .mobile-link {
           display: block;
-          padding: 0.9rem 0;
+          padding: 0.95rem 0;
           font-size: 1rem;
-
-          color: #EAF2FF; /* 🔥 readable */
+          color: rgba(255,255,255,0.92);
           text-decoration: none;
-
           border-bottom: 1px solid rgba(255,255,255,0.08);
 
           opacity: 0;
@@ -217,23 +232,21 @@ export default function Navbar() {
         }
 
         .mobile-link:hover {
-          color: #8A7CFF; /* 🔥 purple highlight */
+          color: var(--gold);
           padding-left: 6px;
         }
 
-        /* MOBILE CTA */
+        /* CTA */
         .mobile-cta {
           display: block;
           text-align: center;
           margin-top: 1rem;
+          padding: 0.75rem;
 
-          padding: 0.7rem;
-          font-size: 0.9rem;
-
-          background: linear-gradient(135deg, #6C63FF, #8A7CFF);
+          background: var(--rust);
           color: white;
+          border-radius: 4px;
           text-decoration: none;
-          border-radius: 6px;
         }
 
         /* RESPONSIVE */
