@@ -1,0 +1,22 @@
+{
+  "name": "samburu-wellness",
+  "version": "1.0.0",
+  "description": "Samburu Wellness & Resilience - Community Organisation Website",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [],
+  "author": "Daniel Lepati",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.106.1",
+    "lucide-react": "^1.16.0",
+    "next": "^15.3.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
