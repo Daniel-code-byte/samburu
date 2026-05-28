@@ -79,7 +79,7 @@ function Navbar() {
       </div>
 
       <script dangerouslySetInnerHTML={{__html: `
-        (function() {
+        document.addEventListener('DOMContentLoaded', function() {
           var navbar   = document.getElementById('main-navbar');
           var img      = document.getElementById('nav-logo-img');
           var fallback = document.getElementById('nav-logo-fallback');
@@ -147,7 +147,7 @@ function Navbar() {
           document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu();
           });
-        })();
+        });
       `}} />
     </>
   )
