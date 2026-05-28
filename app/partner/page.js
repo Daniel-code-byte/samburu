@@ -23,7 +23,7 @@ export default function PartnerPage() {
   ]
 
   const payments = [
-    { icon:'📱', name:'M-Pesa', detail:'Till No: 0704 579 936', sub:'Business: Samburu Wellness' },
+    { icon:'📱', name:'M-Pesa', detail:'+254 708 588479', sub:'Business: Samburu Wellness' },
     { icon:'🌐', name:'PayPal', detail:'paypal.me/samburuwellness', sub:'International donors welcome' },
     { icon:'🏦', name:'Bank Transfer', detail:'Equity Bank Kenya', sub:'Contact us for account details' },
   ]
