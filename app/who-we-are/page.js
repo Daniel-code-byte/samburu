@@ -3,11 +3,48 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
 const TEAM_SLOTS = [
-  { slot: 1, pfpKey: 'man_1', name: 'Name Here', role: 'Role / Title', email: 'email@samburuwellness.org', caption: '' },
-  { slot: 2, pfpKey: 'man_2', name: 'Name Here', role: 'Role / Title', email: 'email@samburuwellness.org', caption: '' },
-  { slot: 3, pfpKey: 'man_3', name: 'Name Here', role: 'Role / Title', email: 'email@samburuwellness.org', caption: '' },
-  { slot: 4, pfpKey: 'man_4', name: 'Name Here', role: 'Role / Title', email: 'email@samburuwellness.org', caption: '' },
-  { slot: 5, pfpKey: 'man_5', name: 'Dann Lepati', role: 'IT Manager', email: 'lepatidan5@gmail.com', caption: 'Manages all technology systems, digital infrastructure, and online presence for Samburu Wellness & Resilience.' },
+  {
+    slot: 1, pfpKey: 'man_1',
+    name: 'Soila Seenoi',
+    role: 'Co-Founder & Chairlady',
+    email: 'email@samburuwellness.org',
+    caption: 'A humanitarian advocate with a Degree in Community Development. Active in children\'s advocacy, refugee support, and anti-human trafficking projects. Brings strong leadership and deep commitment to community empowerment and sustainable social impact.',
+  },
+  {
+    slot: 2, pfpKey: 'man_2',
+    name: 'Patel Lenaruti',
+    role: 'Co-Founder & Secretary',
+    email: 'email@samburuwellness.org',
+    caption: '',
+  },
+  {
+    slot: 3, pfpKey: 'man_3',
+    name: 'Jessica Namusu',
+    role: 'Co-Founder & Board Member',
+    email: 'email@samburuwellness.org',
+    caption: '',
+  },
+  {
+    slot: 4, pfpKey: 'man_4',
+    name: 'Naomi Sarolyne',
+    role: 'Executive Coordinator',
+    email: 'email@samburuwellness.org',
+    caption: 'Oversees planning, implementation, and monitoring of community programmes. Her talent mentorship initiative has connected gifted children with mentors, training, and educational support — helping them rise above challenges and reach their full potential.',
+  },
+  {
+    slot: 5, pfpKey: 'man_5',
+    name: 'Jackline Kathomi',
+    role: 'Team Volunteer — Administration',
+    email: 'email@samburuwellness.org',
+    caption: 'Community Development student supporting the organisation through administrative coordination and day-to-day operations. Assists with records, communications, and smooth programme implementation.',
+  },
+  {
+    slot: 6, pfpKey: 'man_6',
+    name: 'Daniel Lepati',
+    role: 'IT Manager',
+    email: 'lepatidan5@gmail.com',
+    caption: 'Manages all technology systems, digital infrastructure, and online presence for Samburu Wellness & Resilience.',
+  },
 ]
 
 const values = [
@@ -134,6 +171,7 @@ export default function WhoWeArePage() {
                 <div key={member.slot} className="team-member-card">
                   <span className="slot-number">#{member.slot}</span>
 
+                  {/* ENLARGED PROFILE PHOTO */}
                   <div className="team-pfp">
                     {pfpUrl
                       ? <img src={pfpUrl} alt={member.name} />
@@ -165,10 +203,10 @@ export default function WhoWeArePage() {
 
                   {member.caption ? (
                     <p style={{
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: 'var(--text-dim)',
-                      lineHeight: 1.65,
-                      marginTop: '10px',
+                      lineHeight: 1.7,
+                      marginTop: '12px',
                       fontStyle: 'italic',
                       textAlign: 'center',
                     }}>
