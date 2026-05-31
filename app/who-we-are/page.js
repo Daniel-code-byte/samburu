@@ -8,14 +8,14 @@ const TEAM_SLOTS = [
     name: 'Soila Seenoi',
     role: 'Co-Founder & Chairlady',
     email: 'email@samburuwellness.org',
-    caption: 'A humanitarian advocate with a Degree in Community Development. Active in children\'s advocacy, refugee support, and anti-human trafficking projects. Brings strong leadership and deep commitment to community empowerment and sustainable social impact.',
+    caption: 'A humanitarian advocate with a Degree in Community Development, currently pursuing a Master\'s degree. Actively involved in children\'s advocacy, refugee support, and anti-human trafficking projects. Brings strong leadership and deep commitment to community empowerment and sustainable social impact.',
   },
   {
     slot: 2, pfpKey: 'man_2',
     name: 'Patel Lenaruti',
     role: 'Co-Founder & Secretary',
     email: 'email@samburuwellness.org',
-    caption: '',
+    caption: 'Registered Mental Health and Psychiatric specialist, Palliative Care specialist, Counselling Psychologist and Psychological First Aid Provider. Experienced in holistic care for individuals and families facing chronic and life-limiting conditions — bringing mental health advocacy and inclusion to the heart of our work.',
   },
   {
     slot: 3, pfpKey: 'man_3',
@@ -29,7 +29,7 @@ const TEAM_SLOTS = [
     name: 'Naomi Sarolyne',
     role: 'Executive Coordinator',
     email: 'email@samburuwellness.org',
-    caption: 'Oversees planning, implementation, and monitoring of community programmes. Her talent mentorship initiative has connected gifted children with mentors, training, and educational support — helping them rise above challenges and reach their full potential.',
+    caption: 'Oversees planning, implementation, and monitoring of community programmes. Her talent mentorship initiative identified gifted children and connected them with mentors, training, and educational support — helping them rise above challenges and reach their full potential.',
   },
   {
     slot: 5, pfpKey: 'man_5',
@@ -171,7 +171,6 @@ export default function WhoWeArePage() {
                 <div key={member.slot} className="team-member-card">
                   <span className="slot-number">#{member.slot}</span>
 
-                  {/* ENLARGED PROFILE PHOTO */}
                   <div className="team-pfp">
                     {pfpUrl
                       ? <img src={pfpUrl} alt={member.name} />
