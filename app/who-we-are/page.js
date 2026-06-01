@@ -4,21 +4,21 @@ import { supabase } from '@/lib/supabase'
 
 const TEAM_SLOTS = [
   {
-    slot: 1, pfpKey: 'man_1',
+    slot: 1, pfpKey: 'man_2',
     name: 'Soila Seenoi',
     role: 'Co-Founder & Chairlady',
     email: 'email@samburuwellness.org',
     caption: 'A humanitarian advocate with a Degree in Community Development, currently pursuing a Master\'s degree. Actively involved in children\'s advocacy, refugee support, and anti-human trafficking projects. Brings strong leadership and deep commitment to community empowerment and sustainable social impact.',
   },
   {
-    slot: 2, pfpKey: 'man_2',
+    slot: 2, pfpKey: 'man_1',
     name: 'Patel Lenaruti',
     role: 'Co-Founder & Secretary',
     email: 'email@samburuwellness.org',
     caption: 'Registered Mental Health and Psychiatric specialist, Palliative Care specialist, Counselling Psychologist and Psychological First Aid Provider. Experienced in holistic care for individuals and families facing chronic and life-limiting conditions — bringing mental health advocacy and inclusion to the heart of our work.',
   },
   {
-    slot: 3, pfpKey: 'man_3',
+    slot: 3, pfpKey: 'man_9',
     name: 'Jessica Namusu',
     role: 'Co-Founder & Board Member',
     email: 'email@samburuwellness.org',
@@ -32,14 +32,14 @@ const TEAM_SLOTS = [
     caption: 'Oversees planning, implementation, and monitoring of community programmes. Her talent mentorship initiative identified gifted children and connected them with mentors, training, and educational support — helping them rise above challenges and reach their full potential.',
   },
   {
-    slot: 5, pfpKey: 'man_5',
+    slot: 5, pfpKey: 'man_6',
     name: 'Jackline Kathomi',
     role: 'Team Volunteer — Administration',
     email: 'email@samburuwellness.org',
     caption: 'Community Development student supporting the organisation through administrative coordination and day-to-day operations. Assists with records, communications, and smooth programme implementation.',
   },
   {
-    slot: 6, pfpKey: 'man_6',
+    slot: 6, pfpKey: 'man_5',
     name: 'Daniel Lepati',
     role: 'IT Manager',
     email: 'lepatidan5@gmail.com',
