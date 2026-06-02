@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 
 const TEAM_SLOTS = [
   {
-    slot: 1, pfpKey: 'man_2',
+    slot: 1, pfpKey: 'man_3',
     name: 'Soila Seenoi',
     role: 'Co-Founder & Chairlady',
     email: 'soila@samburuwellness.org',
@@ -25,14 +25,14 @@ const TEAM_SLOTS = [
     caption: '',
   },
   {
-    slot: 4, pfpKey: 'man_4',
+    slot: 4, pfpKey: 'man_1',
     name: 'Naomi Sarolyne',
     role: 'Executive Coordinator',
     email: 'naomi@samburuwellness.org',
     caption: 'Oversees planning, implementation, and monitoring of community programmes. Her talent mentorship initiative identified gifted children and connected them with mentors, training, and educational support — helping them rise above challenges and reach their full potential.',
   },
   {
-    slot: 5, pfpKey: 'man_6',
+    slot: 5, pfpKey: 'man_4',
     name: 'Jackline Kathomi',
     role: 'Team Volunteer — Administration',
     email: 'email@samburuwellness.org',
