@@ -25,7 +25,7 @@ const TEAM_SLOTS = [
     caption: '',
   },
   {
-    slot: 4, pfpKey: 'man_1',
+    slot: 4, pfpKey: 'man_2',
     name: 'Naomi Sarolyne',
     role: 'Executive Coordinator',
     email: 'naomi@samburuwellness.org',
