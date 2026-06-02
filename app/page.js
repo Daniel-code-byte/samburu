@@ -56,21 +56,6 @@ export default function HomePage() {
         )}
         <div className="hero-overlay" />
         <div className="hero-content">
-          {/* Logo Area: White background, enlarged (was 48px, now 60px) */}
-          <div style={{ 
-            display: 'inline-flex', 
-            backgroundColor: 'white', 
-            padding: '16px 28px', 
-            borderRadius: '60px',
-            marginBottom: '28px',
-            boxShadow: '0 8px 20px rgba(0,0,0,0.1)'
-          }}>
-            <img 
-              src="/logo.png" 
-              alt="Logo" 
-              style={{ height: '60px', width: 'auto', display: 'block' }} 
-            />
-          </div>
           <p className="hero-eyebrow">Samburu County, Kenya</p>
           <h1 className="hero-title">
             Rooted in <em>Community,</em><br />
@@ -192,7 +177,7 @@ export default function HomePage() {
 
       {/* ── SECOND QUOTE ── */}
       <section style={{
-        background: 'linear-gradient(135deg, #2D5A6E, #4A8B9F)', /* Brighter gradient: was dark steel/navy-light, now lighter teal tones */
+        background: 'linear-gradient(135deg, var(--steel), var(--navy-light))',
         borderTop: '1px solid var(--navy-border)',
         borderBottom: '1px solid var(--navy-border)',
         padding: 'clamp(48px,7vw,90px) clamp(18px,7vw,120px)',
