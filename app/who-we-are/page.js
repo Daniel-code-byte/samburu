@@ -22,7 +22,8 @@ const TEAM_SLOTS = [
     name: 'Jessica Namusu',
     role: 'Co-Founder & Board Member',
     email: 'email@samburuwellness.org',
-    caption: '',
+    caption: 'Jessica Namusu  is a Co Founder and Board member she is  a legal professional with special interest in human rights, children’s law,  and International Humanitarian Law. Holding a Bachelor of Laws (LLB), her career is built on an in-depth knowledge of legal frameworks .  Her committement  to social impact is reflected in her extensive work organizing events for social-economic empowerment.
+​As a boardmember, she bring a unique blend of sharp legal acumen, strategic governance, and a deeply rooted passion for humanitarian progress. Her advanced understanding of compliance, risk management, and systemic advocacy allows her to guide the organizations through complex regulatory landscapes while keeping core missions aligned with ethical excellence. She leverage her extensive network and proven track record in community fundraising to drive sustainable growth, foster strategic partnerships, and ensure the board delivers measurable, transformative impact to the populations we serve.',
   },
   {
     slot: 4, pfpKey: 'man_2',
