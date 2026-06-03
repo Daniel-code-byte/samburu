@@ -204,16 +204,16 @@ export default function HomePage() {
       <section className="section" style={{ background: 'var(--navy-card)' }}>
         <div className="section-inner" style={{ maxWidth: '900px' }}>
           <p className="section-eyebrow">Impact in Numbers</p>
-          <h2 className="section-title">Six Years of <em>Showing Up</em></h2>
+          <h2 className="section-title">Two Years of <em>Showing Up</em></h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginTop: 'clamp(24px,3vw,40px)' }}>
             {[
-              { n: '1200+', l: 'people reached across all programmes' },
-              { n: '18',      l: 'villages with active programme presence' },
-              { n: '100+',    l: 'families in maternal health support' },
-              { n: '400+',    l: 'women trained in business & finance' },
-              { n: '200+',    l: 'youth in annual leadership camp' },
-              { n: '500+',    l: 'households supported with food security' },
+              { n: '120+', l: 'people reached across all programmes' },
+              { n: '9',      l: 'villages with active programme presence' },
+              { n: '10+',    l: 'families in maternal health support' },
+              { n: '40+',    l: 'women trained in business & finance' },
+              { n: '20+',    l: 'youth in annual leadership camp' },
+              { n: '50+',    l: 'households supported with food security' },
             ].map(item => (
               <div key={item.n} style={{
                 background: 'var(--navy)',
