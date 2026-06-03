@@ -51,7 +51,7 @@ function Navbar() {
       <nav className={`navbar ${scrolled ? 'solid' : 'transparent'}`}>
         <a href="/" className="nav-logo">
           <img
-            src="/icon.jpeg"
+            src="/icon3.jpeg"
             alt="Samburu Wellness"
             className="nav-logo-img"
             onError={(e) => {
@@ -116,7 +116,7 @@ function Footer() {
       <div className="footer-grid">
         <div className="footer-brand">
           <a href="/" style={{ display: 'inline-block', marginBottom: '16px' }}>
-            <img src="/icon.jpeg" alt="Samburu Wellness & Resilience"
+            <img src="/icon.3jpeg" alt="Samburu Wellness & Resilience"
               style={{ height: '48px', width: 'auto', borderRadius: '8px' }}
               onError={(e) => { e.target.style.display = 'none' }} />
           </a>
