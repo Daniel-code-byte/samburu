@@ -38,7 +38,7 @@ export default function HomePage() {
   const stats = [
     { n: '1200+', l: 'Lives Touched' },
     { n: '4',       l: 'Active Programmes' },
-    { n: '38',      l: 'Villages Reached' },
+    { n: '18',      l: 'Villages Reached' },
     { n: '3+',      l: 'Years of Service' },
   ]
 
