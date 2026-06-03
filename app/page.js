@@ -36,10 +36,10 @@ export default function HomePage() {
   }, [slides.length])
 
   const stats = [
-    { n: '12,000+', l: 'Lives Touched' },
+    { n: '1200+', l: 'Lives Touched' },
     { n: '4',       l: 'Active Programmes' },
     { n: '38',      l: 'Villages Reached' },
-    { n: '6+',      l: 'Years of Service' },
+    { n: '3+',      l: 'Years of Service' },
   ]
 
   return (
@@ -208,12 +208,12 @@ export default function HomePage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginTop: 'clamp(24px,3vw,40px)' }}>
             {[
-              { n: '12,000+', l: 'people reached across all programmes' },
-              { n: '38',      l: 'villages with active programme presence' },
-              { n: '600+',    l: 'families in maternal health support' },
+              { n: '1200+', l: 'people reached across all programmes' },
+              { n: '18',      l: 'villages with active programme presence' },
+              { n: '100+',    l: 'families in maternal health support' },
               { n: '400+',    l: 'women trained in business & finance' },
               { n: '200+',    l: 'youth in annual leadership camp' },
-              { n: '800+',    l: 'households supported with food security' },
+              { n: '500+',    l: 'households supported with food security' },
             ].map(item => (
               <div key={item.n} style={{
                 background: 'var(--navy)',
