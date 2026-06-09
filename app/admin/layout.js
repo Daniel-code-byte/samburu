@@ -16,6 +16,7 @@ export default function AdminLayout({ children }) {
   const [authed, setAuthed] = useState(false)
   const [pw, setPw] = useState('')
   const [err, setErr] = useState('')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -23,6 +24,19 @@ export default function AdminLayout({ children }) {
       setAuthed(sessionStorage.getItem('swadmin') === '1')
     }
   }, [])
+
+  // Close sidebar when route changes (mobile nav tap)
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [pathname])
+
+  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = sidebarOpen ? 'hidden' : ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [sidebarOpen])
 
   function login(e) {
     e.preventDefault()
@@ -36,22 +50,41 @@ export default function AdminLayout({ children }) {
 
   if (!authed) {
     return (
-      <div style={{minHeight:'100vh',background:'var(--brown)',display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}}>
-        <div style={{background:'white',borderRadius:'8px',padding:'48px',width:'100%',maxWidth:'420px',textAlign:'center'}}>
-          <div style={{width:'56px',height:'56px',background:'var(--amber)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 20px',fontSize:'24px',fontFamily:'Playfair Display,serif',fontWeight:700,color:'white'}}>SW</div>
-          <h2 style={{fontFamily:'Playfair Display,serif',color:'var(--brown)',fontSize:'24px',marginBottom:'6px'}}>Admin Access</h2>
-          <p style={{color:'var(--text-light)',fontSize:'14px',marginBottom:'28px'}}>Samburu Wellness & Resilience</p>
+      <div style={{
+        minHeight: '100vh', background: 'var(--navy)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px'
+      }}>
+        <div style={{
+          background: 'var(--navy-card)', border: '1px solid var(--navy-border)',
+          borderRadius: '12px', padding: 'clamp(32px,5vw,48px)',
+          width: '100%', maxWidth: '420px', textAlign: 'center'
+        }}>
+          <div style={{
+            width: '56px', height: '56px', background: 'var(--gold)', borderRadius: '50%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 20px', fontSize: '20px',
+            fontFamily: 'Cormorant Garamond, serif', fontWeight: 700, color: '#04101F'
+          }}>SW</div>
+          <h2 style={{
+            fontFamily: 'Cormorant Garamond, serif', color: 'var(--text-bright)',
+            fontSize: '24px', marginBottom: '6px'
+          }}>Admin Access</h2>
+          <p style={{ color: 'var(--text-mid)', fontSize: '14px', marginBottom: '28px' }}>
+            Samburu Wellness & Resilience
+          </p>
           <form onSubmit={login}>
             <input
               type="password"
               placeholder="Enter admin password"
               className="form-input"
               value={pw}
-              onChange={e=>{ setPw(e.target.value); setErr('') }}
-              style={{marginBottom:'16px',textAlign:'center'}}
+              onChange={e => { setPw(e.target.value); setErr('') }}
+              style={{ marginBottom: '16px', textAlign: 'center' }}
             />
-            {err && <p style={{color:'#c0392b',fontSize:'13px',marginBottom:'12px'}}>{err}</p>}
-            <button type="submit" className="btn-amber" style={{width:'100%',padding:'12px'}}>Enter Dashboard</button>
+            {err && <p style={{ color: '#ef4444', fontSize: '13px', marginBottom: '12px' }}>{err}</p>}
+            <button type="submit" className="btn-amber" style={{ width: '100%', padding: '12px' }}>
+              Enter Dashboard
+            </button>
           </form>
         </div>
       </div>
@@ -60,11 +93,44 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="admin-layout">
-      <aside className="admin-sidebar">
+
+      {/* ── MOBILE TOP BAR ── */}
+      <header className="admin-topbar">
+        <button
+          className="admin-menu-toggle"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Open menu"
+        >
+          <span /><span /><span />
+        </button>
+        <span className="admin-topbar-title">
+          {NAV.find(n => n.pathname === pathname)?.label ?? 'Dashboard'}
+        </span>
+        <a href="/" className="admin-topbar-back">← Site</a>
+      </header>
+
+      {/* ── SIDEBAR OVERLAY (mobile) ── */}
+      {sidebarOpen && (
+        <div
+          className="admin-sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* ── SIDEBAR ── */}
+      <aside className={`admin-sidebar${sidebarOpen ? ' open' : ''}`}>
         <div className="admin-sidebar-brand">
           <h2>Samburu Wellness</h2>
           <span>Admin Dashboard</span>
+          {/* Close button — visible on mobile only */}
+          <button
+            className="admin-sidebar-close"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close menu"
+          >✕</button>
         </div>
+
         <nav className="admin-nav">
           {NAV.map(item => (
             <Link
@@ -77,14 +143,27 @@ export default function AdminLayout({ children }) {
             </Link>
           ))}
         </nav>
-        <div style={{padding:'16px 24px',borderTop:'1px solid rgba(255,255,255,0.1)'}}>
-          <a href="/" style={{fontSize:'13px',color:'rgba(253,250,244,0.5)',display:'flex',alignItems:'center',gap:'6px'}}>← Back to Site</a>
-          <button onClick={()=>{ sessionStorage.removeItem('swadmin'); setAuthed(false) }} style={{marginTop:'10px',fontSize:'13px',color:'rgba(253,250,244,0.4)',background:'none',border:'none',cursor:'pointer',padding:0}}>Log Out</button>
+
+        <div style={{ padding: '16px 22px', borderTop: '1px solid var(--navy-border)' }}>
+          <a href="/" style={{
+            fontSize: '13px', color: 'var(--text-dim)',
+            display: 'flex', alignItems: 'center', gap: '6px'
+          }}>← Back to Site</a>
+          <button
+            onClick={() => { sessionStorage.removeItem('swadmin'); setAuthed(false) }}
+            style={{
+              marginTop: '10px', fontSize: '13px', color: 'var(--text-dim)',
+              background: 'none', border: 'none', cursor: 'pointer', padding: 0
+            }}
+          >Log Out</button>
         </div>
       </aside>
+
+      {/* ── MAIN CONTENT ── */}
       <main className="admin-main">
         {children}
       </main>
+
     </div>
   )
 }
