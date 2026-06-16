@@ -15,7 +15,7 @@ export default function ContactPage() {
 
   const contacts = [
     { icon:'📍', label:'Location', text:<>Samburu County, Kenya<br />P.O. Box 00100 – Maralal</> },
-    { icon:'📞', label:'Phone', text:<a href="tel:+254704579936" style={{color:'var(--gold)'}}>+254 708 588479</a> },
+    { icon:'📞', label:'Phone', text:<a href="tel:+254708588479" style={{color:'var(--gold)'}}>+254 708 588479</a> },
     { icon:'✉️', label:'Email', text:<a href="mailto:info@samburuwellness.org" style={{color:'var(--gold)'}}>info@samburuwellness.org</a> },
     { icon:'💬', label:'WhatsApp', text:<a href="https://wa.me/254704579936" target="_blank" rel="noopener noreferrer" style={{color:'var(--gold)'}}>Chat with us on WhatsApp</a> },
     { icon:'🕐', label:'Office Hours', text:<>Mon – Fri: 8:00 AM – 5:00 PM EAT<br />Saturday: 9:00 AM – 1:00 PM</> },
