@@ -126,7 +126,7 @@ export default function HomePage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 'clamp(14px,2vw,22px)', marginTop: 'clamp(28px,4vw,48px)' }}>
             {[
-              { n:'01', icon:'🏥', title:'Community Health',    desc:'Mobile clinics, maternal care, and disease prevention meeting communities where they live — in their villages, on their terms.' },
+              { n:'01', icon:'🏥', title:'Mental Health',    desc:'Creating safe spaces for support, counseling, and emotional wellbeing — meeting people where they are, when they need it most' },
               { n:'02', icon:'👩🏾', title:'Women Empowerment',  desc:'Economic independence, legal rights education, and leadership development for women and girls across every stage of life.' },
               { n:'03', icon:'🌱', title:'Youth Resilience',    desc:'Mentorship, skills training, and mental health support for young people navigating the pressures of a rapidly changing world.' },
               { n:'04', icon:'🤝', title:'Community Care',      desc:'Food security, elder care, disability support, and emergency response — the safety net every community deserves.' },
