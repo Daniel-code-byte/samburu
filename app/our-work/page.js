@@ -4,17 +4,17 @@ import { supabase } from '@/lib/supabase'
 
 const programs = [
   {
-    tag: 'Programme 01', title: 'Community Health', icon: '🏥', category: 'Health',
+    tag: 'Programme 01', title: 'Mental Health', icon: '🏥', category: 'Health',
     paras: [
-      'Access to quality healthcare is not a privilege — it is a right. In Samburu County, geography and poverty have long made this right difficult to realise. Our health programme works to close that gap.',
-      'From mobile health clinics to maternal care, from disease prevention to mental health first aid, we meet communities where they are — in their villages, in their homes, on their terms.',
+      'Mental health is not a luxury — it is a vital part of every person’s well-being. Across our communities, stigma, limited resources, and lack of awareness continue to prevent many people from accessing the support they need. Our mental health programme works to bridge that gap.',
+      'From awareness campaigns to community support, from counselling services to mental health first aid, we bring care closer to people — creating safe spaces where individuals can be heard, supported, and empowered.',
     ],
     bullets: [
-      'Mobile health clinics reaching 18 villages monthly',
-      'Maternal and child health care for 600+ families',
-      'Community health worker training programme',
-      'HIV/AIDS awareness and support services',
-      'Mental health first aid in 12 schools',
+      'Mental health awareness programmes in schools and communities',
+      'Counselling and psychosocial support services',
+      'Mental health first aid training for community members',
+      'Support groups promoting emotional well-being and resilience',
+      'Anti-stigma campaigns encouraging open conversations about mental health',
     ],
   },
   {
@@ -186,7 +186,7 @@ export default function OurWorkPage() {
 
       <div className="stats-bar">
         <div className="stats-grid">
-          {[['12,000+','Lives Touched'],['4','Core Programmes'],['38','Villages Reached'],['6+','Years of Service']].map(([n,l]) => (
+          {[['120+','Lives Touched'],['4','Core Programmes'],['18','Villages Reached'],['3+','Years of Service']].map(([n,l]) => (
             <div key={n}>
               <div className="stat-number">{n}</div>
               <div className="stat-label">{l}</div>
