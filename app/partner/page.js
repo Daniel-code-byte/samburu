@@ -48,7 +48,7 @@ const partners = [
   },
   {
     name: 'Communities for Africa Network (CAN-K)',
-    logo: '/partners/can-k-logo.png',
+    logo: '/can-k-logo.png',
     tagline: 'Community Development NGO in Kenya | CAN-K',
     desc: 'A grassroots-driven public benefit organization strengthening community leadership through human rights promotion, peacebuilding, and sustainable livelihood initiatives across Kenya.',
     url: 'https://communitiesforafricanetwork.org/index.php/partnerships/',
