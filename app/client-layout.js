@@ -116,7 +116,7 @@ function Footer() {
       <div className="footer-grid">
         <div className="footer-brand">
           <a href="/" style={{ display: 'inline-block', marginBottom: '16px' }}>
-            <img src="/icon.3jpeg" alt="Samburu Wellness & Resilience"
+            <img src="/icon3.jpeg" alt="Samburu Wellness & Resilience"
               style={{ height: '48px', width: 'auto', borderRadius: '8px' }}
               onError={(e) => { e.target.style.display = 'none' }} />
           </a>
@@ -145,7 +145,7 @@ function Footer() {
           <h4>Contact</h4>
           <p>📍 Samburu County, Kenya</p>
           <p>📞 <a href="tel:+254704579936">+254 704 579 936</a></p>
-          <p>✉️ <a href="mailto:info@samburuwellness.org">info@samburuwellness.org</a></p>
+          <p>✉️ <a href="mailto:samburuwellness@gmail.com">samburuwellness@gmail.com</a></p>
           <p>💬 <a href="https://wa.me/254704579936" target="_blank" rel="noopener noreferrer">WhatsApp Us</a></p>
         </div>
       </div>
