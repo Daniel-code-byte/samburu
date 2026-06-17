@@ -98,7 +98,11 @@ export default function HomePage() {
             <p className="section-eyebrow">Who We Are</p>
             <h2 className="section-title">A Community That Knows<br /><em>Its Own Story</em></h2>
             <p style={{ fontSize: 'clamp(15px,1.5vw,19px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '20px', fontWeight: 300 }}>
-              Samburu Wellness &amp; Resilience was founded by people from Samburu — not outsiders arriving with answers, but neighbours, relatives, and community members who grew up knowing the weight of walking miles for water, the grief of preventable loss, and the quiet resilience of their people.
+             This organisation was not born in a boardroom or a development agency's planning retreat. It was born from grief, from worry, and from love — the kind of love that only comes from belonging somewhere.
+
+We watched as the art of community — the long evenings under acacia trees, the elders passing wisdom to the young, the neighbours who carried each other through drought and loss — began to erode. Young men were dying by suicide in numbers that should have shaken everyone. The hillsides that had given our pastoralist ancestors shade and forage were going bare. Families who had survived centuries of hardship were beginning to fracture under pressures they had never faced before.
+
+We were neighbours, relatives, and friends who had grown up in Samburu. We didn't arrive with external answers. We sat together and asked the only question that mattered: what would it take for our communities to truly thrive again?
             </p>
             <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-dim)', lineHeight: 1.85, marginBottom: '32px' }}>
               In 2018, a small group sat together and asked one question: <em style={{ color: 'var(--text-mid)' }}>what would it take for our communities to truly thrive?</em> Everything we do flows from that conversation.
