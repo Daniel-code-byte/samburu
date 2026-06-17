@@ -105,7 +105,7 @@ We watched as the art of community — the long evenings under acacia trees, the
 We were neighbours, relatives, and friends who had grown up in Samburu. We didn't arrive with external answers. We sat together and asked the only question that mattered: what would it take for our communities to truly thrive again?
             </p>
             <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-dim)', lineHeight: 1.85, marginBottom: '32px' }}>
-              In 2018, a small group sat together and asked one question: <em style={{ color: 'var(--text-mid)' }}>what would it take for our communities to truly thrive?</em> Everything we do flows from that conversation.
+              In 2022, a small group sat together and asked one question: <em style={{ color: 'var(--text-mid)' }}>what would it take for our communities to truly thrive?</em> Everything we do flows from that conversation.
             </p>
             <a href="/who-we-are" className="btn-outline">Meet Our Team →</a>
           </div>
