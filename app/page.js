@@ -42,6 +42,16 @@ export default function HomePage() {
     { n: '3+',      l: 'Years of Service' },
   ]
 
+  // Our current partners — keep this in sync with /partner/page.js
+  const partners = [
+    {
+      name: 'RoamRoar Kenya Safaris',
+      logo: 'https://cdn.prod.website-files.com/664501c0a1543edee1fe122e/6996b4af410c1720487b9422_roamroar-logo.svg',
+      tagline: 'Community Development NGO in Kenya | CAN-K',
+      url: 'https://roamroarkenyasafaris.com/',
+    },
+  ]
+
   return (
     <main>
 
@@ -98,14 +108,10 @@ export default function HomePage() {
             <p className="section-eyebrow">Who We Are</p>
             <h2 className="section-title">A Community That Knows<br /><em>Its Own Story</em></h2>
             <p style={{ fontSize: 'clamp(15px,1.5vw,19px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '20px', fontWeight: 300 }}>
-             This organisation was not born in a boardroom or a development agency's planning retreat. It was born from grief, from worry, and from love — the kind of love that only comes from belonging somewhere.
-
-We watched as the art of community — the long evenings under acacia trees, the elders passing wisdom to the young, the neighbours who carried each other through drought and loss — began to erode. Young men were dying by suicide in numbers that should have shaken everyone. The hillsides that had given our pastoralist ancestors shade and forage were going bare. Families who had survived centuries of hardship were beginning to fracture under pressures they had never faced before.
-
-We were neighbours, relatives, and friends who had grown up in Samburu. We didn't arrive with external answers. We sat together and asked the only question that mattered: what would it take for our communities to truly thrive again?
+              Samburu Wellness &amp; Resilience was founded by people from Samburu — not outsiders arriving with answers, but neighbours, relatives, and community members who grew up knowing the weight of walking miles for water, the grief of preventable loss, and the quiet resilience of their people.
             </p>
             <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-dim)', lineHeight: 1.85, marginBottom: '32px' }}>
-              In 2022, a small group sat together and asked one question: <em style={{ color: 'var(--text-mid)' }}>what would it take for our communities to truly thrive?</em> Everything we do flows from that conversation.
+              In 2018, a small group sat together and asked one question: <em style={{ color: 'var(--text-mid)' }}>what would it take for our communities to truly thrive?</em> Everything we do flows from that conversation.
             </p>
             <a href="/who-we-are" className="btn-outline">Meet Our Team →</a>
           </div>
@@ -274,6 +280,50 @@ We were neighbours, relatives, and friends who had grown up in Samburu. We didn'
           </div>
         </section>
       )}
+
+      {/* ── OUR PARTNERS (teaser) ── */}
+      <section className="section" style={{ background: 'var(--navy-card)' }}>
+        <div className="section-inner">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: 'clamp(24px,3vw,40px)' }}>
+            <div>
+              <p className="section-eyebrow">Working Together</p>
+              <h2 className="section-title" style={{ marginBottom: 0 }}>Our <em>Partners</em></h2>
+            </div>
+            <a href="/partner" className="btn-outline">Become a Partner →</a>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'clamp(16px,2vw,24px)' }}>
+            {partners.map(p => (
+              <a
+                key={p.name}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '18px',
+                  background: 'var(--navy)',
+                  border: '1px solid var(--navy-border)',
+                  borderRadius: '12px',
+                  padding: 'clamp(18px,2.5vw,24px)',
+                  textDecoration: 'none',
+                }}
+              >
+                <img
+                  src={p.logo}
+                  alt={`${p.name} logo`}
+                  style={{ height: '44px', width: '90px', objectFit: 'contain', flexShrink: 0 }}
+                />
+                <div>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '17px', color: 'var(--text-bright)', fontWeight: 600 }}>{p.name}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: 600, marginTop: '2px' }}>{p.tagline}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── FINAL CTA ── */}
       <section className="partner-cta">
