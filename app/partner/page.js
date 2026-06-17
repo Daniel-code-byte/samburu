@@ -29,16 +29,31 @@ export default function PartnerPage() {
   ]
 
   // Our current partners — add more objects here as new partners come on board
-  const partners = [
-    {
-      name: 'RoamRoar Kenya Safaris',
-      logo: 'https://cdn.prod.website-files.com/664501c0a1543edee1fe122e/6996b4af410c1720487b9422_roamroar-logo.svg',
-      tagline: 'Community Development NGO in Kenya | CAN-K',
-      desc: 'A luxury Kenyan safari operator championing conservation and community-driven tourism — supporting Samburu Wellness & Resilience through shared community development goals.',
-      url: 'https://roamroarkenyasafaris.com/',
-      featured: true,
-    },
-  ]
+  // Our current partners — add more objects here as new partners come on board
+const partners = [
+  {
+    name: 'RoamRoar Kenya Safaris',
+    logo: 'https://cdn.prod.website-files.com/664501c0a1543edee1fe122e/6996b4af410c1720487b9422_roamroar-logo.svg',
+    tagline: 'Luxury Kenyan Safari Tours & Wildlife Adventures',
+    desc: 'A luxury Kenyan safari operator championing conservation and community-driven tourism — supporting Samburu Wellness & Resilience through shared community development goals.',
+    url: 'https://roamroarkenyasafaris.com/',
+    featured: true,
+  },
+  {
+    name: 'Kelhonic Technology',
+    logo: 'https://getkelhonic.com/static/img/kelhoniclogo.980193d7024d.png',
+    tagline: 'AI & Software Company in Kenya',
+    desc: 'A Nairobi-based technology company building AI solutions, custom software, websites, and mobile apps — providing technical support and digital infrastructure expertise.',
+    url: 'https://getkelhonic.com/',
+  },
+  {
+    name: 'Communities for Africa Network (CAN-K)',
+    logo: '/partners/can-k-logo.png',
+    tagline: 'Community Development NGO in Kenya | CAN-K',
+    desc: 'A grassroots-driven public benefit organization strengthening community leadership through human rights promotion, peacebuilding, and sustainable livelihood initiatives across Kenya.',
+    url: 'https://communitiesforafricanetwork.org/index.php/partnerships/',
+  },
+]
 
   return (
     <main>
