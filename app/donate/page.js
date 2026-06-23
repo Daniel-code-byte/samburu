@@ -238,7 +238,7 @@ export default function DonatePage() {
             <div>
               <p style={{ fontWeight: 600, color: 'var(--text-mid)', fontSize: '14px', marginBottom: '4px' }}>Prefer bank transfer?</p>
               <p style={{ fontSize: '13px', color: 'var(--text-dim)', lineHeight: 1.6 }}>
-                Reach us at <a href="mailto:info@samburuwellness.org" style={{ color: 'var(--gold)', fontWeight: 600 }}>info@samburuwellness.org</a> or <a href="tel:+254704579936" style={{ color: 'var(--gold)', fontWeight: 600 }}>+254 704 579 936</a> and we'll send you our bank details.
+                Reach us at <a href="mailto:samburuwellness@gmail.com" style={{ color: 'var(--gold)', fontWeight: 600 }}>info@samburuwellness.org</a> or <a href="tel:+254 708 588479" style={{ color: 'var(--gold)', fontWeight: 600 }}>+254 704 579 936</a> and we'll send you our bank details.
               </p>
             </div>
           </div>
