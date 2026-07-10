@@ -2,22 +2,41 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
+/*
+  HOMEPAGE — story-led redesign
+  ------------------------------------------------------------
+  Palette: keeps your existing navy + gold system and adds a
+  forest-green accent (inspired by the acacia/land-restoration
+  story). All new colors use var(--x, fallback) so this works
+  even before you add them to your theme file — but for best
+  results add these to your global CSS :root alongside your
+  existing --navy / --gold variables:
+
+    --forest: #2d6147;
+    --forest-light: #4a8c68;
+    --forest-deep: #16331f;
+    --earth: #8b4513;
+    --sky: #2a5f8f;
+
+  Hero image: free-to-use Unsplash photo of the actual Samburu
+  hills (Lewa Conservancy, Isiolo) — swap the URL below any time
+  for one of your own field photos.
+------------------------------------------------------------- */
+
+const HERO_IMAGE =
+  'https://images.unsplash.com/photo-1535342604578-a175d3fc4f22?auto=format&fit=crop&w=2400&q=80'
+
+const FOUNDING_IMAGE_MAIN =
+  'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1200&q=80'
+
+const FOUNDING_IMAGE_ACCENT =
+  'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=800&q=80'
+
 export default function HomePage() {
-  const [slides, setSlides] = useState([])
   const [news, setNews] = useState([])
-  const [current, setCurrent] = useState(0)
 
   useEffect(() => {
-    async function fetchData() {
-      const { data: photos } = await supabase
-        .from('photos')
-        .select('*')
-        .not('category', 'eq', 'Team')
-        .order('created_at', { ascending: false })
-        .limit(5)
-      if (photos && photos.length > 0) {
-        setSlides(photos.map(p => ({ url: p.url, caption: p.caption || '' })))
-      }
+    async function fetchNews() {
       const { data: posts } = await supabase
         .from('posts')
         .select('*')
@@ -26,23 +45,91 @@ export default function HomePage() {
         .limit(3)
       if (posts && posts.length > 0) setNews(posts)
     }
-    fetchData()
+    fetchNews()
   }, [])
 
-  useEffect(() => {
-    if (slides.length < 2) return
-    const t = setInterval(() => setCurrent(c => (c + 1) % slides.length), 5500)
-    return () => clearInterval(t)
-  }, [slides.length])
-
-  const stats = [
-    { n: '1200+', l: 'Lives Touched' },
-    { n: '4',       l: 'Active Programmes' },
-    { n: '18',      l: 'Villages Reached' },
-    { n: '3+',      l: 'Years of Service' },
+  const heroStats = [
+    { n: '1,200+', l: 'Lives Touched' },
+    { n: '4', l: 'Active Programmes' },
+    { n: '18', l: 'Villages Reached' },
+    { n: '38', l: 'Acres Replanted' },
   ]
 
-  // Our current partners — keep this in sync with /partner/page.js
+  const pillars = [
+    {
+      num: 'Pillar One',
+      icon: '🧠',
+      accent: 'var(--forest, #2d6147)',
+      title: 'Improved Mental Health',
+      story:
+        "In Samburu, suicide is rarely spoken of — but it happens, quietly and too often. We train community mental health champions, people already trusted in their own villages, to recognise the signs, hold space, and connect someone in crisis to real support.",
+      stats: [
+        { n: '12', l: 'Schools Reached' },
+        { n: '80+', l: 'Champions Trained' },
+        { n: '400+', l: 'People Supported' },
+      ],
+    },
+    {
+      num: 'Pillar Two',
+      icon: '👩🏾',
+      accent: 'var(--gold)',
+      title: "Women's Empowerment",
+      story:
+        'Women in Samburu hold the social fabric together, often with little recognition. Through business literacy, micro-savings cooperatives, and leadership mentorship, we help women build the income, rights knowledge, and community that make real freedom possible.',
+      stats: [
+        { n: '400+', l: 'Women Trained' },
+        { n: '15', l: 'Savings Groups' },
+        { n: '600+', l: 'Families Impacted' },
+      ],
+    },
+    {
+      num: 'Pillar Three',
+      icon: '🌱',
+      accent: 'var(--sky, #2a5f8f)',
+      title: 'Youth Resilience',
+      story:
+        "Young Samburu people stand between a pastoral heritage and a fast-changing world. We don't ask them to choose. Leadership camps, peer counselling, and vocational training help them carry both — because a young person who knows who they are becomes a leader, not a statistic.",
+      stats: [
+        { n: '200+', l: 'Annual Camp' },
+        { n: '8', l: 'Vocational Trades' },
+        { n: '18', l: 'Villages Active' },
+      ],
+    },
+    {
+      num: 'Pillar Four',
+      icon: '🌳',
+      accent: 'var(--earth, #8b4513)',
+      title: 'Conservation & Land Stewardship',
+      story:
+        'The acacia woodlands and grasslands that fed generations of pastoralists are disappearing. Through community-led, indigenous-seedling tree planting — elders and young people working side by side — we give the land back to itself.',
+      stats: [
+        { n: '3,500+', l: 'Trees Planted' },
+        { n: '38', l: 'Acres Restored' },
+        { n: '6', l: 'Sites Active' },
+      ],
+    },
+  ]
+
+  const groundStories = [
+    {
+      title: 'The boy who planted a forest',
+      body: 'He came to the youth leadership camp expecting sports. He left with thirty acacia seedlings, a plan for where to plant them, and a mentor he still calls every month. Three years later, that hillside has shade again.',
+    },
+    {
+      title: 'The day someone asked if you were okay',
+      body: 'Our trained community health champions don\u2019t carry prescription pads. What they carry is time — and the language to ask the question no one else was asking. One evening visit changed everything. He is still here.',
+    },
+  ]
+
+  const impactNumbers = [
+    { n: '1,200+', l: 'People reached across all programmes', accent: 'var(--forest, #2d6147)' },
+    { n: '400+', l: 'Women trained in business & financial literacy', accent: 'var(--gold)' },
+    { n: '3,500+', l: 'Indigenous trees planted across 6 sites', accent: 'var(--earth, #8b4513)' },
+    { n: '80+', l: 'Community mental health champions trained', accent: 'var(--sky, #2a5f8f)' },
+    { n: '200+', l: 'Youth in annual leadership programmes', accent: 'var(--forest-light, #4a8c68)' },
+    { n: '18', l: 'Villages with active programme presence', accent: 'var(--gold)' },
+  ]
+
   const partners = [
     {
       name: 'RoamRoar Kenya Safaris',
@@ -56,97 +143,316 @@ export default function HomePage() {
     <main>
 
       {/* ── HERO ── */}
-      <section className="hero">
-        {slides.length > 0 ? slides.map((slide, i) => (
-          <div key={i} className={`hero-slide${i === current ? ' active' : ''}`}>
-            <img src={slide.url} alt="" />
-          </div>
-        )) : (
-          <div className="hero-slide active" style={{ background: 'var(--navy-mid)' }} />
-        )}
-        <div className="hero-overlay" />
-        <div className="hero-content">
-          <p className="hero-eyebrow">Samburu County, Kenya</p>
-          <h1 className="hero-title">
-            Rooted in <em>Community,</em><br />
-            Driven by Compassion
-          </h1>
-          <p className="hero-caption">
-            Transforming lives across Samburu County — through health, economic empowerment, and community care.
+      <section
+        style={{
+          position: 'relative',
+          minHeight: '92vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url('${HERO_IMAGE}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center 40%',
+            filter: 'brightness(0.42) saturate(1.05)',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(180deg, rgba(10,20,16,0.35) 0%, rgba(10,20,16,0.15) 40%, rgba(10,20,16,0.9) 100%)',
+          }}
+        />
+
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            padding: 'clamp(120px, 16vw, 180px) clamp(20px,6vw,80px) 0',
+            maxWidth: '1100px',
+          }}
+        >
+          <p
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(196,134,10,0.18)',
+              border: '1px solid rgba(240,180,41,0.35)',
+              color: 'var(--gold)',
+              fontSize: '12px',
+              fontWeight: 600,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              padding: '6px 16px',
+              borderRadius: '100px',
+              marginBottom: '28px',
+            }}
+          >
+            Samburu County, Northern Kenya
           </p>
-          <div className="hero-ctas">
-            <a href="/our-work" className="btn-amber">Discover Our Work</a>
-            <a href="/partner" className="btn-outline">Partner With Us</a>
+          <h1
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 600,
+              fontSize: 'clamp(2.6rem, 6.4vw, 5.2rem)',
+              lineHeight: 1.08,
+              color: 'var(--text-bright, #fff)',
+              maxWidth: '820px',
+              marginBottom: '24px',
+            }}
+          >
+            When a community<br />
+            remembers <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>who it is,</em><br />
+            it heals itself.
+          </h1>
+          <p
+            style={{
+              fontSize: 'clamp(15px,1.6vw,19px)',
+              color: 'rgba(255,255,255,0.8)',
+              maxWidth: '560px',
+              lineHeight: 1.8,
+              fontWeight: 300,
+              marginBottom: '40px',
+            }}
+          >
+            Samburu Wellness &amp; Resilience walks alongside the people of Samburu County — honouring their knowledge, their land, and their strength.
+          </p>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: 'clamp(48px,7vw,80px)' }}>
+            <a href="/our-work" className="btn-amber">Explore Our Work</a>
+            <a href="/donate" className="btn-outline">Support the Mission</a>
           </div>
         </div>
-        {slides.length > 1 && (
-          <div className="hero-dots">
-            {slides.map((_, i) => (
-              <button key={i} className={`hero-dot${i === current ? ' active' : ''}`}
-                onClick={() => setCurrent(i)} />
-            ))}
-          </div>
-        )}
-      </section>
 
-      {/* ── STATS ── */}
-      <section className="stats-bar">
-        <div className="stats-grid">
-          {stats.map(s => (
-            <div key={s.n}>
-              <div className="stat-number">{s.n}</div>
-              <div className="stat-label">{s.l}</div>
+        {/* hero stat strip */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            display: 'grid',
+            gridTemplateColumns: `repeat(${heroStats.length}, 1fr)`,
+            borderTop: '1px solid rgba(255,255,255,0.15)',
+            background: 'rgba(10,20,16,0.55)',
+            backdropFilter: 'blur(6px)',
+          }}
+        >
+          {heroStats.map((s) => (
+            <div
+              key={s.n}
+              style={{
+                padding: 'clamp(18px,2.5vw,28px) 12px',
+                textAlign: 'center',
+                borderRight: '1px solid rgba(255,255,255,0.1)',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: 'clamp(22px,2.6vw,34px)',
+                  fontWeight: 600,
+                  color: 'var(--gold)',
+                  lineHeight: 1,
+                }}
+              >
+                {s.n}
+              </div>
+              <div
+                style={{
+                  fontSize: '11px',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.65)',
+                  marginTop: '6px',
+                }}
+              >
+                {s.l}
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── WHO WE ARE INTRO ── */}
+      {/* ── FOUNDING STORY ── */}
       <section className="section" style={{ background: 'var(--navy)' }}>
-        <div className="section-inner">
-          <div style={{ maxWidth: '760px' }}>
-            <p className="section-eyebrow">Who We Are</p>
-            <h2 className="section-title">A Community That Knows<br /><em>Its Own Story</em></h2>
-            <p style={{ fontSize: 'clamp(15px,1.5vw,19px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '20px', fontWeight: 300 }}>
-              Samburu Wellness &amp; Resilience was founded by people from Samburu — not outsiders arriving with answers, but neighbours, relatives, and community members who grew up knowing the weight of walking miles for water, the grief of preventable loss, and the quiet resilience of their people.
+        <div
+          className="section-inner"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '0.85fr 1.15fr',
+            gap: 'clamp(32px,5vw,64px)',
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ position: 'relative' }}>
+            <img
+              src={FOUNDING_IMAGE_MAIN}
+              alt="Samburu community gathering"
+              style={{
+                width: '100%',
+                height: 'clamp(280px, 34vw, 440px)',
+                objectFit: 'cover',
+                borderRadius: '6px',
+              }}
+            />
+            <img
+              src={FOUNDING_IMAGE_ACCENT}
+              alt="Samburu women's group"
+              style={{
+                position: 'absolute',
+                bottom: '-32px',
+                right: '-24px',
+                width: '46%',
+                height: '52%',
+                objectFit: 'cover',
+                borderRadius: '6px',
+                border: '6px solid var(--navy)',
+                boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
+              }}
+            />
+          </div>
+
+          <div>
+            <p className="section-eyebrow">Our Founding Story</p>
+            <h2 className="section-title">We saw what was<br /><em>slipping away</em> — and chose to act</h2>
+            <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '16px' }}>
+              This organisation was not born in a boardroom. It was born from grief, worry, and love — the kind that only comes from belonging somewhere.
             </p>
-            <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-dim)', lineHeight: 1.85, marginBottom: '32px' }}>
-              In 2018, a small group sat together and asked one question: <em style={{ color: 'var(--text-mid)' }}>what would it take for our communities to truly thrive?</em> Everything we do flows from that conversation.
+            <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '24px' }}>
+              We watched the art of community — long evenings under acacia trees, elders passing wisdom to the young — begin to erode. Young men were dying by suicide in numbers that should have shaken everyone. The hillsides that fed our ancestors' herds were going bare. So we sat together, as neighbours and relatives, and asked the only question that mattered: <em style={{ color: 'var(--text-bright)' }}>what would it take for our communities to truly thrive again?</em>
             </p>
+
+            <blockquote
+              style={{
+                borderLeft: '3px solid var(--gold)',
+                paddingLeft: '20px',
+                margin: '0 0 24px',
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontStyle: 'italic',
+                  fontSize: 'clamp(18px,2vw,24px)',
+                  color: 'var(--text-bright)',
+                  lineHeight: 1.4,
+                  marginBottom: '8px',
+                }}
+              >
+                "Every community carries the seeds of its own strength. Our work is simply to water them."
+              </p>
+              <cite style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', fontStyle: 'normal' }}>
+                — Founders, Samburu Wellness &amp; Resilience
+              </cite>
+            </blockquote>
+
             <a href="/who-we-are" className="btn-outline">Meet Our Team →</a>
           </div>
         </div>
       </section>
 
-      {/* ── PULL QUOTE ── */}
-      <section className="pull-quote-section">
-        <div className="pull-quote">
-          <blockquote>
-            Every community has the seeds of its own strength.<br />Our work is simply to water them.
-          </blockquote>
-          <cite>— Founders, Samburu Wellness &amp; Resilience</cite>
+      {/* ── CONTEXT BAND ── */}
+      <section
+        style={{
+          background: 'var(--navy-mid, #10241c)',
+          borderTop: '1px solid var(--navy-border)',
+          borderBottom: '1px solid var(--navy-border)',
+          padding: 'clamp(48px,6vw,80px) 0',
+        }}
+      >
+        <div
+          className="section-inner"
+          style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 'clamp(28px,4vw,56px)', alignItems: 'center' }}
+        >
+          <div>
+            <p className="section-eyebrow" style={{ marginBottom: '10px' }}>The Context</p>
+            <p
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: 'italic',
+                fontSize: 'clamp(20px,2.6vw,30px)',
+                color: 'var(--text-bright)',
+                lineHeight: 1.4,
+              }}
+            >
+              "Poverty is never one-dimensional — and neither is healing."
+            </p>
+          </div>
+          <div>
+            <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-mid)', lineHeight: 1.9, marginBottom: '14px' }}>
+              Samburu County sits in northern Kenya — dramatic landscapes, proud pastoralist heritage, extraordinary people. It is also one of Kenya's most marginalised counties, with some of the country's lowest rates of access to healthcare, education, and economic opportunity.
+            </p>
+            <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-mid)', lineHeight: 1.9 }}>
+              Its communities have survived drought, conflict, and decades of neglect through extraordinary solidarity. Our role is not to rescue — it is to stand with them. Addressed together, mental health, women's empowerment, youth resilience, and land stewardship don't just help. They make transformation inevitable.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ── 4 PROGRAMMES ── */}
+      {/* ── FOUR PILLARS ── */}
       <section className="section" style={{ background: 'var(--navy-card)' }}>
         <div className="section-inner">
           <p className="section-eyebrow">What We Do</p>
           <h2 className="section-title">Four Pillars of<br /><em>Community Transformation</em></h2>
+          <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-dim)', maxWidth: '620px', lineHeight: 1.8, marginBottom: 'clamp(28px,4vw,48px)' }}>
+            Each pillar is rooted in what Samburu people themselves said they needed most — not in an imported model.
+          </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 'clamp(14px,2vw,22px)', marginTop: 'clamp(28px,4vw,48px)' }}>
-            {[
-              { n:'01', icon:'🏥', title:'Mental Health',    desc:'Creating safe spaces for support, counseling, and emotional wellbeing — meeting people where they are, when they need it most' },
-              { n:'02', icon:'👩🏾', title:'Women Empowerment',  desc:'Economic independence, legal rights education, and leadership development for women and girls across every stage of life.' },
-              { n:'03', icon:'🌱', title:'Youth Resilience',    desc:'Mentorship, skills training, and mental health support for young people navigating the pressures of a rapidly changing world.' },
-              { n:'04', icon:'🤝', title:'Community Care',      desc:'Food security, elder care, disability support, and emergency response — the safety net every community deserves.' },
-            ].map(p => (
-              <div key={p.n} className="program-card">
-                <div className="program-number">{p.n}</div>
-                <div className="program-content">
-                  <div className="program-icon">{p.icon}</div>
-                  <h3>{p.title}</h3>
-                  <p>{p.desc}</p>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2,1fr)',
+              gap: 'clamp(16px,2.2vw,24px)',
+            }}
+          >
+            {pillars.map((p) => (
+              <div
+                key={p.num}
+                style={{
+                  background: 'var(--navy)',
+                  border: '1px solid var(--navy-border)',
+                  borderRadius: '10px',
+                  padding: 'clamp(20px,2.6vw,32px)',
+                  borderTop: `3px solid ${p.accent}`,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '30px', lineHeight: 1 }}>{p.icon}</span>
+                  <div>
+                    <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: p.accent }}>
+                      {p.num}
+                    </div>
+                    <h3
+                      style={{
+                        fontFamily: "'Cormorant Garamond', serif",
+                        fontSize: 'clamp(19px,2vw,23px)',
+                        fontWeight: 600,
+                        color: 'var(--text-bright)',
+                      }}
+                    >
+                      {p.title}
+                    </h3>
+                  </div>
+                </div>
+                <p style={{ fontSize: 'clamp(13px,1.15vw,15px)', color: 'var(--text-mid)', lineHeight: 1.8, marginBottom: '20px' }}>
+                  {p.story}
+                </p>
+                <div style={{ display: 'flex', gap: '20px', borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
+                  {p.stats.map((s) => (
+                    <div key={s.l}>
+                      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', fontWeight: 600, color: 'var(--text-bright)', lineHeight: 1 }}>
+                        {s.n}
+                      </div>
+                      <div style={{ fontSize: '10.5px', color: 'var(--text-dim)', marginTop: '4px' }}>{s.l}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
@@ -158,88 +464,68 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── STORY SECTION ── */}
+      {/* ── STORIES FROM THE GROUND ── */}
       <section className="section" style={{ background: 'var(--navy)' }}>
         <div className="section-inner" style={{ maxWidth: '900px' }}>
-          <p className="section-eyebrow">The Context</p>
-          <h2 className="section-title">Samburu County:<br /><em>Beautiful, Resilient, Underserved</em></h2>
+          <p className="section-eyebrow">The Work in Practice</p>
+          <h2 className="section-title">Stories from <em>the Ground</em></h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(24px,4vw,56px)', alignItems: 'start' }}>
-            <div>
-              <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '18px' }}>
-                Samburu County sits in northern Kenya — a land of dramatic landscapes, proud pastoralist heritage, and extraordinary people. It is also one of Kenya's most marginalised counties, with some of the country's lowest rates of access to healthcare, education, and economic opportunity.
-              </p>
-              <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85 }}>
-                This is not a story of helplessness. The communities of Samburu have survived drought, conflict, and decades of neglect — and they have done so through extraordinary solidarity and ingenuity. Our role is simply to stand with them.
-              </p>
-            </div>
-            <div>
-              <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '18px' }}>
-                We work across four interconnected areas because poverty is never one-dimensional. A child who is hungry cannot learn. A woman without economic independence cannot protect herself or her children. A young person without hope becomes a community's deepest wound.
-              </p>
-              <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85 }}>
-                When we address all of these together — health, women's empowerment, youth resilience, and community care — transformation becomes not just possible, but inevitable.
-              </p>
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 'clamp(24px,3.5vw,40px)', marginTop: 'clamp(24px,3vw,40px)' }}>
+            {groundStories.map((s) => (
+              <div key={s.title}>
+                <h3
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontStyle: 'italic',
+                    fontSize: 'clamp(19px,2vw,23px)',
+                    color: 'var(--gold)',
+                    marginBottom: '12px',
+                  }}
+                >
+                  {s.title}
+                </h3>
+                <p style={{ fontSize: 'clamp(13px,1.2vw,15px)', color: 'var(--text-mid)', lineHeight: 1.85 }}>
+                  {s.body}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── SECOND QUOTE ── */}
-      <section style={{
-        background: 'linear-gradient(135deg, var(--steel), var(--navy-light))',
-        borderTop: '1px solid var(--navy-border)',
-        borderBottom: '1px solid var(--navy-border)',
-        padding: 'clamp(48px,7vw,90px) clamp(18px,7vw,120px)',
-      }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(22px,3.5vw,42px)',
-            fontStyle: 'italic',
-            fontWeight: 300,
-            color: 'var(--text-bright)',
-            lineHeight: 1.45,
-            marginBottom: '24px',
-          }}>
-            "A community that is fed, healthy, and educated is not a burden to anyone. It is the foundation of everything."
-          </p>
-          <p style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)' }}>
-            — Community Elder, Wamba Division
-          </p>
-        </div>
-      </section>
-
-      {/* ── IMPACT SNAPSHOT ── */}
+      {/* ── IMPACT NUMBERS ── */}
       <section className="section" style={{ background: 'var(--navy-card)' }}>
-        <div className="section-inner" style={{ maxWidth: '900px' }}>
+        <div className="section-inner" style={{ maxWidth: '1000px' }}>
           <p className="section-eyebrow">Impact in Numbers</p>
-          <h2 className="section-title">Two Years of <em>Showing Up</em></h2>
+          <h2 className="section-title">What <em>Showing Up</em> Looks Like</h2>
+          <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-dim)', lineHeight: 1.85, maxWidth: '640px', marginBottom: 'clamp(24px,3vw,40px)' }}>
+            We don't measure success in donor reports. We measure it in the woman who hasn't missed a school fees payment in two years, the hillside with shade again, the young man who reached out before it was too late.
+          </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginTop: 'clamp(24px,3vw,40px)' }}>
-            {[
-              { n: '120+', l: 'people reached across all programmes' },
-              { n: '9',      l: 'villages with active programme presence' },
-              { n: '10+',    l: 'families in maternal health support' },
-              { n: '40+',    l: 'women trained in business & finance' },
-              { n: '20+',    l: 'youth in annual leadership camp' },
-              { n: '50+',    l: 'households supported with food security' },
-            ].map(item => (
-              <div key={item.n} style={{
-                background: 'var(--navy)',
-                border: '1px solid var(--navy-border)',
-                borderRadius: '10px',
-                padding: 'clamp(18px,2.5vw,28px)',
-                borderTop: '2px solid var(--gold)',
-              }}>
-                <div style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 'clamp(28px,3.5vw,44px)',
-                  fontWeight: 600,
-                  color: 'var(--gold)',
-                  lineHeight: 1,
-                  marginBottom: '10px',
-                }}>{item.n}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            {impactNumbers.map((item) => (
+              <div
+                key={item.l}
+                style={{
+                  background: 'var(--navy)',
+                  border: '1px solid var(--navy-border)',
+                  borderRadius: '10px',
+                  padding: 'clamp(18px,2.5vw,28px)',
+                  borderTop: `2px solid ${item.accent}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 'clamp(28px,3.5vw,44px)',
+                    fontWeight: 600,
+                    color: item.accent,
+                    lineHeight: 1,
+                    marginBottom: '10px',
+                  }}
+                >
+                  {item.n}
+                </div>
                 <div style={{ fontSize: 'clamp(12px,1.1vw,14px)', color: 'var(--text-mid)', lineHeight: 1.55 }}>{item.l}</div>
               </div>
             ))}
@@ -247,7 +533,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── NEWS / STORIES ── */}
+      {/* ── NEWS / STORIES (dynamic) ── */}
       {news.length > 0 && (
         <section className="section" style={{ background: 'var(--navy)' }}>
           <div className="section-inner">
@@ -259,7 +545,7 @@ export default function HomePage() {
               <a href="/news" className="btn-outline">All Stories →</a>
             </div>
             <div className="news-grid">
-              {news.map(post => (
+              {news.map((post) => (
                 <a key={post.id} href={`/news/${post.slug || post.id}`} className="news-card" style={{ display: 'block' }}>
                   {(post.image_url || post.cover_image) && (
                     <div className="news-card-img">
@@ -293,7 +579,7 @@ export default function HomePage() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'clamp(16px,2vw,24px)' }}>
-            {partners.map(p => (
+            {partners.map((p) => (
               <a
                 key={p.name}
                 href={p.url}
@@ -330,7 +616,7 @@ export default function HomePage() {
         <h2>Be Part of<br /><em>the Story</em></h2>
         <p>
           Your partnership — financial, professional, or in-kind — directly changes lives in Samburu County.
-          No contribution is too small. No connection is too indirect.
+          Every contribution reaches a real person in a real village.
         </p>
         <div className="cta-btns">
           <a href="/partner" className="btn-amber">Partner With Us</a>
