@@ -7,35 +7,30 @@ const TEAM_SLOTS = [
     slot: 1, pfpKey: 'man_3',
     name: 'Soila Seenoi',
     role: 'Co-Founder & Chairlady',
-    email: 'soila@samburuwellness.org',
     caption: 'A humanitarian advocate with a Degree in Community Development, currently pursuing a Master\'s degree. Actively involved in children\'s advocacy, refugee support, and anti-human trafficking projects. Brings strong leadership and deep commitment to community empowerment and sustainable social impact.',
   },
   {
     slot: 2, pfpKey: 'man_1',
     name: 'Patel Lenaruti',
     role: 'Co-Founder & Secretary',
-    email: 'patel@samburuwellness.org',
     caption: 'Registered Mental Health and Psychiatric specialist, Palliative Care specialist, Counselling Psychologist and Psychological First Aid Provider. Experienced in holistic care for individuals and families facing chronic and life-limiting conditions — bringing mental health advocacy and inclusion to the heart of our work.',
   },
   {
     slot: 3, pfpKey: 'man_9',
     name: 'Jessica Namusu',
     role: 'Co-Founder & Board Member',
-    email: 'email@samburuwellness.org',
     caption: 'Jessica Namusu is a Co Founder and Board member she is a legal professional with special interest in human rights, children\'s law, and International Humanitarian Law. Holding a Bachelor of Laws (LLB), her career is built on an in-depth knowledge of legal frameworks. Her commitment to social impact is reflected in her extensive work organizing events for social-economic empowerment.',
   },
   {
     slot: 4, pfpKey: 'man_2',
     name: 'Naomi Sarolyne',
     role: 'Executive Coordinator',
-    email: 'naomi@samburuwellness.org',
     caption: 'Oversees planning, implementation, and monitoring of community programmes. Her talent mentorship initiative identified gifted children and connected them with mentors, training, and educational support — helping them rise above challenges and reach their full potential.',
   },
   {
     slot: 5, pfpKey: 'man_4',
     name: 'Jackline Kathomi',
     role: 'Team Volunteer — Administration',
-    email: 'email@samburuwellness.org',
     caption: 'Community Development student supporting the organisation through administrative coordination and day-to-day operations. Assists with records, communications, and smooth programme implementation.',
   },
   {
@@ -59,6 +54,7 @@ const values = [
 export default function WhoWeArePage() {
   const [storyImg, setStoryImg] = useState(null)
   const [pfpMap, setPfpMap]     = useState({})
+  const [lightboxImage, setLightboxImage] = useState(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -82,6 +78,16 @@ export default function WhoWeArePage() {
     }
     fetchData()
   }, [])
+
+  const openLightbox = (imageUrl) => {
+    setLightboxImage(imageUrl)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeLightbox = () => {
+    setLightboxImage(null)
+    document.body.style.overflow = 'auto'
+  }
 
   return (
     <main>
@@ -170,17 +176,32 @@ export default function WhoWeArePage() {
               return (
                 <div key={member.slot} className="team-card">
                   <div className="team-card-inner">
-                    <div className="team-card-header">
-                      <span className="slot-badge">#{member.slot}</span>
-                      <div className="team-avatar">
-                        {pfpUrl
-                          ? <img src={pfpUrl} alt={member.name} />
-                          : <span className="avatar-placeholder">{initials}</span>
-                        }
-                      </div>
+                    {/* Large Image Section */}
+                    <div 
+                      className="team-image-wrapper"
+                      onClick={() => pfpUrl && openLightbox(pfpUrl)}
+                      style={{ cursor: pfpUrl ? 'pointer' : 'default' }}
+                    >
+                      {pfpUrl
+                        ? <img src={pfpUrl} alt={member.name} className="team-image" />
+                        : <div className="team-image-placeholder">
+                            <span className="avatar-initials">{initials}</span>
+                          </div>
+                      }
+                      {pfpUrl && (
+                        <div className="image-overlay">
+                          <span className="view-icon">🔍</span>
+                          <span className="view-text">Click to view</span>
+                        </div>
+                      )}
                     </div>
 
-                    <div className="team-card-body">
+                    {/* Content Section */}
+                    <div className="team-content">
+                      <div className="team-header">
+                        <span className="slot-badge">#{member.slot}</span>
+                      </div>
+
                       <h3 className="team-name">
                         {isEmpty
                           ? <span style={{ color:'var(--text-dim)', fontStyle:'italic' }}>Team Member {member.slot}</span>
@@ -195,7 +216,7 @@ export default function WhoWeArePage() {
                         }
                       </p>
 
-                      {!isEmpty && (
+                      {member.email && (
                         <a href={`mailto:${member.email}`} className="team-email">
                           {member.email}
                         </a>
@@ -224,13 +245,23 @@ export default function WhoWeArePage() {
         </div>
       </section>
 
+      {/* ── LIGHTBOX ── */}
+      {lightboxImage && (
+        <div className="lightbox" onClick={closeLightbox}>
+          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <button className="lightbox-close" onClick={closeLightbox}>✕</button>
+            <img src={lightboxImage} alt="Team member" />
+          </div>
+        </div>
+      )}
+
       {/* ── STYLES ── */}
       <style jsx>{`
         /* ── TEAM GRID ── */
         .team-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-          gap: 28px;
+          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          gap: 32px;
           margin-top: 36px;
           width: 100%;
         }
@@ -241,7 +272,6 @@ export default function WhoWeArePage() {
           border: 1px solid rgba(255, 255, 255, 0.06);
           transition: all 0.3s ease;
           overflow: hidden;
-          min-height: 380px;
           display: flex;
           flex-direction: column;
         }
@@ -253,72 +283,104 @@ export default function WhoWeArePage() {
         }
 
         .team-card-inner {
-          padding: 28px 24px 32px;
           display: flex;
           flex-direction: column;
-          height: 100%;
-          gap: 16px;
         }
 
-        .team-card-header {
+        /* ── IMAGE SECTION ── */
+        .team-image-wrapper {
+          width: 100%;
+          aspect-ratio: 4/3;
+          position: relative;
+          overflow: hidden;
+          background: var(--navy, #0f172a);
+          cursor: pointer;
+        }
+
+        .team-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.4s ease;
+        }
+
+        .team-card:hover .team-image {
+          transform: scale(1.05);
+        }
+
+        .team-image-placeholder {
+          width: 100%;
+          height: 100%;
           display: flex;
           align-items: center;
-          gap: 20px;
-          margin-bottom: 8px;
+          justify-content: center;
+          background: linear-gradient(135deg, #1e293b, #0f172a);
+        }
+
+        .avatar-initials {
+          font-size: 64px;
+          font-weight: 700;
+          color: #fbbf24;
+          letter-spacing: 2px;
+        }
+
+        .image-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.6);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          gap: 8px;
+        }
+
+        .team-image-wrapper:hover .image-overlay {
+          opacity: 1;
+        }
+
+        .view-icon {
+          font-size: 32px;
+          color: white;
+        }
+
+        .view-text {
+          color: white;
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+        }
+
+        /* ── CONTENT SECTION ── */
+        .team-content {
+          padding: 20px 24px 28px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          flex: 1;
+        }
+
+        .team-header {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          margin-bottom: 4px;
         }
 
         .slot-badge {
           background: rgba(251, 191, 36, 0.15);
           color: #fbbf24;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 600;
-          padding: 4px 12px;
+          padding: 3px 12px;
           border-radius: 20px;
           letter-spacing: 0.5px;
           border: 1px solid rgba(251, 191, 36, 0.15);
-          flex-shrink: 0;
-        }
-
-        .team-avatar {
-          width: 80px;
-          height: 80px;
-          border-radius: 12px;
-          overflow: hidden;
-          flex-shrink: 0;
-          background: var(--navy, #0f172a);
-          border: 2px solid rgba(251, 191, 36, 0.15);
-          transition: border-color 0.3s ease;
-          margin-left: auto;
-        }
-
-        .team-card:hover .team-avatar {
-          border-color: rgba(251, 191, 36, 0.4);
-        }
-
-        .team-avatar img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .avatar-placeholder {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(135deg, #1e293b, #0f172a);
-          color: #fbbf24;
-          font-size: 28px;
-          font-weight: 700;
-          letter-spacing: 1px;
-        }
-
-        .team-card-body {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
         }
 
         .team-name {
@@ -356,64 +418,105 @@ export default function WhoWeArePage() {
           color: var(--text-dim, #94a3b8);
           line-height: 1.7;
           margin: 8px 0 0 0;
-          flex: 1;
-          display: -webkit-box;
-          -webkit-line-clamp: 4;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
         }
 
-        .team-caption.expanded {
-          -webkit-line-clamp: unset;
-          overflow: visible;
+        /* ── LIGHTBOX ── */
+        .lightbox {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.92);
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        .lightbox-content {
+          position: relative;
+          max-width: 90vw;
+          max-height: 90vh;
+        }
+
+        .lightbox-content img {
+          max-width: 100%;
+          max-height: 85vh;
+          object-fit: contain;
+          border-radius: 8px;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox-close {
+          position: absolute;
+          top: -50px;
+          right: 0;
+          background: none;
+          border: none;
+          color: white;
+          font-size: 32px;
+          cursor: pointer;
+          padding: 8px 12px;
+          transition: color 0.2s ease;
+          z-index: 10;
+        }
+
+        .lightbox-close:hover {
+          color: #fbbf24;
         }
 
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
           .team-grid {
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 24px;
           }
 
-          .team-card-inner {
-            padding: 24px 20px 28px;
+          .team-content {
+            padding: 16px 20px 24px;
           }
 
-          .team-card {
-            min-height: 320px;
+          .team-image-wrapper {
+            aspect-ratio: 16/10;
           }
 
-          .team-avatar {
-            width: 70px;
-            height: 70px;
+          .avatar-initials {
+            font-size: 48px;
           }
 
-          .team-card-header {
-            gap: 16px;
+          .lightbox-content {
+            max-width: 95vw;
           }
 
-          .team-caption {
-            -webkit-line-clamp: 3;
+          .lightbox-close {
+            top: -45px;
+            font-size: 28px;
           }
         }
 
         @media (max-width: 480px) {
           .team-grid {
-            gap: 16px;
+            gap: 20px;
           }
 
-          .team-card-inner {
-            padding: 20px 16px 24px;
+          .team-content {
+            padding: 14px 16px 20px;
           }
 
-          .team-card {
-            min-height: 280px;
+          .team-image-wrapper {
+            aspect-ratio: 4/3;
           }
 
-          .team-avatar {
-            width: 60px;
-            height: 60px;
+          .avatar-initials {
+            font-size: 40px;
           }
 
           .team-name {
@@ -426,12 +529,19 @@ export default function WhoWeArePage() {
 
           .team-caption {
             font-size: 12px;
-            -webkit-line-clamp: 2;
           }
 
-          .slot-badge {
-            font-size: 10px;
-            padding: 3px 10px;
+          .view-text {
+            font-size: 12px;
+          }
+
+          .view-icon {
+            font-size: 24px;
+          }
+
+          .lightbox-close {
+            top: -40px;
+            font-size: 24px;
           }
         }
 
@@ -440,33 +550,27 @@ export default function WhoWeArePage() {
             grid-template-columns: repeat(3, 1fr);
           }
 
-          .team-card {
-            min-height: 420px;
-          }
-
-          .team-avatar {
-            width: 90px;
-            height: 90px;
+          .team-image-wrapper {
+            aspect-ratio: 16/11;
           }
         }
 
         @media (min-width: 1400px) {
           .team-grid {
             grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
+            gap: 36px;
           }
 
-          .team-card {
-            min-height: 460px;
+          .team-content {
+            padding: 24px 28px 32px;
           }
 
-          .team-card-inner {
-            padding: 32px 28px 36px;
+          .team-image-wrapper {
+            aspect-ratio: 16/10;
           }
 
-          .team-avatar {
-            width: 100px;
-            height: 100px;
+          .avatar-initials {
+            font-size: 72px;
           }
         }
       `}</style>
