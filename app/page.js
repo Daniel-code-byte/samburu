@@ -32,7 +32,7 @@ import { supabase } from '@/lib/supabase'
 const wiki = (filename, width = 800) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`
 
-const HERO_IMAGE = wiki('Malaso Samburu Kenya.jpg', 1600) // Samburu hills, Kenya
+const HERO_IMAGE = wiki('Reserve samburu paysage 2.jpg', 1600) // Samburu National Reserve landscape
 const FOUNDING_IMAGE_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900)
 const FOUNDING_IMAGE_ACCENT = wiki('The Samburu women are building a new hut.jpg', 600)
 const CONTEXT_BG = wiki('Reserve samburu paysage 2.jpg', 1400)
@@ -164,21 +164,21 @@ export default function HomePage() {
     <main>
       <style jsx global>{`
         :root {
-          --navy: #0d1e1a;
-          --navy-mid: #122c26;
-          --navy-card: #16332c;
-          --navy-light: #1c4038;
-          --navy-border: rgba(255, 255, 255, 0.09);
-          --steel: #1f3b4d;
-          --gold: #f0b429;
-          --forest: #2d6147;
-          --forest-light: #4a8c68;
-          --forest-deep: #16331f;
-          --sky: #2a6f9e;
-          --earth: #8b4513;
-          --text-bright: #f6f8f6;
-          --text-mid: #b9c5be;
-          --text-dim: #8b9a93;
+          --navy: #10241f;
+          --navy-mid: #163530;
+          --navy-card: #1b3d36;
+          --navy-light: #234a40;
+          --navy-border: rgba(255, 255, 255, 0.1);
+          --steel: #235271;
+          --gold: #f5b731;
+          --forest: #379764;
+          --forest-light: #57b884;
+          --forest-deep: #1c4a34;
+          --sky: #2f86bd;
+          --earth: #b0591f;
+          --text-bright: #ffffff;
+          --text-mid: #c3d0c9;
+          --text-dim: #93a49c;
         }
         body {
           background: var(--navy);
@@ -256,7 +256,7 @@ export default function HomePage() {
             backgroundImage: `url('${HERO_IMAGE}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center 40%',
-            filter: 'brightness(0.42) saturate(1.05)',
+            filter: 'brightness(0.72) saturate(1.35) contrast(1.08)',
           }}
         />
         <div
@@ -264,7 +264,7 @@ export default function HomePage() {
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(180deg, rgba(10,20,16,0.35) 0%, rgba(10,20,16,0.15) 40%, rgba(10,20,16,0.9) 100%)',
+              'linear-gradient(180deg, rgba(10,20,16,0.18) 0%, rgba(10,20,16,0.05) 38%, rgba(10,20,16,0.88) 100%)',
           }}
         />
 
@@ -301,13 +301,14 @@ export default function HomePage() {
               fontWeight: 600,
               fontSize: 'clamp(2.6rem, 6.4vw, 5.2rem)',
               lineHeight: 1.08,
-              color: 'var(--text-bright, #fff)',
+              color: '#ffffff',
+              textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)',
               maxWidth: '820px',
               marginBottom: '24px',
             }}
           >
             When a community<br />
-            remembers <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>who it is,</em><br />
+            remembers <em style={{ fontStyle: 'italic', color: 'var(--gold)', textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)' }}>who it is,</em><br />
             it heals itself.
           </h1>
           <p
@@ -542,7 +543,7 @@ export default function HomePage() {
               <div
                 key={p.num}
                 style={{
-                  background: 'linear-gradient(165deg, var(--navy) 0%, rgba(45,97,71,0.16) 140%)',
+                  background: 'linear-gradient(165deg, var(--navy) 0%, rgba(55,151,100,0.22) 140%)',
                   border: '1px solid var(--navy-border)',
                   borderRadius: '10px',
                   overflow: 'hidden',
@@ -656,7 +657,7 @@ export default function HomePage() {
               <div
                 key={item.l}
                 style={{
-                  background: 'linear-gradient(165deg, var(--navy) 0%, rgba(45,97,71,0.14) 150%)',
+                  background: 'linear-gradient(165deg, var(--navy) 0%, rgba(55,151,100,0.2) 150%)',
                   border: '1px solid var(--navy-border)',
                   borderRadius: '10px',
                   padding: 'clamp(18px,2.5vw,28px)',
