@@ -273,21 +273,22 @@ export default function HomePage() {
           >
             Samburu County, Northern Kenya
           </p>
-          <h1
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontWeight: 600,
-              fontSize: 'clamp(2.6rem, 6.4vw, 5.2rem)',
-              lineHeight: 1.08,
-              color: 'var(--text-bright, #fff)',
-              maxWidth: '820px',
-              marginBottom: '24px',
-            }}
-          >
-            When a community<br />
-            remembers <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>who it is,</em><br />
-            it heals itself.
-          </h1>
+<h1
+  style={{
+    fontFamily: "'Cormorant Garamond', serif",
+    fontWeight: 600,
+    fontSize: 'clamp(2.6rem, 6.4vw, 5.2rem)',
+    lineHeight: 1.08,
+    color: '#ffffff',
+    textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)',
+    maxWidth: '820px',
+    marginBottom: '24px',
+  }}
+>
+  When a community<br />
+  remembers <em style={{ fontStyle: 'italic', color: '#f0b429', textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)' }}>who it is,</em><br />
+  it heals itself.
+</h1>
           <p
             style={{
               fontSize: 'clamp(15px,1.6vw,19px)',
