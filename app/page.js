@@ -162,6 +162,28 @@ export default function HomePage() {
 
   return (
     <main>
+      <style jsx global>{`
+        :root {
+          --navy: #0d1e1a;
+          --navy-mid: #122c26;
+          --navy-card: #16332c;
+          --navy-light: #1c4038;
+          --navy-border: rgba(255, 255, 255, 0.09);
+          --steel: #1f3b4d;
+          --gold: #f0b429;
+          --forest: #2d6147;
+          --forest-light: #4a8c68;
+          --forest-deep: #16331f;
+          --sky: #2a6f9e;
+          --earth: #8b4513;
+          --text-bright: #f6f8f6;
+          --text-mid: #b9c5be;
+          --text-dim: #8b9a93;
+        }
+        body {
+          background: var(--navy);
+        }
+      `}</style>
       <style jsx>{`
         .sw-hero-stats {
           display: grid;
@@ -273,22 +295,21 @@ export default function HomePage() {
           >
             Samburu County, Northern Kenya
           </p>
-<h1
-  style={{
-    fontFamily: "'Cormorant Garamond', serif",
-    fontWeight: 600,
-    fontSize: 'clamp(2.6rem, 6.4vw, 5.2rem)',
-    lineHeight: 1.08,
-    color: '#ffffff',
-    textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)',
-    maxWidth: '820px',
-    marginBottom: '24px',
-  }}
->
-  When a community<br />
-  remembers <em style={{ fontStyle: 'italic', color: '#f0b429', textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)' }}>who it is,</em><br />
-  it heals itself.
-</h1>
+          <h1
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 600,
+              fontSize: 'clamp(2.6rem, 6.4vw, 5.2rem)',
+              lineHeight: 1.08,
+              color: 'var(--text-bright, #fff)',
+              maxWidth: '820px',
+              marginBottom: '24px',
+            }}
+          >
+            When a community<br />
+            remembers <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>who it is,</em><br />
+            it heals itself.
+          </h1>
           <p
             style={{
               fontSize: 'clamp(15px,1.6vw,19px)',
@@ -429,7 +450,7 @@ export default function HomePage() {
       {/* ── CONTEXT BAND ── */}
       <section
         style={{
-          background: 'var(--navy-mid, #10241c)',
+          background: 'linear-gradient(120deg, var(--navy-mid) 0%, var(--steel) 55%, var(--navy-mid) 100%)',
           borderTop: '1px solid var(--navy-border)',
           borderBottom: '1px solid var(--navy-border)',
           padding: 'clamp(48px,6vw,80px) 0',
