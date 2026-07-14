@@ -18,38 +18,39 @@ import { supabase } from '@/lib/supabase'
     --earth: #8b4513;
     --sky: #2a5f8f;
 
-  IMAGES — the previous version used made-up Unsplash URLs that
-  didn't point to real photos, which is why they were broken.
-  These are all real, verified files hosted on Wikimedia Commons
-  (public domain / CC-licensed, hotlink-safe via Special:FilePath —
-  Wikimedia's own supported method for external embedding). They
-  are placeholders to make the page feel real *today* — swap every
-  one of them for your own field photography as soon as you can.
-  A couple require attribution under their CC BY-SA license; keep
-  the credit line in the footer note below until you replace them.
+  IMAGES — all photos now load from your Supabase 'photos' bucket.
+  Upload your photos to the 'photos' bucket with these exact names
+  (or update the filename below to match what you uploaded):
+    pic1.jpg, pic2.jpg, pic3.jpg, pic4.jpg, pic5.jpg
 ------------------------------------------------------------- */
 
+// Supabase-hosted images — upload your photos to the 'photos' Storage bucket
+// and name the files pic1.jpg through pic5.jpg (or update the extension 
+// below to match what you actually uploaded, e.g. .png).
+const SUPABASE_BUCKET = 'photos'
+const pic = (name) => {
+  const { data } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name)
+  return data.publicUrl
+}
+
+// Wikimedia Commons fallbacks for content images that aren't in your bucket
 const wiki = (filename, width = 800) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`
 
-// Supabase-hosted images — upload your photos to a Storage bucket
-// and name the files pic1.jpg through pic10.jpg (or update the
-// extension below to match what you actually upload, e.g. .png).
-// CONFIRM the bucket name below matches your Supabase Storage bucket —
-// 'site-images' is a placeholder; change it if yours is named differently.
-const SUPABASE_BUCKET = 'site-images'
-const pic = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
-
+// All images from your Supabase 'photos' bucket
 const HERO_IMAGE = pic('pic3.jpg') // hero background — your pic3
-const FOUNDING_IMAGE_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900) // kept intact
-const FOUNDING_IMAGE_ACCENT = wiki('Young Samburu male.jpg', 600) // swapped in: Samburu warrior portrait
-const CONTEXT_BG = wiki('Reserve samburu paysage 2.jpg', 1400)
+const FOUNDING_IMAGE_MAIN = pic('pic1.jpg') // main founding story image
+const FOUNDING_IMAGE_ACCENT = pic('pic2.jpg') // accent image for founding story
+const CONTEXT_BG = pic('pic4.jpg') // cinematic background
+
 const PILLAR_IMAGES = {
   women: pic('pic1.jpg'),
   youth: pic('pic2.jpg'),
   community: pic('pic4.jpg'),
   conservation: pic('pic5.jpg'),
 }
+
+// Story images still use Wikimedia Commons since they're specific content
 const STORY_IMAGES = {
   forest: wiki('Landscapes of Kenya 04.jpg', 700),
   community: wiki('200812 kenya 7 (3197992047).jpg', 700),
@@ -191,8 +192,176 @@ export default function HomePage() {
         body {
           background: var(--navy);
         }
-      `}</style>
-      <style jsx>{`
+        .section {
+          padding: clamp(48px, 6vw, 96px) 0;
+        }
+        .section-inner {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 clamp(16px, 4vw, 48px);
+        }
+        .section-eyebrow {
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--gold);
+          margin-bottom: 12px;
+        }
+        .section-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 600;
+          font-size: clamp(2rem, 4.2vw, 3.4rem);
+          line-height: 1.15;
+          color: var(--text-bright);
+          margin-bottom: 20px;
+        }
+        .section-title em {
+          font-style: italic;
+          color: var(--gold);
+        }
+        .btn-amber {
+          display: inline-block;
+          background: var(--gold);
+          color: var(--navy);
+          font-weight: 700;
+          font-size: 14px;
+          letter-spacing: 0.04em;
+          padding: 14px 32px;
+          border-radius: 60px;
+          text-decoration: none;
+          transition: 0.2s;
+        }
+        .btn-amber:hover {
+          background: #f0cd4a;
+          transform: scale(1.02);
+        }
+        .btn-outline {
+          display: inline-block;
+          background: rgba(255, 255, 255, 0.08);
+          color: var(--text-bright);
+          font-weight: 600;
+          font-size: 14px;
+          letter-spacing: 0.04em;
+          padding: 14px 32px;
+          border-radius: 60px;
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          text-decoration: none;
+          transition: 0.2s;
+        }
+        .btn-outline:hover {
+          background: rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.4);
+        }
+        .btn-brown {
+          display: inline-block;
+          background: var(--earth, #b0591f);
+          color: #fff;
+          font-weight: 700;
+          font-size: 14px;
+          letter-spacing: 0.04em;
+          padding: 14px 32px;
+          border-radius: 60px;
+          text-decoration: none;
+          transition: 0.2s;
+        }
+        .btn-brown:hover {
+          background: #c96622;
+          transform: scale(1.02);
+        }
+        .news-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: clamp(20px, 2.5vw, 32px);
+          margin-top: clamp(24px, 3vw, 40px);
+        }
+        .news-card {
+          background: var(--navy-card);
+          border: 1px solid var(--navy-border);
+          border-radius: 12px;
+          overflow: hidden;
+          text-decoration: none;
+          transition: 0.2s;
+        }
+        .news-card:hover {
+          transform: translateY(-4px);
+          border-color: var(--gold);
+        }
+        .news-card-img {
+          height: 200px;
+          overflow: hidden;
+        }
+        .news-card-img img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .news-card-body {
+          padding: 20px 24px;
+        }
+        .news-tag {
+          display: inline-block;
+          background: rgba(245, 183, 49, 0.15);
+          color: var(--gold);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 4px 12px;
+          border-radius: 100px;
+          margin-bottom: 10px;
+        }
+        .news-card-body h3 {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 20px;
+          font-weight: 600;
+          color: var(--text-bright);
+          margin-bottom: 8px;
+          line-height: 1.3;
+        }
+        .news-card-body p {
+          font-size: 14px;
+          color: var(--text-mid);
+          line-height: 1.6;
+          margin-bottom: 12px;
+        }
+        .news-card-date {
+          font-size: 12px;
+          color: var(--text-dim);
+        }
+        .partner-cta {
+          background: linear-gradient(145deg, var(--navy) 0%, var(--forest-deep) 100%);
+          border-top: 1px solid var(--navy-border);
+          padding: clamp(56px, 8vw, 100px) clamp(20px, 6vw, 80px);
+          text-align: center;
+          max-width: 780px;
+          margin: 0 auto;
+        }
+        .partner-cta h2 {
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 600;
+          font-size: clamp(2.4rem, 5vw, 4rem);
+          line-height: 1.1;
+          color: var(--text-bright);
+          margin-bottom: 20px;
+        }
+        .partner-cta h2 em {
+          font-style: italic;
+          color: var(--gold);
+        }
+        .partner-cta p {
+          font-size: clamp(15px, 1.3vw, 18px);
+          color: var(--text-mid);
+          line-height: 1.8;
+          max-width: 600px;
+          margin: 0 auto 32px;
+        }
+        .cta-btns {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 16px;
+        }
         .sw-hero-stats {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -219,6 +388,10 @@ export default function HomePage() {
           right: -24px;
           width: 46%;
           height: 52%;
+          object-fit: cover;
+          border-radius: 6px;
+          border: 6px solid var(--navy);
+          box-shadow: 0 16px 40px rgba(0,0,0,0.4);
         }
         @media (max-width: 760px) {
           .sw-hero {
@@ -318,7 +491,7 @@ export default function HomePage() {
             When a community<br />
             remembers <em style={{ fontStyle: 'italic', color: 'var(--gold)', textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)' }}>who it is,</em><br />
             it heals itself.
-          </h1>
+          </p>
           <p
             style={{
               fontSize: 'clamp(15px,1.6vw,19px)',
@@ -410,9 +583,6 @@ export default function HomePage() {
               className="sw-founding-accent"
               style={{
                 objectFit: 'cover',
-                borderRadius: '6px',
-                border: '6px solid var(--navy)',
-                boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
               }}
             />
           </div>
