@@ -37,7 +37,7 @@ const wiki = (filename, width = 800) =>
 // extension below to match what you actually upload, e.g. .png).
 // CONFIRM the bucket name below matches your Supabase Storage bucket —
 // 'site-images' is a placeholder; change it if yours is named differently.
-const SUPABASE_BUCKET = 'media'
+const SUPABASE_BUCKET = 'photos'
 const pic = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
 
 const HERO_IMAGE = pic('pic3.jpg') // hero background — your pic3
