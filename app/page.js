@@ -32,19 +32,27 @@ import { supabase } from '@/lib/supabase'
 const wiki = (filename, width = 800) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`
 
-const HERO_IMAGE = wiki('Reserve samburu paysage 2.jpg', 1600) // Samburu National Reserve landscape
-const FOUNDING_IMAGE_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900)
-const FOUNDING_IMAGE_ACCENT = wiki('The Samburu women are building a new hut.jpg', 600)
+// Supabase-hosted images — upload your photos to a Storage bucket
+// and name the files pic1.jpg through pic10.jpg (or update the
+// extension below to match what you actually upload, e.g. .png).
+// CONFIRM the bucket name below matches your Supabase Storage bucket —
+// 'site-images' is a placeholder; change it if yours is named differently.
+const SUPABASE_BUCKET = 'media'
+const pic = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
+
+const HERO_IMAGE = pic('pic3.jpg') // hero background — your pic3
+const FOUNDING_IMAGE_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900) // kept intact
+const FOUNDING_IMAGE_ACCENT = wiki('Young Samburu male.jpg', 600) // swapped in: Samburu warrior portrait
 const CONTEXT_BG = wiki('Reserve samburu paysage 2.jpg', 1400)
 const PILLAR_IMAGES = {
-  mental: wiki('Northern Kenya.jpg', 700),
-  women: wiki('The Samburu women are building a new hut.jpg', 700),
-  youth: wiki('Young Samburu male.jpg', 700),
-  conservation: wiki('Landscapes of Kenya 04.jpg', 700),
+  women: pic('pic1.jpg'),
+  youth: pic('pic2.jpg'),
+  community: pic('pic4.jpg'),
+  conservation: pic('pic5.jpg'),
 }
 const STORY_IMAGES = {
   forest: wiki('Landscapes of Kenya 04.jpg', 700),
-  champion: wiki('200812 kenya 7 (3197992047).jpg', 700),
+  community: wiki('200812 kenya 7 (3197992047).jpg', 700),
 }
 
 export default function HomePage() {
@@ -73,20 +81,6 @@ export default function HomePage() {
   const pillars = [
     {
       num: 'Pillar One',
-      icon: '🧠',
-      image: PILLAR_IMAGES.mental,
-      accent: 'var(--forest, #2d6147)',
-      title: 'Improved Mental Health',
-      story:
-        "In Samburu, suicide is rarely spoken of — but it happens, quietly and too often. We train community mental health champions, people already trusted in their own villages, to recognise the signs, hold space, and connect someone in crisis to real support.",
-      stats: [
-        { n: '6', l: 'Schools Reached' },
-        { n: '15+', l: 'Champions Trained' },
-        { n: '80+', l: 'People Supported' },
-      ],
-    },
-    {
-      num: 'Pillar Two',
       icon: '👩🏾',
       image: PILLAR_IMAGES.women,
       accent: 'var(--gold)',
@@ -100,17 +94,31 @@ export default function HomePage() {
       ],
     },
     {
-      num: 'Pillar Three',
+      num: 'Pillar Two',
       icon: '🌱',
       image: PILLAR_IMAGES.youth,
       accent: 'var(--sky, #2a5f8f)',
       title: 'Youth Resilience',
       story:
-        "Young Samburu people stand between a pastoral heritage and a fast-changing world. We don't ask them to choose. Leadership camps, peer counselling, and vocational training help them carry both — because a young person who knows who they are becomes a leader, not a statistic.",
+        "Young Samburu people stand between a pastoral heritage and a fast-changing world. We don't ask them to choose. Leadership camps, peer mentorship, and vocational training help them carry both — because a young person who knows who they are becomes a leader, not a statistic.",
       stats: [
         { n: '20+', l: 'Annual Camp' },
         { n: '5', l: 'Vocational Trades' },
         { n: '9', l: 'Villages Active' },
+      ],
+    },
+    {
+      num: 'Pillar Three',
+      icon: '🤝',
+      image: PILLAR_IMAGES.community,
+      accent: 'var(--forest, #379764)',
+      title: 'Community Care',
+      story:
+        'Some community members need extra support — elders without family networks, people living with disabilities, families facing acute food insecurity. Our community care programme is the safety net that catches those who fall through the cracks, with dignity and speed.',
+      stats: [
+        { n: '50+', l: 'Households Supported' },
+        { n: '3', l: 'Villages Active' },
+        { n: '120+', l: 'People Reached' },
       ],
     },
     {
@@ -136,9 +144,9 @@ export default function HomePage() {
       body: 'He came to the youth leadership camp expecting sports. He left with thirty acacia seedlings, a plan for where to plant them, and a mentor he still calls every month. A year later, that hillside has shade again.',
     },
     {
-      title: 'The day someone asked if you were okay',
-      image: STORY_IMAGES.champion,
-      body: 'Our trained community health champions don\u2019t carry prescription pads. What they carry is time — and the language to ask the question no one else was asking. One evening visit changed everything. He is still here.',
+      title: 'The grandmother who wasn\u2019t forgotten',
+      image: STORY_IMAGES.community,
+      body: 'She had raised five children alone and outlived most of the people who once checked in on her. Our community care visits started as a food basket. They became a standing Tuesday visit, a name someone remembers, a door that still gets knocked on.',
     },
   ]
 
@@ -146,7 +154,7 @@ export default function HomePage() {
     { n: '120+', l: 'People reached across all programmes', accent: 'var(--forest, #2d6147)' },
     { n: '40+', l: 'Women trained in business & financial literacy', accent: 'var(--gold)' },
     { n: '800+', l: 'Indigenous trees planted across 3 sites', accent: 'var(--earth, #8b4513)' },
-    { n: '15+', l: 'Community mental health champions trained', accent: 'var(--sky, #2a5f8f)' },
+    { n: '50+', l: 'Households supported with community care', accent: 'var(--sky, #2a5f8f)' },
     { n: '20+', l: 'Youth in annual leadership programmes', accent: 'var(--forest-light, #4a8c68)' },
     { n: '9', l: 'Villages with active programme presence', accent: 'var(--gold)' },
   ]
@@ -398,7 +406,7 @@ export default function HomePage() {
             />
             <img
               src={FOUNDING_IMAGE_ACCENT}
-              alt="Samburu women's group"
+              alt="Samburu warrior"
               className="sw-founding-accent"
               style={{
                 objectFit: 'cover',
@@ -443,7 +451,7 @@ export default function HomePage() {
               </cite>
             </blockquote>
 
-            <a href="/who-we-are" className="btn-outline">Meet Our Team →</a>
+            <a href="/who-we-are#team" className="btn-outline">Meet Our Team →</a>
           </div>
         </div>
       </section>
@@ -480,7 +488,7 @@ export default function HomePage() {
               Samburu County sits in northern Kenya — dramatic landscapes, proud pastoralist heritage, extraordinary people. It is also one of Kenya's most marginalised counties, with some of the country's lowest rates of access to healthcare, education, and economic opportunity.
             </p>
             <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-mid)', lineHeight: 1.9 }}>
-              Its communities have survived drought, conflict, and decades of neglect through extraordinary solidarity. Our role is not to rescue — it is to stand with them. Addressed together, mental health, women's empowerment, youth resilience, and land stewardship don't just help. They make transformation inevitable.
+              Its communities have survived drought, conflict, and decades of neglect through extraordinary solidarity. Our role is not to rescue — it is to stand with them. Addressed together, women's empowerment, youth resilience, community care, and land stewardship don't just help. They make transformation inevitable.
             </p>
           </div>
         </div>
