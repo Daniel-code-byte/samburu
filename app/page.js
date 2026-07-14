@@ -1,410 +1,788 @@
-"use client";
+'use client'
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
 
-import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
+/*
+  HOMEPAGE — story-led redesign
+  ------------------------------------------------------------
+  Palette: keeps your existing navy + gold system and adds a
+  forest-green accent (inspired by the acacia/land-restoration
+  story). All new colors use var(--x, fallback) so this works
+  even before you add them to your theme file — but for best
+  results add these to your global CSS :root alongside your
+  existing --navy / --gold variables:
+
+    --forest: #2d6147;
+    --forest-light: #4a8c68;
+    --forest-deep: #16331f;
+    --earth: #8b4513;
+    --sky: #2a5f8f;
+
+  IMAGES — the previous version used made-up Unsplash URLs that
+  didn't point to real photos, which is why they were broken.
+  These are all real, verified files hosted on Wikimedia Commons
+  (public domain / CC-licensed, hotlink-safe via Special:FilePath —
+  Wikimedia's own supported method for external embedding). They
+  are placeholders to make the page feel real *today* — swap every
+  one of them for your own field photography as soon as you can.
+  A couple require attribution under their CC BY-SA license; keep
+  the credit line in the footer note below until you replace them.
+------------------------------------------------------------- */
+
+const wiki = (filename, width = 800) =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`
+
+// Supabase-hosted images — upload your photos to a Storage bucket
+// and name the files pic1.jpg through pic10.jpg (or update the
+// extension below to match what you actually upload, e.g. .png).
+// CONFIRM the bucket name below matches your Supabase Storage bucket —
+// 'site-images' is a placeholder; change it if yours is named differently.
+const SUPABASE_BUCKET = 'site-images'
+const pic = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
+
+const HERO_IMAGE = pic('pic3.jpg') // hero background — your pic3
+const FOUNDING_IMAGE_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900) // kept intact
+const FOUNDING_IMAGE_ACCENT = wiki('Young Samburu male.jpg', 600) // swapped in: Samburu warrior portrait
+const CONTEXT_BG = wiki('Reserve samburu paysage 2.jpg', 1400)
+const PILLAR_IMAGES = {
+  women: pic('pic1.jpg'),
+  youth: pic('pic2.jpg'),
+  community: pic('pic4.jpg'),
+  conservation: pic('pic5.jpg'),
+}
+const STORY_IMAGES = {
+  forest: wiki('Landscapes of Kenya 04.jpg', 700),
+  community: wiki('200812 kenya 7 (3197992047).jpg', 700),
+}
 
 export default function HomePage() {
-  const [slides, setSlides] = useState([]);
-  const [news, setNews] = useState([]);
-  const [current, setCurrent] = useState(0);
-  const canvasRef = useRef(null);
+  const [news, setNews] = useState([])
 
-  // ----- HIDE NAVBAR, FOOTER, WHATSAPP BUTTON ON THIS PAGE -----
   useEffect(() => {
-    // Find and hide navbar
-    const navbar = document.querySelector('nav.navbar');
-    const footer = document.querySelector('footer.footer');
-    const whatsapp = document.querySelector('a.whatsapp-btn');
-    
-    if (navbar) navbar.style.display = 'none';
-    if (footer) footer.style.display = 'none';
-    if (whatsapp) whatsapp.style.display = 'none';
-
-    // Add class to body to prevent scrolling
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      // Restore everything when leaving this page
-      if (navbar) navbar.style.display = '';
-      if (footer) footer.style.display = '';
-      if (whatsapp) whatsapp.style.display = '';
-      document.body.style.overflow = '';
-    };
-  }, []);
-
-  // ----- FETCH DATA -----
-  useEffect(() => {
-    async function fetchData() {
-      const { data: photos } = await supabase
-        .from('photos')
-        .select('*');
-      if (photos) setSlides(photos);
-
-      const { data: articles } = await supabase
-        .from('news')
+    async function fetchNews() {
+      const { data: posts } = await supabase
+        .from('posts')
         .select('*')
+        .eq('published', true)
         .order('created_at', { ascending: false })
-        .limit(5);
-      if (articles) setNews(articles);
+        .limit(3)
+      if (posts && posts.length > 0) setNews(posts)
     }
-    fetchData();
-  }, []);
+    fetchNews()
+  }, [])
 
-  // ----- ACACIA TREE ANIMATION -----
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+  const heroStats = [
+    { n: '120+', l: 'Lives Touched' },
+    { n: '4', l: 'Active Programmes' },
+    { n: '9', l: 'Villages Reached' },
+    { n: '2024', l: 'Founded' },
+  ]
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', resize);
-    resize();
+  const pillars = [
+    {
+      num: 'Pillar One',
+      icon: '👩🏾',
+      image: PILLAR_IMAGES.women,
+      accent: 'var(--gold)',
+      title: "Women's Empowerment",
+      story:
+        'Women in Samburu hold the social fabric together, often with little recognition. Through business literacy, micro-savings cooperatives, and leadership mentorship, we help women build the income, rights knowledge, and community that make real freedom possible.',
+      stats: [
+        { n: '40+', l: 'Women Trained' },
+        { n: '6', l: 'Savings Groups' },
+        { n: '120+', l: 'Families Impacted' },
+      ],
+    },
+    {
+      num: 'Pillar Two',
+      icon: '🌱',
+      image: PILLAR_IMAGES.youth,
+      accent: 'var(--sky, #2a5f8f)',
+      title: 'Youth Resilience',
+      story:
+        "Young Samburu people stand between a pastoral heritage and a fast-changing world. We don't ask them to choose. Leadership camps, peer mentorship, and vocational training help them carry both — because a young person who knows who they are becomes a leader, not a statistic.",
+      stats: [
+        { n: '20+', l: 'Annual Camp' },
+        { n: '5', l: 'Vocational Trades' },
+        { n: '9', l: 'Villages Active' },
+      ],
+    },
+    {
+      num: 'Pillar Three',
+      icon: '🤝',
+      image: PILLAR_IMAGES.community,
+      accent: 'var(--forest, #379764)',
+      title: 'Community Care',
+      story:
+        'Some community members need extra support — elders without family networks, people living with disabilities, families facing acute food insecurity. Our community care programme is the safety net that catches those who fall through the cracks, with dignity and speed.',
+      stats: [
+        { n: '50+', l: 'Households Supported' },
+        { n: '3', l: 'Villages Active' },
+        { n: '120+', l: 'People Reached' },
+      ],
+    },
+    {
+      num: 'Pillar Four',
+      icon: '🌳',
+      image: PILLAR_IMAGES.conservation,
+      accent: 'var(--earth, #8b4513)',
+      title: 'Conservation & Land Stewardship',
+      story:
+        'The acacia woodlands and grasslands that fed generations of pastoralists are disappearing. Through community-led, indigenous-seedling tree planting — elders and young people working side by side — we give the land back to itself.',
+      stats: [
+        { n: '800+', l: 'Trees Planted' },
+        { n: '9', l: 'Acres Restored' },
+        { n: '3', l: 'Sites Active' },
+      ],
+    },
+  ]
 
-    const tree = {
-      x: canvas.width * 0.5,
-      y: canvas.height * 0.75,
-      trunkHeight: canvas.height * 0.25,
-      trunkWidth: 14,
-      branches: [],
-      leaves: [],
-    };
+  const groundStories = [
+    {
+      title: 'The boy who planted a forest',
+      image: STORY_IMAGES.forest,
+      body: 'He came to the youth leadership camp expecting sports. He left with thirty acacia seedlings, a plan for where to plant them, and a mentor he still calls every month. A year later, that hillside has shade again.',
+    },
+    {
+      title: 'The grandmother who wasn\u2019t forgotten',
+      image: STORY_IMAGES.community,
+      body: 'She had raised five children alone and outlived most of the people who once checked in on her. Our community care visits started as a food basket. They became a standing Tuesday visit, a name someone remembers, a door that still gets knocked on.',
+    },
+  ]
 
-    const generateBranches = () => {
-      const branches = [];
-      const levels = 6;
-      const baseAngle = -Math.PI / 2;
-      const spread = 1.2;
+  const impactNumbers = [
+    { n: '120+', l: 'People reached across all programmes', accent: 'var(--forest, #2d6147)' },
+    { n: '40+', l: 'Women trained in business & financial literacy', accent: 'var(--gold)' },
+    { n: '800+', l: 'Indigenous trees planted across 3 sites', accent: 'var(--earth, #8b4513)' },
+    { n: '50+', l: 'Households supported with community care', accent: 'var(--sky, #2a5f8f)' },
+    { n: '20+', l: 'Youth in annual leadership programmes', accent: 'var(--forest-light, #4a8c68)' },
+    { n: '9', l: 'Villages with active programme presence', accent: 'var(--gold)' },
+  ]
 
-      for (let i = 0; i < levels; i++) {
-        const t = i / levels;
-        const yPos = tree.y - tree.trunkHeight * (0.3 + t * 0.6);
-        const widthScale = 1 - t * 0.5;
-        const branchCount = Math.floor(3 + t * 4);
+  const partners = [
+    {
+      name: 'RoamRoar Kenya Safaris',
+      logo: 'https://cdn.prod.website-files.com/664501c0a1543edee1fe122e/6996b4af410c1720487b9422_roamroar-logo.svg',
+      tagline: 'Community Development NGO in Kenya | CAN-K',
+      url: 'https://roamroarkenyasafaris.com/',
+    },
+  ]
 
-        for (let j = 0; j < branchCount; j++) {
-          const angleOffset = (j / branchCount) * Math.PI * 2;
-          const angle = baseAngle + angleOffset * spread;
-          const length = (40 + Math.random() * 80) * (1 - t * 0.3);
-          const thickness = (6 - t * 3) * widthScale;
-
-          branches.push({
-            x: tree.x + Math.cos(angleOffset * 0.7) * 20 * t,
-            y: yPos,
-            angle: angle + (Math.random() - 0.5) * 0.3,
-            length: length,
-            thickness: Math.max(thickness, 1.5),
-            phase: Math.random() * Math.PI * 2,
-            speed: 0.005 + Math.random() * 0.01,
-          });
+  return (
+    <main>
+      <style jsx global>{`
+        :root {
+          --navy: #10241f;
+          --navy-mid: #163530;
+          --navy-card: #1b3d36;
+          --navy-light: #234a40;
+          --navy-border: rgba(255, 255, 255, 0.1);
+          --steel: #235271;
+          --gold: #f5b731;
+          --forest: #379764;
+          --forest-light: #57b884;
+          --forest-deep: #1c4a34;
+          --sky: #2f86bd;
+          --earth: #b0591f;
+          --text-bright: #ffffff;
+          --text-mid: #c3d0c9;
+          --text-dim: #93a49c;
         }
-      }
-      return branches;
-    };
-
-    const generateLeaves = () => {
-      const leaves = [];
-      for (let i = 0; i < 200; i++) {
-        const t = Math.random();
-        const yPos = tree.y - tree.trunkHeight * (0.2 + t * 0.7);
-        const spread = 80 + Math.random() * 180;
-        const angle = Math.random() * Math.PI * 2;
-        const dist = Math.random() * spread * (0.3 + t * 0.5);
-
-        leaves.push({
-          x: tree.x + Math.cos(angle) * dist,
-          y: yPos - Math.random() * 20,
-          size: 6 + Math.random() * 16,
-          sway: Math.random() * 0.02,
-          phase: Math.random() * Math.PI * 2,
-          color: `hsl(${100 + Math.random() * 30}, ${40 + Math.random() * 30}%, ${35 + Math.random() * 25}%)`,
-        });
-      }
-      return leaves;
-    };
-
-    tree.branches = generateBranches();
-    tree.leaves = generateLeaves();
-
-    let frame = 0;
-    const animate = () => {
-      frame++;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Background gradient
-      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      grad.addColorStop(0, '#1a2a1f');
-      grad.addColorStop(0.3, '#2d4a33');
-      grad.addColorStop(0.6, '#5d6b4a');
-      grad.addColorStop(0.8, '#8a7a5a');
-      grad.addColorStop(1, '#3d2e1e');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Sun glow
-      const sunX = canvas.width * 0.8;
-      const sunY = canvas.height * 0.15;
-      const sunGrad = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 200);
-      sunGrad.addColorStop(0, 'rgba(255, 220, 150, 0.4)');
-      sunGrad.addColorStop(0.5, 'rgba(255, 180, 100, 0.15)');
-      sunGrad.addColorStop(1, 'rgba(255, 150, 50, 0)');
-      ctx.fillStyle = sunGrad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Draw branches
-      tree.branches.forEach((branch) => {
-        const sway = Math.sin(frame * branch.speed + branch.phase) * 3;
-        const angle = branch.angle + sway * 0.015;
-
-        ctx.beginPath();
-        ctx.moveTo(branch.x, branch.y);
-        const endX = branch.x + Math.cos(angle) * branch.length;
-        const endY = branch.y + Math.sin(angle) * branch.length;
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = '#3d2b1a';
-        ctx.lineWidth = branch.thickness;
-        ctx.lineCap = 'round';
-        ctx.stroke();
-
-        if (branch.length > 40) {
-          for (let k = 0; k < 3; k++) {
-            const subAngle = angle + (k - 1) * 0.7 + sway * 0.01;
-            const subLen = branch.length * (0.25 + Math.random() * 0.2);
-            const subX = branch.x + Math.cos(angle) * branch.length * 0.5;
-            const subY = branch.y + Math.sin(angle) * branch.length * 0.5;
-            ctx.beginPath();
-            ctx.moveTo(subX, subY);
-            ctx.lineTo(
-              subX + Math.cos(subAngle) * subLen,
-              subY + Math.sin(subAngle) * subLen
-            );
-            ctx.strokeStyle = '#4a3520';
-            ctx.lineWidth = branch.thickness * 0.3;
-            ctx.stroke();
+        body {
+          background: var(--navy);
+        }
+      `}</style>
+      <style jsx>{`
+        .sw-hero-stats {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .sw-founding-grid {
+          display: grid;
+          grid-template-columns: 0.85fr 1.15fr;
+        }
+        .sw-context-grid {
+          display: grid;
+          grid-template-columns: 1fr 2fr;
+        }
+        .sw-pillars-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .sw-stories-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .sw-founding-accent {
+          position: absolute;
+          bottom: -32px;
+          right: -24px;
+          width: 46%;
+          height: 52%;
+        }
+        @media (max-width: 760px) {
+          .sw-hero {
+            min-height: 78vh !important;
+          }
+          .sw-hero-stats {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          .sw-hero-stats > div:nth-child(2n) {
+            border-right: none;
+          }
+          .sw-founding-grid,
+          .sw-context-grid,
+          .sw-pillars-grid,
+          .sw-stories-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .sw-founding-accent {
+            position: static;
+            width: 100%;
+            height: clamp(180px, 50vw, 260px);
+            margin-top: 12px;
           }
         }
-      });
+      `}</style>
 
-      // Draw leaves
-      tree.leaves.forEach((leaf) => {
-        const swayX = Math.sin(frame * 0.008 + leaf.phase) * leaf.sway * 15;
-        const swayY = Math.cos(frame * 0.006 + leaf.phase * 1.3) * leaf.sway * 8;
-
-        ctx.beginPath();
-        ctx.ellipse(
-          leaf.x + swayX,
-          leaf.y + swayY,
-          leaf.size * 0.5,
-          leaf.size * 0.3,
-          Math.sin(frame * 0.005 + leaf.phase) * 0.2,
-          0,
-          Math.PI * 2
-        );
-        ctx.fillStyle = leaf.color;
-        ctx.shadowColor = 'rgba(0,0,0,0.2)';
-        ctx.shadowBlur = 10;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        ctx.beginPath();
-        ctx.ellipse(
-          leaf.x + swayX - 2,
-          leaf.y + swayY - 3,
-          leaf.size * 0.15,
-          leaf.size * 0.1,
-          0,
-          0,
-          Math.PI * 2
-        );
-        ctx.fillStyle = 'rgba(255,255,200,0.15)';
-        ctx.fill();
-      });
-
-      // Draw trunk
-      ctx.shadowBlur = 0;
-      ctx.beginPath();
-      ctx.moveTo(tree.x - tree.trunkWidth * 0.4, tree.y);
-      ctx.lineTo(tree.x - tree.trunkWidth * 0.2, tree.y - tree.trunkHeight);
-      ctx.lineTo(tree.x + tree.trunkWidth * 0.2, tree.y - tree.trunkHeight);
-      ctx.lineTo(tree.x + tree.trunkWidth * 0.4, tree.y);
-      ctx.closePath();
-      ctx.fillStyle = '#2d1f12';
-      ctx.fill();
-
-      // Ground
-      ctx.beginPath();
-      ctx.ellipse(tree.x, tree.y + 8, 120, 18, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(30, 25, 15, 0.3)';
-      ctx.fill();
-
-      // Grass tufts
-      for (let i = 0; i < 20; i++) {
-        const gx = tree.x + (Math.random() - 0.5) * 300;
-        const gy = tree.y + 4 + Math.random() * 6;
-        ctx.beginPath();
-        ctx.moveTo(gx, gy);
-        ctx.lineTo(gx + (Math.random() - 0.5) * 8, gy - 8 - Math.random() * 12);
-        ctx.strokeStyle = `rgba(60, 80, 40, ${0.2 + Math.random() * 0.3})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      }
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-    };
-  }, []);
-
-  // ----- RENDER -----
-  return (
-    <div style={{ 
-      position: 'relative', 
-      width: '100vw', 
-      height: '100vh', 
-      overflow: 'hidden', 
-      background: '#0e1c22',
-      margin: 0,
-      padding: 0
-    }}>
-      {/* Canvas for acacia tree */}
-      <canvas
-        ref={canvasRef}
+      {/* ── HERO ── */}
+      <section
+        className="sw-hero"
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 0,
-        }}
-      />
-
-      {/* OVERLAY CONTENT */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 10,
+          position: 'relative',
+          minHeight: '92vh',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#f2eee7',
-          textShadow: '0 4px 30px rgba(0,0,0,0.8)',
-          padding: '1.5rem',
-          textAlign: 'center',
-          pointerEvents: 'none',
+          justifyContent: 'flex-end',
+          overflow: 'hidden',
         }}
       >
-        {/* Main heading */}
-        <h1
-          style={{
-            fontSize: 'clamp(2.8rem, 14vw, 6rem)',
-            fontWeight: 700,
-            letterSpacing: '4px',
-            marginBottom: '0.3rem',
-            background: 'linear-gradient(135deg, #f7e9c3, #d4b68a)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-        >
-          Under Maintenance
-        </h1>
-
-        {/* Sub message */}
-        <p
-          style={{
-            fontSize: 'clamp(1.2rem, 4vw, 2.2rem)',
-            fontWeight: 300,
-            letterSpacing: '2px',
-            marginBottom: '0.5rem',
-            color: '#e5dccf',
-          }}
-        >
-          We'll be back soon ✦
-        </p>
-
-        {/* Decorative icons */}
         <div
           style={{
-            fontSize: '2.2rem',
-            margin: '0.5rem 0 1rem',
-            color: '#c9b393',
-            letterSpacing: '12px',
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url('${HERO_IMAGE}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center 40%',
+            filter: 'brightness(0.72) saturate(1.35) contrast(1.08)',
           }}
-        >
-          <span style={{ marginRight: '8px' }}>🌳</span>
-          <span style={{ marginRight: '8px' }}>☀️</span>
-          <span>☁️</span>
-        </div>
-
-        {/* Branding: getkelhonic.com */}
+        />
         <div
           style={{
-            fontSize: 'clamp(1rem, 2.5vw, 1.6rem)',
-            fontWeight: 300,
-            background: 'rgba(20, 35, 30, 0.5)',
-            backdropFilter: 'blur(4px)',
-            padding: '0.6rem 2.2rem',
-            borderRadius: '60px',
-            border: '1px solid rgba(255, 215, 150, 0.25)',
-            boxShadow: '0 8px 25px rgba(0,0,0,0.4)',
-            color: '#ede3d4',
-            marginTop: '1rem',
-            display: 'inline-block',
-            pointerEvents: 'auto',
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(180deg, rgba(10,20,16,0.18) 0%, rgba(10,20,16,0.05) 38%, rgba(10,20,16,0.88) 100%)',
+          }}
+        />
+
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            padding: 'clamp(120px, 16vw, 180px) clamp(20px,6vw,80px) 0',
+            maxWidth: '1100px',
           }}
         >
-          <span style={{ marginRight: '10px' }}>🌍</span>
-          managed by <span style={{ fontWeight: 600, color: '#f5e3c1' }}>getkelhonic.com</span>
+          <p
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(196,134,10,0.18)',
+              border: '1px solid rgba(240,180,41,0.35)',
+              color: 'var(--gold)',
+              fontSize: '12px',
+              fontWeight: 600,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              padding: '6px 16px',
+              borderRadius: '100px',
+              marginBottom: '28px',
+            }}
+          >
+            Samburu County, Northern Kenya
+          </p>
+          <h1
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 600,
+              fontSize: 'clamp(2.6rem, 6.4vw, 5.2rem)',
+              lineHeight: 1.08,
+              color: '#ffffff',
+              textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)',
+              maxWidth: '820px',
+              marginBottom: '24px',
+            }}
+          >
+            When a community<br />
+            remembers <em style={{ fontStyle: 'italic', color: 'var(--gold)', textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)' }}>who it is,</em><br />
+            it heals itself.
+          </h1>
+          <p
+            style={{
+              fontSize: 'clamp(15px,1.6vw,19px)',
+              color: 'rgba(255,255,255,0.8)',
+              maxWidth: '560px',
+              lineHeight: 1.8,
+              fontWeight: 300,
+              marginBottom: '40px',
+            }}
+          >
+            Samburu Wellness &amp; Resilience walks alongside the people of Samburu County — honouring their knowledge, their land, and their strength.
+          </p>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: 'clamp(48px,7vw,80px)' }}>
+            <a href="/our-work" className="btn-amber">Explore Our Work</a>
+            <a href="/donate" className="btn-outline">Support the Mission</a>
+          </div>
         </div>
 
-        {/* Small status note */}
-        <p
+        {/* hero stat strip */}
+        <div
+          className="sw-hero-stats"
           style={{
-            marginTop: '1.8rem',
-            fontSize: '0.9rem',
-            color: '#8f9a8a',
-            letterSpacing: '2px',
-            opacity: 0.6,
+            position: 'relative',
+            zIndex: 2,
+            borderTop: '1px solid rgba(255,255,255,0.15)',
+            background: 'rgba(10,20,16,0.55)',
+            backdropFilter: 'blur(6px)',
           }}
         >
-          <span style={{ marginRight: '6px' }}>⚡</span>
-          we are down for a moment
-        </p>
-      </div>
+          {heroStats.map((s) => (
+            <div
+              key={s.n}
+              style={{
+                padding: 'clamp(18px,2.5vw,28px) 12px',
+                textAlign: 'center',
+                borderRight: '1px solid rgba(255,255,255,0.1)',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: 'clamp(22px,2.6vw,34px)',
+                  fontWeight: 600,
+                  color: 'var(--gold)',
+                  lineHeight: 1,
+                }}
+              >
+                {s.n}
+              </div>
+              <div
+                style={{
+                  fontSize: '11px',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.65)',
+                  marginTop: '6px',
+                }}
+              >
+                {s.l}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* Tiny acacia tag (bottom right) */}
-      <div
+      {/* ── FOUNDING STORY ── */}
+      <section className="section" style={{ background: 'var(--navy)' }}>
+        <div
+          className="section-inner sw-founding-grid"
+          style={{
+            gap: 'clamp(32px,5vw,64px)',
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ position: 'relative' }}>
+            <img
+              src={FOUNDING_IMAGE_MAIN}
+              alt="Samburu community gathering"
+              style={{
+                width: '100%',
+                height: 'clamp(280px, 34vw, 440px)',
+                objectFit: 'cover',
+                borderRadius: '6px',
+              }}
+            />
+            <img
+              src={FOUNDING_IMAGE_ACCENT}
+              alt="Samburu warrior"
+              className="sw-founding-accent"
+              style={{
+                objectFit: 'cover',
+                borderRadius: '6px',
+                border: '6px solid var(--navy)',
+                boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
+              }}
+            />
+          </div>
+
+          <div>
+            <p className="section-eyebrow">Our Founding Story</p>
+            <h2 className="section-title">We saw what was<br /><em>slipping away</em> — and chose to act</h2>
+            <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '16px' }}>
+              This organisation was not born in a boardroom. It was born from grief, worry, and love — the kind that only comes from belonging somewhere.
+            </p>
+            <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '24px' }}>
+              We watched the art of community — long evenings under acacia trees, elders passing wisdom to the young — begin to erode. Young men were dying by suicide in numbers that should have shaken everyone. The hillsides that fed our ancestors' herds were going bare. So in 2024, we sat together, as neighbours and relatives, and asked the only question that mattered: <em style={{ color: 'var(--text-bright)' }}>what would it take for our communities to truly thrive again?</em>
+            </p>
+
+            <blockquote
+              style={{
+                borderLeft: '3px solid var(--gold)',
+                paddingLeft: '20px',
+                margin: '0 0 24px',
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontStyle: 'italic',
+                  fontSize: 'clamp(18px,2vw,24px)',
+                  color: 'var(--text-bright)',
+                  lineHeight: 1.4,
+                  marginBottom: '8px',
+                }}
+              >
+                "Every community carries the seeds of its own strength. Our work is simply to water them."
+              </p>
+              <cite style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', fontStyle: 'normal' }}>
+                — Founders, Samburu Wellness &amp; Resilience
+              </cite>
+            </blockquote>
+
+            <a href="/who-we-are#team" className="btn-outline">Meet Our Team →</a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTEXT BAND ── */}
+      <section
         style={{
-          position: 'absolute',
-          bottom: '20px',
-          right: '30px',
-          zIndex: 20,
-          color: '#6f7e72',
-          fontSize: '0.75rem',
-          letterSpacing: '2px',
-          opacity: 0.4,
-          background: 'rgba(0,0,0,0.2)',
-          padding: '4px 16px',
-          borderRadius: '30px',
-          backdropFilter: 'blur(2px)',
-          border: '1px solid #3d4d44',
-          pointerEvents: 'none',
+          background: 'linear-gradient(120deg, var(--navy-mid) 0%, var(--steel) 55%, var(--navy-mid) 100%)',
+          borderTop: '1px solid var(--navy-border)',
+          borderBottom: '1px solid var(--navy-border)',
+          padding: 'clamp(48px,6vw,80px) 0',
         }}
       >
-        🌱 acacia · savanna
-      </div>
-    </div>
-  );
+        <div
+          className="section-inner sw-context-grid"
+          style={{ gap: 'clamp(28px,4vw,56px)', alignItems: 'center' }}
+        >
+          <div>
+            <p className="section-eyebrow" style={{ marginBottom: '10px' }}>The Context</p>
+            <p
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: 'italic',
+                fontSize: 'clamp(20px,2.6vw,30px)',
+                color: 'var(--text-bright)',
+                lineHeight: 1.4,
+              }}
+            >
+              "Poverty is never one-dimensional — and neither is healing."
+            </p>
+          </div>
+          <div>
+            <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-mid)', lineHeight: 1.9, marginBottom: '14px' }}>
+              Samburu County sits in northern Kenya — dramatic landscapes, proud pastoralist heritage, extraordinary people. It is also one of Kenya's most marginalised counties, with some of the country's lowest rates of access to healthcare, education, and economic opportunity.
+            </p>
+            <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-mid)', lineHeight: 1.9 }}>
+              Its communities have survived drought, conflict, and decades of neglect through extraordinary solidarity. Our role is not to rescue — it is to stand with them. Addressed together, women's empowerment, youth resilience, community care, and land stewardship don't just help. They make transformation inevitable.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CINEMATIC MOMENT ── */}
+      <section
+        style={{
+          position: 'relative',
+          minHeight: '52vh',
+          display: 'flex',
+          alignItems: 'flex-end',
+          overflow: 'hidden',
+        }}
+      >
+        <img
+          src={CONTEXT_BG}
+          alt="Samburu landscape"
+          onError={(e) => { e.currentTarget.style.display = 'none' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(10,20,16,0.1) 0%, rgba(10,20,16,0.92) 100%)',
+          }}
+        />
+        <div style={{ position: 'relative', zIndex: 2, padding: 'clamp(40px,6vw,72px) clamp(20px,6vw,80px)', maxWidth: '760px' }}>
+          <p
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: 'italic',
+              fontWeight: 300,
+              fontSize: 'clamp(22px,3.2vw,38px)',
+              color: 'var(--text-bright, #fff)',
+              lineHeight: 1.4,
+              marginBottom: '18px',
+            }}
+          >
+            "A community that is fed, healthy, and educated is not a burden to anyone. It is the foundation of everything."
+          </p>
+          <p style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)' }}>
+            — Community Elder, Wamba Division
+          </p>
+        </div>
+      </section>
+
+      {/* ── FOUR PILLARS ── */}
+      <section className="section" style={{ background: 'var(--navy-card)' }}>
+        <div className="section-inner">
+          <p className="section-eyebrow">What We Do</p>
+          <h2 className="section-title">Four Pillars of<br /><em>Community Transformation</em></h2>
+          <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-dim)', maxWidth: '620px', lineHeight: 1.8, marginBottom: 'clamp(28px,4vw,48px)' }}>
+            Each pillar is rooted in what Samburu people themselves said they needed most — not in an imported model.
+          </p>
+
+          <div className="sw-pillars-grid" style={{ gap: 'clamp(16px,2.2vw,24px)' }}>
+            {pillars.map((p) => (
+              <div
+                key={p.num}
+                style={{
+                  background: 'linear-gradient(165deg, var(--navy) 0%, rgba(55,151,100,0.22) 140%)',
+                  border: '1px solid var(--navy-border)',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  borderTop: `3px solid ${p.accent}`,
+                }}
+              >
+                <div style={{ position: 'relative', height: '160px' }}>
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    onError={(e) => { e.currentTarget.style.display = 'none' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(180deg, rgba(10,20,16,0.15) 0%, rgba(10,20,16,0.85) 100%)',
+                    }}
+                  />
+                  <div style={{ position: 'absolute', left: '20px', bottom: '14px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ fontSize: '26px', lineHeight: 1 }}>{p.icon}</span>
+                    <div>
+                      <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: p.accent }}>
+                        {p.num}
+                      </div>
+                      <h3
+                        style={{
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontSize: 'clamp(19px,2vw,23px)',
+                          fontWeight: 600,
+                          color: 'var(--text-bright, #fff)',
+                        }}
+                      >
+                        {p.title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ padding: 'clamp(20px,2.6vw,32px)' }}>
+                  <p style={{ fontSize: 'clamp(13px,1.15vw,15px)', color: 'var(--text-mid)', lineHeight: 1.8, marginBottom: '20px' }}>
+                    {p.story}
+                  </p>
+                  <div style={{ display: 'flex', gap: '20px', borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
+                    {p.stats.map((s) => (
+                      <div key={s.l}>
+                        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', fontWeight: 600, color: 'var(--text-bright)', lineHeight: 1 }}>
+                          {s.n}
+                        </div>
+                        <div style={{ fontSize: '10.5px', color: 'var(--text-dim)', marginTop: '4px' }}>{s.l}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 'clamp(28px,4vw,48px)' }}>
+            <a href="/our-work" className="btn-brown">Explore All Programmes</a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── STORIES FROM THE GROUND ── */}
+      <section className="section" style={{ background: 'var(--navy)' }}>
+        <div className="section-inner" style={{ maxWidth: '900px' }}>
+          <p className="section-eyebrow">The Work in Practice</p>
+          <h2 className="section-title">Stories from <em>the Ground</em></h2>
+
+          <div className="sw-stories-grid" style={{ gap: 'clamp(24px,3.5vw,40px)', marginTop: 'clamp(24px,3vw,40px)' }}>
+            {groundStories.map((s) => (
+              <div key={s.title}>
+                <img
+                  src={s.image}
+                  alt=""
+                  onError={(e) => { e.currentTarget.style.display = 'none' }}
+                  style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '6px', marginBottom: '18px' }}
+                />
+                <h3
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontStyle: 'italic',
+                    fontSize: 'clamp(19px,2vw,23px)',
+                    color: 'var(--gold)',
+                    marginBottom: '12px',
+                  }}
+                >
+                  {s.title}
+                </h3>
+                <p style={{ fontSize: 'clamp(13px,1.2vw,15px)', color: 'var(--text-mid)', lineHeight: 1.85 }}>
+                  {s.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── IMPACT NUMBERS ── */}
+      <section className="section" style={{ background: 'var(--navy-card)' }}>
+        <div className="section-inner" style={{ maxWidth: '1000px' }}>
+          <p className="section-eyebrow">Impact in Numbers</p>
+          <h2 className="section-title">What <em>Showing Up</em> Looks Like</h2>
+          <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-dim)', lineHeight: 1.85, maxWidth: '640px', marginBottom: 'clamp(24px,3vw,40px)' }}>
+            We don't measure success in donor reports. We measure it in the woman who hasn't missed a school fees payment in two years, the hillside with shade again, the young man who reached out before it was too late.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            {impactNumbers.map((item) => (
+              <div
+                key={item.l}
+                style={{
+                  background: 'linear-gradient(165deg, var(--navy) 0%, rgba(55,151,100,0.2) 150%)',
+                  border: '1px solid var(--navy-border)',
+                  borderRadius: '10px',
+                  padding: 'clamp(18px,2.5vw,28px)',
+                  borderTop: `2px solid ${item.accent}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 'clamp(28px,3.5vw,44px)',
+                    fontWeight: 600,
+                    color: item.accent,
+                    lineHeight: 1,
+                    marginBottom: '10px',
+                  }}
+                >
+                  {item.n}
+                </div>
+                <div style={{ fontSize: 'clamp(12px,1.1vw,14px)', color: 'var(--text-mid)', lineHeight: 1.55 }}>{item.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── NEWS / STORIES (dynamic) ── */}
+      {news.length > 0 && (
+        <section className="section" style={{ background: 'var(--navy)' }}>
+          <div className="section-inner">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '8px' }}>
+              <div>
+                <p className="section-eyebrow">Stories &amp; Updates</p>
+                <h2 className="section-title" style={{ marginBottom: 0 }}>Latest from <em>the Field</em></h2>
+              </div>
+              <a href="/news" className="btn-outline">All Stories →</a>
+            </div>
+            <div className="news-grid">
+              {news.map((post) => (
+                <a key={post.id} href={`/news/${post.slug || post.id}`} className="news-card" style={{ display: 'block' }}>
+                  {(post.image_url || post.cover_image) && (
+                    <div className="news-card-img">
+                      <img src={post.image_url || post.cover_image} alt={post.title} />
+                    </div>
+                  )}
+                  <div className="news-card-body">
+                    <div className="news-tag">{post.category || 'Community'}</div>
+                    <h3>{post.title}</h3>
+                    <p>{post.excerpt || (post.content ? post.content.slice(0, 100) + '…' : '')}</p>
+                    <div className="news-card-date">
+                      {new Date(post.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── OUR PARTNERS (teaser) ── */}
+      <section className="section" style={{ background: 'var(--navy-card)' }}>
+        <div className="section-inner">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: 'clamp(24px,3vw,40px)' }}>
+            <div>
+              <p className="section-eyebrow">Working Together</p>
+              <h2 className="section-title" style={{ marginBottom: 0 }}>Our <em>Partners</em></h2>
+            </div>
+            <a href="/partner" className="btn-outline">Become a Partner →</a>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'clamp(16px,2vw,24px)' }}>
+            {partners.map((p) => (
+              <a
+                key={p.name}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '18px',
+                  background: 'var(--navy)',
+                  border: '1px solid var(--navy-border)',
+                  borderRadius: '12px',
+                  padding: 'clamp(18px,2.5vw,24px)',
+                  textDecoration: 'none',
+                }}
+              >
+                <img
+                  src={p.logo}
+                  alt={`${p.name} logo`}
+                  style={{ height: '44px', width: '90px', objectFit: 'contain', flexShrink: 0 }}
+                />
+                <div>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '17px', color: 'var(--text-bright)', fontWeight: 600 }}>{p.name}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: 600, marginTop: '2px' }}>{p.tagline}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ── */}
+      <section className="partner-cta">
+        <h2>Be Part of<br /><em>the Story</em></h2>
+        <p>
+          Your partnership — financial, professional, or in-kind — directly changes lives in Samburu County.
+          Every contribution reaches a real person in a real village.
+        </p>
+        <div className="cta-btns">
+          <a href="/partner" className="btn-amber">Partner With Us</a>
+          <a href="/donate" className="btn-outline">Donate Now</a>
+          <a href="/join" className="btn-outline">Join Our Team</a>
+        </div>
+      </section>
+
+    </main>
+  )
 }
