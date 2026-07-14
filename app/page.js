@@ -2,57 +2,33 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
-/*
-  HOMEPAGE — story-led redesign
-  USING ONLINE IMAGES THAT REPRESENT SAMBURU HERITAGE
-  ------------------------------------------------------------
-  All images are from Wikimedia Commons and other public sources
-  that properly represent Samburu culture, landscape, and people.
-  These are placeholders until you upload your own photos.
-------------------------------------------------------------- */
-
-// Online images that represent Samburu heritage
+// Images from reliable sources and correctly formatted for display
 const IMAGES = {
-  // Hero - stunning Samburu warrior/landscape
-  hero: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Samburu_Moran_warrior.jpg/1200px-Samburu_Moran_warrior.jpg',
+  // Hero - Samburu warrior (Wikimedia Commons is specifically allowed for hotlinking [citation:2])
+  hero: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_moran.jpg&width=1200',
   
   // Founding story - main image
-  foundingMain: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Samburu_people_Kenya.jpg/1200px-Samburu_people_Kenya.jpg',
+  foundingMain: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_people_Kenya.jpg&width=900',
   
   // Founding story - accent image
-  foundingAccent: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Samburu_warrior_with_spear.jpg/800px-Samburu_warrior_with_spear.jpg',
+  foundingAccent: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_warrior_with_spear.jpg&width=600',
   
   // Context background - landscape
-  contextBg: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Samburu_National_Reserve_kenya.jpg/1400px-Samburu_National_Reserve_kenya.jpg',
+  contextBg: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_National_Reserve_kenya.jpg&width=1400',
   
-  // Pillar images
-  women: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Samburu_women_traditional_clothing.jpg/800px-Samburu_women_traditional_clothing.jpg',
-  youth: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Samburu_children_kenya.jpg/800px-Samburu_children_kenya.jpg',
-  community: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Samburu_village_kenya.jpg/800px-Samburu_village_kenya.jpg',
-  conservation: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Samburu_landscape_acacia_trees.jpg/800px-Samburu_landscape_acacia_trees.jpg',
+  // Pillar images - using direct Wikimedia files
+  women: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_women_traditional_clothing.jpg&width=800',
+  youth: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_children_kenya.jpg&width=800',
+  community: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_village_kenya.jpg&width=800',
+  conservation: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Acacia_trees_Samburu.jpg&width=800',
   
   // Story images
-  forest: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Acacia_trees_Samburu.jpg/800px-Acacia_trees_Samburu.jpg',
-  communityStory: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Samburu_elder.jpg/800px-Samburu_elder.jpg',
-}
-
-// Fallback images if above don't work
-const FALLBACK_IMAGES = {
-  hero: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1200',
-  foundingMain: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=900',
-  foundingAccent: 'https://images.unsplash.com/photo-1533163794115-dc0cdd1efb61?w=600',
-  contextBg: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400',
-  women: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800',
-  youth: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800',
-  community: 'https://images.unsplash.com/photo-1525183995014-bd94c0750cd5?w=800',
-  conservation: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800',
-  forest: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800',
-  communityStory: 'https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=800',
+  forest: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Landscapes_of_Kenya_04.jpg&width=800',
+  communityStory: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_elder.jpg&width=800',
 }
 
 export default function HomePage() {
   const [news, setNews] = useState([])
-  const [imageErrors, setImageErrors] = useState({})
 
   useEffect(() => {
     async function fetchNews() {
@@ -67,17 +43,6 @@ export default function HomePage() {
     fetchNews()
   }, [])
 
-  const getImage = (key) => {
-    if (imageErrors[key]) {
-      return FALLBACK_IMAGES[key] || IMAGES[key]
-    }
-    return IMAGES[key]
-  }
-
-  const handleImageError = (key) => {
-    setImageErrors(prev => ({ ...prev, [key]: true }))
-  }
-
   const heroStats = [
     { n: '120+', l: 'Lives Touched' },
     { n: '4', l: 'Active Programmes' },
@@ -89,7 +54,7 @@ export default function HomePage() {
     {
       num: 'Pillar One',
       icon: '👩🏾',
-      image: getImage('women'),
+      image: IMAGES.women,
       accent: 'var(--gold)',
       title: "Women's Empowerment",
       story:
@@ -103,7 +68,7 @@ export default function HomePage() {
     {
       num: 'Pillar Two',
       icon: '🌱',
-      image: getImage('youth'),
+      image: IMAGES.youth,
       accent: 'var(--sky, #2a5f8f)',
       title: 'Youth Resilience',
       story:
@@ -117,7 +82,7 @@ export default function HomePage() {
     {
       num: 'Pillar Three',
       icon: '🤝',
-      image: getImage('community'),
+      image: IMAGES.community,
       accent: 'var(--forest, #379764)',
       title: 'Community Care',
       story:
@@ -131,7 +96,7 @@ export default function HomePage() {
     {
       num: 'Pillar Four',
       icon: '🌳',
-      image: getImage('conservation'),
+      image: IMAGES.conservation,
       accent: 'var(--earth, #8b4513)',
       title: 'Conservation & Land Stewardship',
       story:
@@ -147,12 +112,12 @@ export default function HomePage() {
   const groundStories = [
     {
       title: 'The boy who planted a forest',
-      image: getImage('forest'),
+      image: IMAGES.forest,
       body: 'He came to the youth leadership camp expecting sports. He left with thirty acacia seedlings, a plan for where to plant them, and a mentor he still calls every month. A year later, that hillside has shade again.',
     },
     {
       title: 'The grandmother who wasn\u2019t forgotten',
-      image: getImage('communityStory'),
+      image: IMAGES.communityStory,
       body: 'She had raised five children alone and outlived most of the people who once checked in on her. Our community care visits started as a food basket. They became a standing Tuesday visit, a name someone remembers, a door that still gets knocked on.',
     },
   ]
@@ -443,7 +408,7 @@ export default function HomePage() {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url('${getImage('hero')}')`,
+            backgroundImage: `url('${IMAGES.hero}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center 30%',
             filter: 'brightness(0.65) saturate(1.2) contrast(1.1)',
@@ -577,9 +542,8 @@ export default function HomePage() {
         >
           <div style={{ position: 'relative' }}>
             <img
-              src={getImage('foundingMain')}
+              src={IMAGES.foundingMain}
               alt="Samburu community gathering"
-              onError={() => handleImageError('foundingMain')}
               style={{
                 width: '100%',
                 height: 'clamp(280px, 34vw, 440px)',
@@ -588,10 +552,9 @@ export default function HomePage() {
               }}
             />
             <img
-              src={getImage('foundingAccent')}
+              src={IMAGES.foundingAccent}
               alt="Samburu warrior"
               className="sw-founding-accent"
-              onError={() => handleImageError('foundingAccent')}
               style={{
                 objectFit: 'cover',
               }}
@@ -686,9 +649,8 @@ export default function HomePage() {
         }}
       >
         <img
-          src={getImage('contextBg')}
+          src={IMAGES.contextBg}
           alt="Samburu landscape"
-          onError={() => handleImageError('contextBg')}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
         <div
@@ -743,7 +705,6 @@ export default function HomePage() {
                   <img
                     src={p.image}
                     alt={p.title}
-                    onError={() => handleImageError(p.title.toLowerCase().replace(/\s/g, ''))}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                   <div
@@ -809,7 +770,6 @@ export default function HomePage() {
                 <img
                   src={s.image}
                   alt=""
-                  onError={() => handleImageError('forest')}
                   style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '6px', marginBottom: '18px' }}
                 />
                 <h3
