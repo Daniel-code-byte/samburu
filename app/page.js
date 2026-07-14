@@ -491,7 +491,7 @@ export default function HomePage() {
             When a community<br />
             remembers <em style={{ fontStyle: 'italic', color: 'var(--gold)', textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.4)' }}>who it is,</em><br />
             it heals itself.
-          </p>
+          </h1>
           <p
             style={{
               fontSize: 'clamp(15px,1.6vw,19px)',
