@@ -18,82 +18,133 @@ import { supabase } from '@/lib/supabase'
     --earth: #8b4513;
     --sky: #2a5f8f;
 
-  IMAGES — the previous version used made-up Unsplash URLs that
-  didn't point to real photos, which is why they were broken.
-  These are all real, verified files hosted on Wikimedia Commons
-  (public domain / CC-licensed, hotlink-safe via Special:FilePath —
-  Wikimedia's own supported method for external embedding). They
-  are placeholders to make the page feel real *today* — swap every
-  one of them for your own field photography as soon as you can.
-  A couple require attribution under their CC BY-SA license; keep
-  the credit line in the footer note below until you replace them.
+  IMAGES — this version loads specific named files straight out
+  of your 'photos' Supabase Storage bucket instead of "whatever's
+  next in the list":
+
+    HERO SLIDESHOW  → slideshow1.jpeg, slideshow2.jpeg, ...
+                       (probes up to slideshow6.jpeg — just upload
+                       slideshow3.jpeg / slideshow4.jpeg whenever
+                       you're ready and they'll show up automatically,
+                       no code changes needed)
+    FOUNDING STORY  → head1.jpeg, head2.jpeg
+    PILLAR I        → wellbeing.jpeg     (Community Wellbeing & Heritage)
+    PILLAR II       → women.jpeg         (Women & Youth Empowerment)
+    PILLAR III      → suistanable.jpeg   (Sustainable Livelihoods)
+    PILLAR IV       → conservation.jpeg  (Conservation & Stewardship)
+
+  Every one of these silently falls back to a real, verified
+  Wikimedia Commons photo (public domain / CC-licensed, hotlink-safe
+  via Special:FilePath) if the named file isn't in your bucket yet —
+  so the page never shows a broken image while you're still
+  uploading. Swap them all for your own field photography whenever
+  you like. A couple require attribution under their CC BY-SA
+  license; keep the credit line in the footer note until replaced.
 ------------------------------------------------------------- */
 
 const wiki = (filename, width = 800) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`
 
-// Supabase-hosted images — instead of hardcoded filenames, this now
-// LISTS everything in your 'photos' Storage bucket and uses whatever
-// is actually in there, in whatever order Supabase returns them.
-// Upload as many photos as you like, named anything — no more pic1,
-// pic2 naming needed. First photo found → hero, next four → pillars.
 const SUPABASE_BUCKET = 'photos'
 const bucketUrl = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
 
-const FOUNDING_IMAGE_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900) // kept intact
-const FOUNDING_IMAGE_ACCENT = wiki('Young Samburu male.jpg', 600) // swapped in: Samburu warrior portrait
-const CONTEXT_BG = wiki('Reserve samburu paysage 2.jpg', 1400)
-// Fallbacks shown only until the bucket photos finish loading, or if
-// the bucket is empty / unreachable — never a broken image.
+// How many slideshow slots to probe for. Bump this up if you ever
+// plan to go past 6 hero photos — otherwise leave it as is and just
+// upload slideshow3.jpeg / slideshow4.jpeg whenever they're ready.
+const SLIDESHOW_MAX = 6
+
 const FALLBACK_HERO = wiki('Reserve samburu paysage 2.jpg', 1600)
-const FALLBACK_PILLARS = [
-  wiki('Northern Kenya.jpg', 700),
-  wiki('Landscapes of Kenya 04.jpg', 700),
-  wiki('The Samburu women are building a new hut.jpg', 700),
-  wiki('200812 kenya 7 (3197992047).jpg', 700),
-]
+const FALLBACK_HEAD_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900)
+const FALLBACK_HEAD_ACCENT = wiki('Young Samburu male.jpg', 600)
+const CONTEXT_BG = wiki('Reserve samburu paysage 2.jpg', 1400)
+const FALLBACK_PILLARS = {
+  wellbeing: wiki('The Samburu women are building a new hut.jpg', 700),
+  women: wiki('Northern Kenya.jpg', 700),
+  sustainable: wiki('Landscapes of Kenya 04.jpg', 700),
+  conservation: wiki('200812 kenya 7 (3197992047).jpg', 700),
+}
+
+// Small helper: preload an image, resolve true/false depending on
+// whether it actually exists — used to build the hero slideshow and
+// to fall back gracefully per-pillar without ever showing a broken img.
+function probeImage(url) {
+  return new Promise((resolve) => {
+    const img = new window.Image()
+    img.onload = () => resolve(true)
+    img.onerror = () => resolve(false)
+    img.src = url
+  })
+}
 
 export default function HomePage() {
   const [news, setNews] = useState([])
-  const [bucketPhotos, setBucketPhotos] = useState([])
-  const [heroFailed, setHeroFailed] = useState(false)
 
-  useEffect(() => {
-    // background-image can't use onError, so preload pic3 to detect
-    // a missing/broken file and fall back to the placeholder instead
-    // of showing a blank hero.
-    const img = new window.Image()
-    img.onerror = () => setHeroFailed(true)
-    img.src = bucketUrl('pic3.jpeg')
-  }, [])
+  // Hero slideshow
+  const [slides, setSlides] = useState([])
+  const [slideIndex, setSlideIndex] = useState(0)
 
+  // Named single images, each with its own found/not-found state
+  const [headMain, setHeadMain] = useState(null)
+  const [headAccent, setHeadAccent] = useState(null)
+  const [pillarImgs, setPillarImgs] = useState({
+    wellbeing: null,
+    women: null,
+    sustainable: null,
+    conservation: null,
+  })
+
+  // ── Build hero slideshow from slideshow1.jpeg, slideshow2.jpeg, ... ──
   useEffect(() => {
-    async function fetchBucketPhotos() {
-      const { data, error } = await supabase.storage.from(SUPABASE_BUCKET).list('', {
-        limit: 100,
-        sortBy: { column: 'created_at', order: 'desc' },
-      })
-      if (error || !data) return
-      const imageFiles = data.filter(
-        (f) => f.name && /\.(jpe?g|png|webp|gif)$/i.test(f.name) && f.name.toLowerCase() !== 'pic3.jpeg'
-      )
-      // de-duplicate in case the same photo got uploaded more than once
-      // under different filenames — keeps pillars from repeating an image
-      const urls = [...new Set(imageFiles.map((f) => bucketUrl(f.name)))]
-      if (urls.length > 0) setBucketPhotos(urls)
+    async function buildSlideshow() {
+      const candidates = Array.from({ length: SLIDESHOW_MAX }, (_, i) => `slideshow${i + 1}.jpeg`)
+      const results = await Promise.all(candidates.map((name) => probeImage(bucketUrl(name))))
+      const found = candidates.filter((_, i) => results[i]).map((name) => bucketUrl(name))
+      setSlides(found.length > 0 ? found : [FALLBACK_HERO])
     }
-    fetchBucketPhotos()
+    buildSlideshow()
   }, [])
 
-  // hero uses the first bucket photo; pillars use the next four —
-  // falls back to the Wikimedia placeholders if the bucket is empty
-  const HERO_IMAGE = heroFailed ? FALLBACK_HERO : bucketUrl('pic3.jpeg') // always this exact file, not the dynamic list
-  const PILLAR_IMAGES = {
-    heritage: bucketPhotos[0] || FALLBACK_PILLARS[0],
-    womenYouth: bucketPhotos[1] || FALLBACK_PILLARS[1],
-    livelihoods: bucketPhotos[2] || FALLBACK_PILLARS[2],
-    conservation: bucketPhotos[3] || FALLBACK_PILLARS[3],
-  }
+  // Auto-advance the slideshow every 6s (no-op if there's only one slide)
+  useEffect(() => {
+    if (slides.length < 2) return
+    const t = setInterval(() => {
+      setSlideIndex((i) => (i + 1) % slides.length)
+    }, 6000)
+    return () => clearInterval(t)
+  }, [slides])
+
+  // ── Founding story photos: head1.jpeg / head2.jpeg ──
+  useEffect(() => {
+    async function loadHeadImages() {
+      const [mainOk, accentOk] = await Promise.all([
+        probeImage(bucketUrl('head1.jpeg')),
+        probeImage(bucketUrl('head2.jpeg')),
+      ])
+      setHeadMain(mainOk ? bucketUrl('head1.jpeg') : FALLBACK_HEAD_MAIN)
+      setHeadAccent(accentOk ? bucketUrl('head2.jpeg') : FALLBACK_HEAD_ACCENT)
+    }
+    loadHeadImages()
+  }, [])
+
+  // ── Pillar photos, one named file per pillar ──
+  useEffect(() => {
+    async function loadPillarImages() {
+      const map = {
+        wellbeing: 'wellbeing.jpeg',
+        women: 'women.jpeg',
+        sustainable: 'suistanable.jpeg',
+        conservation: 'conservation.jpeg',
+      }
+      const entries = Object.entries(map)
+      const results = await Promise.all(entries.map(([, file]) => probeImage(bucketUrl(file))))
+      const next = {}
+      entries.forEach(([key, file], i) => {
+        next[key] = results[i] ? bucketUrl(file) : FALLBACK_PILLARS[key]
+      })
+      setPillarImgs(next)
+    }
+    loadPillarImages()
+  }, [])
 
   useEffect(() => {
     async function fetchNews() {
@@ -120,7 +171,7 @@ export default function HomePage() {
       num: 'Pillar One',
       badge: 'I',
       icon: '🧵',
-      image: PILLAR_IMAGES.heritage,
+      image: pillarImgs.wellbeing || FALLBACK_PILLARS.wellbeing,
       accent: 'var(--gold)',
       title: 'Community Wellbeing & Heritage',
       paras: [
@@ -139,7 +190,7 @@ export default function HomePage() {
       num: 'Pillar Two',
       badge: 'II',
       icon: '👩🏾',
-      image: PILLAR_IMAGES.womenYouth,
+      image: pillarImgs.women || FALLBACK_PILLARS.women,
       accent: 'var(--sky, #2f86bd)',
       title: 'Women & Youth Empowerment',
       paras: [
@@ -158,7 +209,7 @@ export default function HomePage() {
       num: 'Pillar Three',
       badge: 'III',
       icon: '🔥',
-      image: PILLAR_IMAGES.livelihoods,
+      image: pillarImgs.sustainable || FALLBACK_PILLARS.sustainable,
       accent: 'var(--forest, #379764)',
       title: 'Sustainable Livelihoods',
       paras: [
@@ -176,7 +227,7 @@ export default function HomePage() {
       num: 'Pillar Four',
       badge: 'IV',
       icon: '🌳',
-      image: PILLAR_IMAGES.conservation,
+      image: pillarImgs.conservation || FALLBACK_PILLARS.conservation,
       accent: 'var(--earth, #b0591f)',
       title: 'Conservation & Stewardship',
       paras: [
@@ -268,6 +319,40 @@ export default function HomePage() {
         .sw-pillar-list li {
           word-break: break-word;
         }
+        .sw-hero-slide {
+          position: absolute;
+          inset: 0;
+          background-size: cover;
+          background-position: center 40%;
+          filter: brightness(0.72) saturate(1.35) contrast(1.08);
+          opacity: 0;
+          transition: opacity 1.2s ease-in-out;
+        }
+        .sw-hero-slide.active {
+          opacity: 1;
+        }
+        .sw-hero-dots {
+          position: absolute;
+          z-index: 3;
+          bottom: 14px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 8px;
+        }
+        .sw-hero-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.35);
+          cursor: pointer;
+          border: none;
+          padding: 0;
+          transition: background 0.2s ease;
+        }
+        .sw-hero-dot.active {
+          background: var(--gold);
+        }
 
         /* ── Tablet ── */
         @media (max-width: 980px) {
@@ -325,16 +410,14 @@ export default function HomePage() {
           overflow: 'hidden',
         }}
       >
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url('${HERO_IMAGE}')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center 40%',
-            filter: 'brightness(0.72) saturate(1.35) contrast(1.08)',
-          }}
-        />
+        {/* Slideshow layers — cross-fades between slideshow1.jpeg, slideshow2.jpeg, etc. */}
+        {slides.map((url, i) => (
+          <div
+            key={url}
+            className={`sw-hero-slide${i === slideIndex ? ' active' : ''}`}
+            style={{ backgroundImage: `url('${url}')` }}
+          />
+        ))}
         <div
           style={{
             position: 'absolute',
@@ -343,6 +426,19 @@ export default function HomePage() {
               'linear-gradient(180deg, rgba(10,20,16,0.18) 0%, rgba(10,20,16,0.05) 38%, rgba(10,20,16,0.88) 100%)',
           }}
         />
+
+        {slides.length > 1 && (
+          <div className="sw-hero-dots">
+            {slides.map((url, i) => (
+              <button
+                key={url}
+                className={`sw-hero-dot${i === slideIndex ? ' active' : ''}`}
+                onClick={() => setSlideIndex(i)}
+                aria-label={`Show slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        )}
 
         <div
           style={{
@@ -463,7 +559,7 @@ export default function HomePage() {
         >
           <div style={{ position: 'relative' }}>
             <img
-              src={FOUNDING_IMAGE_MAIN}
+              src={headMain || FALLBACK_HEAD_MAIN}
               alt="Samburu community gathering"
               style={{
                 width: '100%',
@@ -473,7 +569,7 @@ export default function HomePage() {
               }}
             />
             <img
-              src={FOUNDING_IMAGE_ACCENT}
+              src={headAccent || FALLBACK_HEAD_ACCENT}
               alt="Samburu warrior"
               className="sw-founding-accent"
               style={{
