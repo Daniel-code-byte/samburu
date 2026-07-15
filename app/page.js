@@ -74,8 +74,12 @@ export default function HomePage() {
         sortBy: { column: 'created_at', order: 'desc' },
       })
       if (error || !data) return
-      const imageFiles = data.filter((f) => f.name && /\.(jpe?g|png|webp|gif)$/i.test(f.name))
-      const urls = imageFiles.map((f) => bucketUrl(f.name))
+      const imageFiles = data.filter(
+        (f) => f.name && /\.(jpe?g|png|webp|gif)$/i.test(f.name) && f.name.toLowerCase() !== 'pic3.jpeg'
+      )
+      // de-duplicate in case the same photo got uploaded more than once
+      // under different filenames — keeps pillars from repeating an image
+      const urls = [...new Set(imageFiles.map((f) => bucketUrl(f.name)))]
       if (urls.length > 0) setBucketPhotos(urls)
     }
     fetchBucketPhotos()
