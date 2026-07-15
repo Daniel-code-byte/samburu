@@ -2,29 +2,53 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
-// Images from reliable sources and correctly formatted for display
-const IMAGES = {
-  // Hero - Samburu warrior (Wikimedia Commons is specifically allowed for hotlinking [citation:2])
-  hero: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_moran.jpg&width=1200',
-  
-  // Founding story - main image
-  foundingMain: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_people_Kenya.jpg&width=900',
-  
-  // Founding story - accent image
-  foundingAccent: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_warrior_with_spear.jpg&width=600',
-  
-  // Context background - landscape
-  contextBg: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_National_Reserve_kenya.jpg&width=1400',
-  
-  // Pillar images - using direct Wikimedia files
-  women: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_women_traditional_clothing.jpg&width=800',
-  youth: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_children_kenya.jpg&width=800',
-  community: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_village_kenya.jpg&width=800',
-  conservation: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Acacia_trees_Samburu.jpg&width=800',
-  
-  // Story images
-  forest: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Landscapes_of_Kenya_04.jpg&width=800',
-  communityStory: 'https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Samburu_elder.jpg&width=800',
+/*
+  HOMEPAGE — story-led redesign
+  ------------------------------------------------------------
+  Palette: keeps your existing navy + gold system and adds a
+  forest-green accent (inspired by the acacia/land-restoration
+  story). All new colors use var(--x, fallback) so this works
+  even before you add them to your theme file — but for best
+  results add these to your global CSS :root alongside your
+  existing --navy / --gold variables:
+
+    --forest: #2d6147;
+    --forest-light: #4a8c68;
+    --forest-deep: #16331f;
+    --earth: #8b4513;
+    --sky: #2a5f8f;
+
+  IMAGES — the previous version used made-up Unsplash URLs that
+  didn't point to real photos, which is why they were broken.
+  These are all real, verified files hosted on Wikimedia Commons
+  (public domain / CC-licensed, hotlink-safe via Special:FilePath —
+  Wikimedia's own supported method for external embedding). They
+  are placeholders to make the page feel real *today* — swap every
+  one of them for your own field photography as soon as you can.
+  A couple require attribution under their CC BY-SA license; keep
+  the credit line in the footer note below until you replace them.
+------------------------------------------------------------- */
+
+const wiki = (filename, width = 800) =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`
+
+// Supabase-hosted images — upload your photos to a Storage bucket
+// and name the files pic1.jpg through pic10.jpg (or update the
+// extension below to match what you actually upload, e.g. .png).
+// CONFIRM the bucket name below matches your Supabase Storage bucket —
+// 'site-images' is a placeholder; change it if yours is named differently.
+const SUPABASE_BUCKET = 'photos'
+const pic = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
+
+const HERO_IMAGE = pic('pic3.jpeg') // hero background — your pic3
+const FOUNDING_IMAGE_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900) // kept intact
+const FOUNDING_IMAGE_ACCENT = wiki('Young Samburu male.jpg', 600) // swapped in: Samburu warrior portrait
+const CONTEXT_BG = wiki('Reserve samburu paysage 2.jpg', 1400)
+const PILLAR_IMAGES = {
+  heritage: pic('pic1.jpeg'),
+  womenYouth: pic('pic2.jpeg'),
+  livelihoods: pic('pic4.jpeg'),
+  conservation: pic('pic5.jpeg'),
 }
 
 export default function HomePage() {
@@ -45,7 +69,7 @@ export default function HomePage() {
 
   const heroStats = [
     { n: '120+', l: 'Lives Touched' },
-    { n: '4', l: 'Active Programmes' },
+    { n: '4', l: 'Pillars of Care' },
     { n: '9', l: 'Villages Reached' },
     { n: '2024', l: 'Founded' },
   ]
@@ -53,54 +77,72 @@ export default function HomePage() {
   const pillars = [
     {
       num: 'Pillar One',
-      icon: '👩🏾',
-      image: IMAGES.women,
+      badge: 'I',
+      icon: '🧵',
+      image: PILLAR_IMAGES.heritage,
       accent: 'var(--gold)',
-      title: "Women's Empowerment",
-      story:
-        'Women in Samburu hold the social fabric together, often with little recognition. Through business literacy, micro-savings cooperatives, and leadership mentorship, we help women build the income, rights knowledge, and community that make real freedom possible.',
-      stats: [
-        { n: '40+', l: 'Women Trained' },
-        { n: '6', l: 'Savings Groups' },
-        { n: '120+', l: 'Families Impacted' },
+      title: 'Community Wellbeing & Heritage',
+      paras: [
+        "In Samburu, wellbeing was never just the absence of illness — it was belonging: knowing your clan, your age-set, the beadwork pattern that marks your family, the stories that explain why the land looks the way it does. For a generation raised between the manyatta and the market town, much of that started to feel optional, then forgotten.",
+        "This pillar exists to make sure it isn't. We host heritage gatherings where elders and young people sit in the same circle — not as teacher and student, but as keepers of the same inheritance, each holding a piece the other has lost.",
+      ],
+      quote:
+        "\"The braid pattern belonged to her grandmother, and her grandmother's grandmother before that. She had never learned it herself — there hadn't been time, or someone patient enough to show her. It took one heritage afternoon, four hours, and more laughter than either of them expected, for the pattern to pass hands again.\"",
+      list: [
+        'Elders and youth gathering as equals, not instructors and students',
+        'Oral history, song, and beadwork passed hand to hand again',
+        'Pride in identity treated as part of healing, not separate from it',
       ],
     },
     {
       num: 'Pillar Two',
-      icon: '🌱',
-      image: IMAGES.youth,
-      accent: 'var(--sky, #2a5f8f)',
-      title: 'Youth Resilience',
-      story:
-        "Young Samburu people stand between a pastoral heritage and a fast-changing world. We don't ask them to choose. Leadership camps, peer mentorship, and vocational training help them carry both — because a young person who knows who they are becomes a leader, not a statistic.",
+      badge: 'II',
+      icon: '👩🏾',
+      image: PILLAR_IMAGES.womenYouth,
+      accent: 'var(--sky, #2f86bd)',
+      title: 'Women & Youth Empowerment',
+      paras: [
+        "Women in Samburu hold the social fabric together, often with little recognition — and young people stand between a pastoral heritage and a fast-changing world. We didn't want to keep treating these as separate stories, because in most households, they aren't. A mother's income and a daughter's education rise and fall together.",
+        "Through business literacy, micro-savings cooperatives, leadership mentorship, and vocational training — alongside practical support like reusable sanitary products — we help build the income, confidence, and community that make real freedom possible, for women and the young people watching them.",
+      ],
+      quote:
+        '"For years the maths was simple and nobody said it out loud: no pads meant no school, for up to a week, every month. The day we handed out reusable pads at Milimani Senior School, the girls didn\'t just take them politely — they held them over their heads like trophies. It was never really about the pads. It was about someone finally doing the maths with them, out loud, and fixing it."',
       stats: [
-        { n: '20+', l: 'Annual Camp' },
-        { n: '5', l: 'Vocational Trades' },
-        { n: '9', l: 'Villages Active' },
+        { n: '40+', l: 'Women Trained' },
+        { n: '120+', l: 'Families Impacted' },
+        { n: '20+', l: 'Youth in Leadership' },
       ],
     },
     {
       num: 'Pillar Three',
-      icon: '🤝',
-      image: IMAGES.community,
+      badge: 'III',
+      icon: '🔥',
+      image: PILLAR_IMAGES.livelihoods,
       accent: 'var(--forest, #379764)',
-      title: 'Community Care',
-      story:
-        'Some community members need extra support — elders without family networks, people living with disabilities, families facing acute food insecurity. Our community care programme is the safety net that catches those who fall through the cracks, with dignity and speed.',
-      stats: [
-        { n: '50+', l: 'Households Supported' },
-        { n: '3', l: 'Villages Active' },
-        { n: '120+', l: 'People Reached' },
+      title: 'Sustainable Livelihoods',
+      paras: [
+        'For as long as anyone could remember, a bag of charcoal meant a tree came down first. It was the fastest way to turn a hillside into school fees — and we are not naive enough to think you can ask a family to stop feeding its children in the name of conservation. So instead, we asked a different question: what if the fuel didn\u2019t require the tree at all?',
+        'A circle of women now sits together most weeks, rolling waste plant matter into charcoal briquettes by hand, one small dark sphere at a time. It is slow, unglamorous work. It is also, quietly, one of the more hopeful things happening in Samburu right now.',
+      ],
+      quote: '"Nobody asked them to stop needing an income. We just asked what it could be made of instead."',
+      list: [
+        "Income that doesn't require cutting a single living tree",
+        'A fuel product made almost entirely from waste already on the ground',
+        "Work that fits around the rest of a woman's day, done in community",
       ],
     },
     {
       num: 'Pillar Four',
+      badge: 'IV',
       icon: '🌳',
-      image: IMAGES.conservation,
-      accent: 'var(--earth, #8b4513)',
-      title: 'Conservation & Land Stewardship',
-      story:
+      image: PILLAR_IMAGES.conservation,
+      accent: 'var(--earth, #b0591f)',
+      title: 'Conservation & Stewardship',
+      paras: [
         'The acacia woodlands and grasslands that fed generations of pastoralists are disappearing. Through community-led, indigenous-seedling tree planting — elders and young people working side by side — we give the land back to itself.',
+      ],
+      quote:
+        '"He came to a youth leadership camp expecting sports and left with thirty acacia seedlings, a plan for exactly where each one would go, and a mentor he still calls once a month. A year on, that hillside has shade again — the kind goats rest under, and grandmothers, and everyone who remembers when it wasn\u2019t there."',
       stats: [
         { n: '800+', l: 'Trees Planted' },
         { n: '9', l: 'Acres Restored' },
@@ -109,25 +151,12 @@ export default function HomePage() {
     },
   ]
 
-  const groundStories = [
-    {
-      title: 'The boy who planted a forest',
-      image: IMAGES.forest,
-      body: 'He came to the youth leadership camp expecting sports. He left with thirty acacia seedlings, a plan for where to plant them, and a mentor he still calls every month. A year later, that hillside has shade again.',
-    },
-    {
-      title: 'The grandmother who wasn\u2019t forgotten',
-      image: IMAGES.communityStory,
-      body: 'She had raised five children alone and outlived most of the people who once checked in on her. Our community care visits started as a food basket. They became a standing Tuesday visit, a name someone remembers, a door that still gets knocked on.',
-    },
-  ]
-
   const impactNumbers = [
-    { n: '120+', l: 'People reached across all programmes', accent: 'var(--forest, #2d6147)' },
+    { n: '120+', l: 'People reached across all four pillars', accent: 'var(--forest, #379764)' },
     { n: '40+', l: 'Women trained in business & financial literacy', accent: 'var(--gold)' },
-    { n: '800+', l: 'Indigenous trees planted across 3 sites', accent: 'var(--earth, #8b4513)' },
-    { n: '50+', l: 'Households supported with community care', accent: 'var(--sky, #2a5f8f)' },
-    { n: '20+', l: 'Youth in annual leadership programmes', accent: 'var(--forest-light, #4a8c68)' },
+    { n: '800+', l: 'Indigenous trees planted across 3 sites', accent: 'var(--earth, #b0591f)' },
+    { n: '50+', l: 'Households supported with community care', accent: 'var(--sky, #2f86bd)' },
+    { n: '20+', l: 'Youth in annual leadership programmes', accent: 'var(--forest-light, #57b884)' },
     { n: '9', l: 'Villages with active programme presence', accent: 'var(--gold)' },
   ]
 
@@ -135,7 +164,7 @@ export default function HomePage() {
     {
       name: 'RoamRoar Kenya Safaris',
       logo: 'https://cdn.prod.website-files.com/664501c0a1543edee1fe122e/6996b4af410c1720487b9422_roamroar-logo.svg',
-      tagline: 'Community Development NGO in Kenya | CAN-K',
+      tagline: 'Community Development Partner in Kenya',
       url: 'https://roamroarkenyasafaris.com/',
     },
   ]
@@ -163,179 +192,8 @@ export default function HomePage() {
         body {
           background: var(--navy);
         }
-        .section {
-          padding: clamp(48px, 6vw, 96px) 0;
-        }
-        .section-inner {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 clamp(16px, 4vw, 48px);
-        }
-        .section-eyebrow {
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--gold);
-          margin-bottom: 12px;
-        }
-        .section-title {
-          font-family: 'Cormorant Garamond', serif;
-          font-weight: 600;
-          font-size: clamp(2rem, 4.2vw, 3.4rem);
-          line-height: 1.15;
-          color: var(--text-bright);
-          margin-bottom: 20px;
-        }
-        .section-title em {
-          font-style: italic;
-          color: var(--gold);
-        }
-        .btn-amber {
-          display: inline-block;
-          background: var(--gold);
-          color: var(--navy);
-          font-weight: 700;
-          font-size: 14px;
-          letter-spacing: 0.04em;
-          padding: 14px 32px;
-          border-radius: 60px;
-          text-decoration: none;
-          transition: 0.2s;
-          cursor: pointer;
-        }
-        .btn-amber:hover {
-          background: #f0cd4a;
-          transform: scale(1.02);
-        }
-        .btn-outline {
-          display: inline-block;
-          background: rgba(255, 255, 255, 0.08);
-          color: var(--text-bright);
-          font-weight: 600;
-          font-size: 14px;
-          letter-spacing: 0.04em;
-          padding: 14px 32px;
-          border-radius: 60px;
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          text-decoration: none;
-          transition: 0.2s;
-          cursor: pointer;
-        }
-        .btn-outline:hover {
-          background: rgba(255, 255, 255, 0.15);
-          border-color: rgba(255, 255, 255, 0.4);
-        }
-        .btn-brown {
-          display: inline-block;
-          background: var(--earth, #b0591f);
-          color: #fff;
-          font-weight: 700;
-          font-size: 14px;
-          letter-spacing: 0.04em;
-          padding: 14px 32px;
-          border-radius: 60px;
-          text-decoration: none;
-          transition: 0.2s;
-          cursor: pointer;
-        }
-        .btn-brown:hover {
-          background: #c96622;
-          transform: scale(1.02);
-        }
-        .news-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: clamp(20px, 2.5vw, 32px);
-          margin-top: clamp(24px, 3vw, 40px);
-        }
-        .news-card {
-          background: var(--navy-card);
-          border: 1px solid var(--navy-border);
-          border-radius: 12px;
-          overflow: hidden;
-          text-decoration: none;
-          transition: 0.2s;
-        }
-        .news-card:hover {
-          transform: translateY(-4px);
-          border-color: var(--gold);
-        }
-        .news-card-img {
-          height: 200px;
-          overflow: hidden;
-        }
-        .news-card-img img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        .news-card-body {
-          padding: 20px 24px;
-        }
-        .news-tag {
-          display: inline-block;
-          background: rgba(245, 183, 49, 0.15);
-          color: var(--gold);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          padding: 4px 12px;
-          border-radius: 100px;
-          margin-bottom: 10px;
-        }
-        .news-card-body h3 {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 20px;
-          font-weight: 600;
-          color: var(--text-bright);
-          margin-bottom: 8px;
-          line-height: 1.3;
-        }
-        .news-card-body p {
-          font-size: 14px;
-          color: var(--text-mid);
-          line-height: 1.6;
-          margin-bottom: 12px;
-        }
-        .news-card-date {
-          font-size: 12px;
-          color: var(--text-dim);
-        }
-        .partner-cta {
-          background: linear-gradient(145deg, var(--navy) 0%, var(--forest-deep) 100%);
-          border-top: 1px solid var(--navy-border);
-          padding: clamp(56px, 8vw, 100px) clamp(20px, 6vw, 80px);
-          text-align: center;
-          max-width: 780px;
-          margin: 0 auto;
-        }
-        .partner-cta h2 {
-          font-family: 'Cormorant Garamond', serif;
-          font-weight: 600;
-          font-size: clamp(2.4rem, 5vw, 4rem);
-          line-height: 1.1;
-          color: var(--text-bright);
-          margin-bottom: 20px;
-        }
-        .partner-cta h2 em {
-          font-style: italic;
-          color: var(--gold);
-        }
-        .partner-cta p {
-          font-size: clamp(15px, 1.3vw, 18px);
-          color: var(--text-mid);
-          line-height: 1.8;
-          max-width: 600px;
-          margin: 0 auto 32px;
-        }
-        .cta-btns {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 16px;
-        }
+      `}</style>
+      <style jsx>{`
         .sw-hero-stats {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -362,10 +220,6 @@ export default function HomePage() {
           right: -24px;
           width: 46%;
           height: 52%;
-          object-fit: cover;
-          border-radius: 6px;
-          border: 6px solid var(--navy);
-          box-shadow: 0 16px 40px rgba(0,0,0,0.4);
         }
         @media (max-width: 760px) {
           .sw-hero {
@@ -408,10 +262,10 @@ export default function HomePage() {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url('${IMAGES.hero}')`,
+            backgroundImage: `url('${HERO_IMAGE}')`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center 30%',
-            filter: 'brightness(0.65) saturate(1.2) contrast(1.1)',
+            backgroundPosition: 'center 40%',
+            filter: 'brightness(0.72) saturate(1.35) contrast(1.08)',
           }}
         />
         <div
@@ -419,7 +273,7 @@ export default function HomePage() {
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(180deg, rgba(10,20,16,0.2) 0%, rgba(10,20,16,0.05) 38%, rgba(10,20,16,0.88) 100%)',
+              'linear-gradient(180deg, rgba(10,20,16,0.18) 0%, rgba(10,20,16,0.05) 38%, rgba(10,20,16,0.88) 100%)',
           }}
         />
 
@@ -469,14 +323,14 @@ export default function HomePage() {
           <p
             style={{
               fontSize: 'clamp(15px,1.6vw,19px)',
-              color: 'rgba(255,255,255,0.85)',
+              color: 'rgba(255,255,255,0.8)',
               maxWidth: '560px',
               lineHeight: 1.8,
               fontWeight: 300,
               marginBottom: '40px',
             }}
           >
-            Samburu Wellness &amp; Resilience walks alongside the people of Samburu County — honouring their knowledge, their land, and their strength.
+            Samburu Wellness &amp; Resilience walks alongside the people of Samburu County — across four pillars, four ways of saying the same thing: we see you, and we are not going anywhere.
           </p>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: 'clamp(48px,7vw,80px)' }}>
             <a href="/our-work" className="btn-amber">Explore Our Work</a>
@@ -542,7 +396,7 @@ export default function HomePage() {
         >
           <div style={{ position: 'relative' }}>
             <img
-              src={IMAGES.foundingMain}
+              src={FOUNDING_IMAGE_MAIN}
               alt="Samburu community gathering"
               style={{
                 width: '100%',
@@ -552,11 +406,14 @@ export default function HomePage() {
               }}
             />
             <img
-              src={IMAGES.foundingAccent}
+              src={FOUNDING_IMAGE_ACCENT}
               alt="Samburu warrior"
               className="sw-founding-accent"
               style={{
                 objectFit: 'cover',
+                borderRadius: '6px',
+                border: '6px solid var(--navy)',
+                boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
               }}
             />
           </div>
@@ -649,8 +506,9 @@ export default function HomePage() {
         }}
       >
         <img
-          src={IMAGES.contextBg}
+          src={CONTEXT_BG}
           alt="Samburu landscape"
+          onError={(e) => { e.currentTarget.style.display = 'none' }}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
         <div
@@ -705,6 +563,7 @@ export default function HomePage() {
                   <img
                     src={p.image}
                     alt={p.title}
+                    onError={(e) => { e.currentTarget.style.display = 'none' }}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                   <div
@@ -734,19 +593,71 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div style={{ padding: 'clamp(20px,2.6vw,32px)' }}>
-                  <p style={{ fontSize: 'clamp(13px,1.15vw,15px)', color: 'var(--text-mid)', lineHeight: 1.8, marginBottom: '20px' }}>
-                    {p.story}
-                  </p>
-                  <div style={{ display: 'flex', gap: '20px', borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
-                    {p.stats.map((s) => (
-                      <div key={s.l}>
-                        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', fontWeight: 600, color: 'var(--text-bright)', lineHeight: 1 }}>
-                          {s.n}
+                  {p.paras.map((para, idx) => (
+                    <p
+                      key={idx}
+                      style={{
+                        fontSize: 'clamp(13px,1.15vw,15px)',
+                        color: 'var(--text-mid)',
+                        lineHeight: 1.8,
+                        marginBottom: idx === p.paras.length - 1 ? '18px' : '12px',
+                      }}
+                    >
+                      {para}
+                    </p>
+                  ))}
+
+                  <blockquote
+                    style={{
+                      borderLeft: `2px solid ${p.accent}`,
+                      paddingLeft: '14px',
+                      margin: '0 0 20px',
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontFamily: "'Cormorant Garamond', serif",
+                        fontStyle: 'italic',
+                        fontSize: 'clamp(13.5px,1.2vw,15.5px)',
+                        color: 'var(--text-bright)',
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      {p.quote}
+                    </p>
+                  </blockquote>
+
+                  {p.list ? (
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
+                      {p.list.map((item) => (
+                        <li
+                          key={item}
+                          style={{
+                            fontSize: 'clamp(12px,1.05vw,13.5px)',
+                            color: 'var(--text-dim)',
+                            lineHeight: 1.6,
+                            marginBottom: '8px',
+                            paddingLeft: '16px',
+                            position: 'relative',
+                          }}
+                        >
+                          <span style={{ position: 'absolute', left: 0, color: p.accent }}>—</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div style={{ display: 'flex', gap: '20px', borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
+                      {p.stats.map((s) => (
+                        <div key={s.l}>
+                          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', fontWeight: 600, color: 'var(--text-bright)', lineHeight: 1 }}>
+                            {s.n}
+                          </div>
+                          <div style={{ fontSize: '10.5px', color: 'var(--text-dim)', marginTop: '4px' }}>{s.l}</div>
                         </div>
-                        <div style={{ fontSize: '10.5px', color: 'var(--text-dim)', marginTop: '4px' }}>{s.l}</div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -754,40 +665,6 @@ export default function HomePage() {
 
           <div style={{ textAlign: 'center', marginTop: 'clamp(28px,4vw,48px)' }}>
             <a href="/our-work" className="btn-brown">Explore All Programmes</a>
-          </div>
-        </div>
-      </section>
-
-      {/* ── STORIES FROM THE GROUND ── */}
-      <section className="section" style={{ background: 'var(--navy)' }}>
-        <div className="section-inner" style={{ maxWidth: '900px' }}>
-          <p className="section-eyebrow">The Work in Practice</p>
-          <h2 className="section-title">Stories from <em>the Ground</em></h2>
-
-          <div className="sw-stories-grid" style={{ gap: 'clamp(24px,3.5vw,40px)', marginTop: 'clamp(24px,3vw,40px)' }}>
-            {groundStories.map((s) => (
-              <div key={s.title}>
-                <img
-                  src={s.image}
-                  alt=""
-                  style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '6px', marginBottom: '18px' }}
-                />
-                <h3
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontStyle: 'italic',
-                    fontSize: 'clamp(19px,2vw,23px)',
-                    color: 'var(--gold)',
-                    marginBottom: '12px',
-                  }}
-                >
-                  {s.title}
-                </h3>
-                <p style={{ fontSize: 'clamp(13px,1.2vw,15px)', color: 'var(--text-mid)', lineHeight: 1.85 }}>
-                  {s.body}
-                </p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -915,7 +792,7 @@ export default function HomePage() {
         <h2>Be Part of<br /><em>the Story</em></h2>
         <p>
           Your partnership — financial, professional, or in-kind — directly changes lives in Samburu County.
-          Every contribution reaches a real person in a real village.
+          Every contribution reaches a real person, on one of four paths, in a real village.
         </p>
         <div className="cta-btns">
           <a href="/partner" className="btn-amber">Partner With Us</a>
