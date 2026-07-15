@@ -2,55 +2,12 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
-/*
-  HOMEPAGE — story-led redesign
-  ------------------------------------------------------------
-  Palette: keeps your existing navy + gold system and adds a
-  forest-green accent (inspired by the acacia/land-restoration
-  story). All new colors use var(--x, fallback) so this works
-  even before you add them to your theme file — but for best
-  results add these to your global CSS :root alongside your
-  existing --navy / --gold variables:
-
-    --forest: #2d6147;
-    --forest-light: #4a8c68;
-    --forest-deep: #16331f;
-    --earth: #8b4513;
-    --sky: #2a5f8f;
-
-  IMAGES — this version loads specific named files straight out
-  of your 'photos' Supabase Storage bucket instead of "whatever's
-  next in the list":
-
-    HERO SLIDESHOW  → slideshow1.jpeg, slideshow2.jpeg, ...
-                       (probes up to slideshow6.jpeg — just upload
-                       slideshow3.jpeg / slideshow4.jpeg whenever
-                       you're ready and they'll show up automatically,
-                       no code changes needed)
-    FOUNDING STORY  → head1.jpeg, head2.jpeg
-    PILLAR I        → wellbeing.jpeg     (Community Wellbeing & Heritage)
-    PILLAR II       → women.jpeg         (Women & Youth Empowerment)
-    PILLAR III      → suistanable.jpeg   (Sustainable Livelihoods)
-    PILLAR IV       → conservation.jpeg  (Conservation & Stewardship)
-
-  Every one of these silently falls back to a real, verified
-  Wikimedia Commons photo (public domain / CC-licensed, hotlink-safe
-  via Special:FilePath) if the named file isn't in your bucket yet —
-  so the page never shows a broken image while you're still
-  uploading. Swap them all for your own field photography whenever
-  you like. A couple require attribution under their CC BY-SA
-  license; keep the credit line in the footer note until replaced.
-------------------------------------------------------------- */
-
 const wiki = (filename, width = 800) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`
 
 const SUPABASE_BUCKET = 'photos'
 const bucketUrl = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
 
-// How many slideshow slots to probe for. Bump this up if you ever
-// plan to go past 6 hero photos — otherwise leave it as is and just
-// upload slideshow3.jpeg / slideshow4.jpeg whenever they're ready.
 const SLIDESHOW_MAX = 6
 
 const FALLBACK_HERO = wiki('Reserve samburu paysage 2.jpg', 1600)
@@ -64,9 +21,6 @@ const FALLBACK_PILLARS = {
   conservation: wiki('200812 kenya 7 (3197992047).jpg', 700),
 }
 
-// Small helper: preload an image, resolve true/false depending on
-// whether it actually exists — used to build the hero slideshow and
-// to fall back gracefully per-pillar without ever showing a broken img.
 function probeImage(url) {
   return new Promise((resolve) => {
     const img = new window.Image()
@@ -79,11 +33,9 @@ function probeImage(url) {
 export default function HomePage() {
   const [news, setNews] = useState([])
 
-  // Hero slideshow
   const [slides, setSlides] = useState([])
   const [slideIndex, setSlideIndex] = useState(0)
 
-  // Named single images, each with its own found/not-found state
   const [headMain, setHeadMain] = useState(null)
   const [headAccent, setHeadAccent] = useState(null)
   const [pillarImgs, setPillarImgs] = useState({
@@ -93,7 +45,6 @@ export default function HomePage() {
     conservation: null,
   })
 
-  // ── Build hero slideshow from slideshow1.jpeg, slideshow2.jpeg, ... ──
   useEffect(() => {
     async function buildSlideshow() {
       const candidates = Array.from({ length: SLIDESHOW_MAX }, (_, i) => `slideshow${i + 1}.jpeg`)
@@ -104,7 +55,6 @@ export default function HomePage() {
     buildSlideshow()
   }, [])
 
-  // Auto-advance the slideshow every 6s (no-op if there's only one slide)
   useEffect(() => {
     if (slides.length < 2) return
     const t = setInterval(() => {
@@ -113,7 +63,6 @@ export default function HomePage() {
     return () => clearInterval(t)
   }, [slides])
 
-  // ── Founding story photos: head1.jpeg / head2.jpeg ──
   useEffect(() => {
     async function loadHeadImages() {
       const [mainOk, accentOk] = await Promise.all([
@@ -126,7 +75,6 @@ export default function HomePage() {
     loadHeadImages()
   }, [])
 
-  // ── Pillar photos, one named file per pillar ──
   useEffect(() => {
     async function loadPillarImages() {
       const map = {
@@ -354,7 +302,6 @@ export default function HomePage() {
           background: var(--gold);
         }
 
-        /* ── Tablet ── */
         @media (max-width: 980px) {
           .sw-pillar-row {
             grid-template-columns: 1fr;
@@ -364,7 +311,6 @@ export default function HomePage() {
           }
         }
 
-        /* ── Phone ── */
         @media (max-width: 760px) {
           .sw-hero {
             min-height: 82vh !important;
@@ -390,7 +336,6 @@ export default function HomePage() {
           }
         }
 
-        /* ── Small phone ── */
         @media (max-width: 420px) {
           .sw-hero-stats {
             grid-template-columns: repeat(2, 1fr);
@@ -398,7 +343,6 @@ export default function HomePage() {
         }
       `}</style>
 
-      {/* ── HERO ── */}
       <section
         className="sw-hero"
         style={{
@@ -410,7 +354,6 @@ export default function HomePage() {
           overflow: 'hidden',
         }}
       >
-        {/* Slideshow layers — cross-fades between slideshow1.jpeg, slideshow2.jpeg, etc. */}
         {slides.map((url, i) => (
           <div
             key={url}
@@ -501,7 +444,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* hero stat strip */}
         <div
           className="sw-hero-stats"
           style={{
@@ -548,7 +490,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FOUNDING STORY ── */}
       <section className="section" style={{ background: 'var(--navy)' }}>
         <div
           className="section-inner sw-founding-grid"
@@ -620,7 +561,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CONTEXT BAND ── */}
       <section
         style={{
           background: 'linear-gradient(120deg, var(--navy-mid) 0%, var(--steel) 55%, var(--navy-mid) 100%)',
@@ -658,7 +598,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CINEMATIC MOMENT ── */}
       <section
         style={{
           position: 'relative',
@@ -701,7 +640,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FOUR PILLARS ── */}
       <section className="section" style={{ background: 'var(--navy-card)' }}>
         <div className="section-inner">
           <p className="section-eyebrow">What We Do</p>
@@ -713,7 +651,6 @@ export default function HomePage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(40px,5.5vw,72px)' }}>
             {pillars.map((p, i) => (
               <div key={p.num} className="sw-pillar-row">
-                {/* IMAGE */}
                 <div
                   style={{
                     order: i % 2 !== 0 ? 2 : 1,
@@ -757,7 +694,6 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* TEXT */}
                 <div
                   style={{
                     order: i % 2 !== 0 ? 1 : 2,
@@ -847,7 +783,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── IMPACT NUMBERS ── */}
       <section className="section" style={{ background: 'var(--navy-card)' }}>
         <div className="section-inner" style={{ maxWidth: '1000px' }}>
           <p className="section-eyebrow">Impact in Numbers</p>
@@ -887,7 +822,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── NEWS / STORIES (dynamic) ── */}
       {news.length > 0 && (
         <section className="section" style={{ background: 'var(--navy)' }}>
           <div className="section-inner">
@@ -921,7 +855,6 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* ── OUR PARTNERS (teaser) ── */}
       <section className="section" style={{ background: 'var(--navy-card)' }}>
         <div className="section-inner">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: 'clamp(24px,3vw,40px)' }}>
@@ -965,7 +898,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FINAL CTA ── */}
       <section className="partner-cta">
         <h2>Be Part of<br /><em>the Story</em></h2>
         <p>
