@@ -56,6 +56,16 @@ const FALLBACK_PILLARS = [
 export default function HomePage() {
   const [news, setNews] = useState([])
   const [bucketPhotos, setBucketPhotos] = useState([])
+  const [heroFailed, setHeroFailed] = useState(false)
+
+  useEffect(() => {
+    // background-image can't use onError, so preload pic3 to detect
+    // a missing/broken file and fall back to the placeholder instead
+    // of showing a blank hero.
+    const img = new window.Image()
+    img.onerror = () => setHeroFailed(true)
+    img.src = bucketUrl('pic3.jpeg')
+  }, [])
 
   useEffect(() => {
     async function fetchBucketPhotos() {
@@ -73,12 +83,12 @@ export default function HomePage() {
 
   // hero uses the first bucket photo; pillars use the next four —
   // falls back to the Wikimedia placeholders if the bucket is empty
-  const HERO_IMAGE = bucketPhotos[0] || FALLBACK_HERO
+  const HERO_IMAGE = heroFailed ? FALLBACK_HERO : bucketUrl('pic3.jpeg') // always this exact file, not the dynamic list
   const PILLAR_IMAGES = {
-    heritage: bucketPhotos[1] || FALLBACK_PILLARS[0],
-    womenYouth: bucketPhotos[2] || FALLBACK_PILLARS[1],
-    livelihoods: bucketPhotos[3] || FALLBACK_PILLARS[2],
-    conservation: bucketPhotos[4] || FALLBACK_PILLARS[3],
+    heritage: bucketPhotos[0] || FALLBACK_PILLARS[0],
+    womenYouth: bucketPhotos[1] || FALLBACK_PILLARS[1],
+    livelihoods: bucketPhotos[2] || FALLBACK_PILLARS[2],
+    conservation: bucketPhotos[3] || FALLBACK_PILLARS[3],
   }
 
   useEffect(() => {
@@ -237,10 +247,6 @@ export default function HomePage() {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
         }
-        .sw-stories-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-        }
         .sw-founding-accent {
           position: absolute;
           bottom: -32px;
@@ -248,9 +254,26 @@ export default function HomePage() {
           width: 46%;
           height: 52%;
         }
+        .sw-pillar-stats {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+        .sw-pillar-list li {
+          word-break: break-word;
+        }
+
+        /* ── Tablet ── */
+        @media (max-width: 980px) {
+          .sw-pillars-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        /* ── Phone ── */
         @media (max-width: 760px) {
           .sw-hero {
-            min-height: 78vh !important;
+            min-height: 82vh !important;
           }
           .sw-hero-stats {
             grid-template-columns: repeat(2, 1fr);
@@ -259,9 +282,7 @@ export default function HomePage() {
             border-right: none;
           }
           .sw-founding-grid,
-          .sw-context-grid,
-          .sw-pillars-grid,
-          .sw-stories-grid {
+          .sw-context-grid {
             grid-template-columns: 1fr !important;
           }
           .sw-founding-accent {
@@ -269,6 +290,16 @@ export default function HomePage() {
             width: 100%;
             height: clamp(180px, 50vw, 260px);
             margin-top: 12px;
+          }
+          .sw-pillar-stats {
+            gap: 14px 24px;
+          }
+        }
+
+        /* ── Small phone ── */
+        @media (max-width: 420px) {
+          .sw-hero-stats {
+            grid-template-columns: repeat(2, 1fr);
           }
         }
       `}</style>
@@ -655,7 +686,7 @@ export default function HomePage() {
                   </blockquote>
 
                   {p.list ? (
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
+                    <ul className="sw-pillar-list" style={{ listStyle: 'none', padding: 0, margin: 0, borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
                       {p.list.map((item) => (
                         <li
                           key={item}
@@ -674,7 +705,7 @@ export default function HomePage() {
                       ))}
                     </ul>
                   ) : (
-                    <div style={{ display: 'flex', gap: '20px', borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
+                    <div className="sw-pillar-stats" style={{ borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
                       {p.stats.map((s) => (
                         <div key={s.l}>
                           <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', fontWeight: 600, color: 'var(--text-bright)', lineHeight: 1 }}>
