@@ -32,27 +32,54 @@ import { supabase } from '@/lib/supabase'
 const wiki = (filename, width = 800) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`
 
-// Supabase-hosted images — upload your photos to a Storage bucket
-// and name the files pic1.jpg through pic10.jpg (or update the
-// extension below to match what you actually upload, e.g. .png).
-// CONFIRM the bucket name below matches your Supabase Storage bucket —
-// 'site-images' is a placeholder; change it if yours is named differently.
+// Supabase-hosted images — instead of hardcoded filenames, this now
+// LISTS everything in your 'photos' Storage bucket and uses whatever
+// is actually in there, in whatever order Supabase returns them.
+// Upload as many photos as you like, named anything — no more pic1,
+// pic2 naming needed. First photo found → hero, next four → pillars.
 const SUPABASE_BUCKET = 'photos'
-const pic = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
+const bucketUrl = (name) => supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(name).data.publicUrl
 
-const HERO_IMAGE = pic('pic3.jpeg') // hero background — your pic3
 const FOUNDING_IMAGE_MAIN = wiki('DSC00423-SAMBURU MORAN LIFESTYLE.jpg', 900) // kept intact
 const FOUNDING_IMAGE_ACCENT = wiki('Young Samburu male.jpg', 600) // swapped in: Samburu warrior portrait
 const CONTEXT_BG = wiki('Reserve samburu paysage 2.jpg', 1400)
-const PILLAR_IMAGES = {
-  heritage: pic('pic1.jpeg'),
-  womenYouth: pic('pic2.jpeg'),
-  livelihoods: pic('pic4.jpeg'),
-  conservation: pic('pic5.jpeg'),
-}
+// Fallbacks shown only until the bucket photos finish loading, or if
+// the bucket is empty / unreachable — never a broken image.
+const FALLBACK_HERO = wiki('Reserve samburu paysage 2.jpg', 1600)
+const FALLBACK_PILLARS = [
+  wiki('Northern Kenya.jpg', 700),
+  wiki('Landscapes of Kenya 04.jpg', 700),
+  wiki('The Samburu women are building a new hut.jpg', 700),
+  wiki('200812 kenya 7 (3197992047).jpg', 700),
+]
 
 export default function HomePage() {
   const [news, setNews] = useState([])
+  const [bucketPhotos, setBucketPhotos] = useState([])
+
+  useEffect(() => {
+    async function fetchBucketPhotos() {
+      const { data, error } = await supabase.storage.from(SUPABASE_BUCKET).list('', {
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' },
+      })
+      if (error || !data) return
+      const imageFiles = data.filter((f) => f.name && /\.(jpe?g|png|webp|gif)$/i.test(f.name))
+      const urls = imageFiles.map((f) => bucketUrl(f.name))
+      if (urls.length > 0) setBucketPhotos(urls)
+    }
+    fetchBucketPhotos()
+  }, [])
+
+  // hero uses the first bucket photo; pillars use the next four —
+  // falls back to the Wikimedia placeholders if the bucket is empty
+  const HERO_IMAGE = bucketPhotos[0] || FALLBACK_HERO
+  const PILLAR_IMAGES = {
+    heritage: bucketPhotos[1] || FALLBACK_PILLARS[0],
+    womenYouth: bucketPhotos[2] || FALLBACK_PILLARS[1],
+    livelihoods: bucketPhotos[3] || FALLBACK_PILLARS[2],
+    conservation: bucketPhotos[4] || FALLBACK_PILLARS[3],
+  }
 
   useEffect(() => {
     async function fetchNews() {
@@ -559,12 +586,12 @@ export default function HomePage() {
                   borderTop: `3px solid ${p.accent}`,
                 }}
               >
-                <div style={{ position: 'relative', height: '160px' }}>
+                <div style={{ position: 'relative', height: 'clamp(220px, 24vw, 280px)' }}>
                   <img
                     src={p.image}
                     alt={p.title}
                     onError={(e) => { e.currentTarget.style.display = 'none' }}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
                   />
                   <div
                     style={{
