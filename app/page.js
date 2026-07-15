@@ -247,9 +247,11 @@ export default function HomePage() {
           display: grid;
           grid-template-columns: 1fr 2fr;
         }
-        .sw-pillars-grid {
+        .sw-pillar-row {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: 1fr 1fr;
+          gap: clamp(28px, 4vw, 48px);
+          align-items: stretch;
         }
         .sw-founding-accent {
           position: absolute;
@@ -269,8 +271,11 @@ export default function HomePage() {
 
         /* ── Tablet ── */
         @media (max-width: 980px) {
-          .sw-pillars-grid {
+          .sw-pillar-row {
             grid-template-columns: 1fr;
+          }
+          .sw-pillar-row > div {
+            order: unset !important;
           }
         }
 
@@ -605,38 +610,38 @@ export default function HomePage() {
         <div className="section-inner">
           <p className="section-eyebrow">What We Do</p>
           <h2 className="section-title">Four Pillars of<br /><em>Community Transformation</em></h2>
-          <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-dim)', maxWidth: '620px', lineHeight: 1.8, marginBottom: 'clamp(28px,4vw,48px)' }}>
+          <p style={{ fontSize: 'clamp(14px,1.3vw,16px)', color: 'var(--text-dim)', maxWidth: '620px', lineHeight: 1.8, marginBottom: 'clamp(32px,4.5vw,56px)' }}>
             Each pillar is rooted in what Samburu people themselves said they needed most — not in an imported model.
           </p>
 
-          <div className="sw-pillars-grid" style={{ gap: 'clamp(16px,2.2vw,24px)' }}>
-            {pillars.map((p) => (
-              <div
-                key={p.num}
-                style={{
-                  background: 'linear-gradient(165deg, var(--navy) 0%, rgba(55,151,100,0.22) 140%)',
-                  border: '1px solid var(--navy-border)',
-                  borderRadius: '10px',
-                  overflow: 'hidden',
-                  borderTop: `3px solid ${p.accent}`,
-                }}
-              >
-                <div style={{ position: 'relative', height: 'clamp(220px, 24vw, 280px)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(40px,5.5vw,72px)' }}>
+            {pillars.map((p, i) => (
+              <div key={p.num} className="sw-pillar-row">
+                {/* IMAGE */}
+                <div
+                  style={{
+                    order: i % 2 !== 0 ? 2 : 1,
+                    position: 'relative',
+                    minHeight: 'clamp(320px, 40vw, 460px)',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                  }}
+                >
                   <img
                     src={p.image}
                     alt={p.title}
                     onError={(e) => { e.currentTarget.style.display = 'none' }}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }}
                   />
                   <div
                     style={{
                       position: 'absolute',
                       inset: 0,
-                      background: 'linear-gradient(180deg, rgba(10,20,16,0.15) 0%, rgba(10,20,16,0.85) 100%)',
+                      background: 'linear-gradient(180deg, rgba(10,20,16,0.05) 0%, rgba(10,20,16,0.1) 55%, rgba(10,20,16,0.82) 100%)',
                     }}
                   />
-                  <div style={{ position: 'absolute', left: '20px', bottom: '14px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ fontSize: '26px', lineHeight: 1 }}>{p.icon}</span>
+                  <div style={{ position: 'absolute', left: '22px', bottom: '18px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+                    <span style={{ fontSize: '30px', lineHeight: 1 }}>{p.icon}</span>
                     <div>
                       <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: p.accent }}>
                         {p.num}
@@ -644,9 +649,10 @@ export default function HomePage() {
                       <h3
                         style={{
                           fontFamily: "'Cormorant Garamond', serif",
-                          fontSize: 'clamp(19px,2vw,23px)',
+                          fontSize: 'clamp(21px,2.4vw,27px)',
                           fontWeight: 600,
-                          color: 'var(--text-bright, #fff)',
+                          color: '#fff',
+                          textShadow: '0 2px 16px rgba(0,0,0,0.5)',
                         }}
                       >
                         {p.title}
@@ -654,15 +660,29 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-                <div style={{ padding: 'clamp(20px,2.6vw,32px)' }}>
+
+                {/* TEXT */}
+                <div
+                  style={{
+                    order: i % 2 !== 0 ? 1 : 2,
+                    background: 'linear-gradient(165deg, var(--navy) 0%, rgba(55,151,100,0.16) 150%)',
+                    border: '1px solid var(--navy-border)',
+                    borderRadius: '12px',
+                    borderTop: `3px solid ${p.accent}`,
+                    padding: 'clamp(24px,3vw,40px)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
                   {p.paras.map((para, idx) => (
                     <p
                       key={idx}
                       style={{
-                        fontSize: 'clamp(13px,1.15vw,15px)',
+                        fontSize: 'clamp(13.5px,1.2vw,15.5px)',
                         color: 'var(--text-mid)',
-                        lineHeight: 1.8,
-                        marginBottom: idx === p.paras.length - 1 ? '18px' : '12px',
+                        lineHeight: 1.85,
+                        marginBottom: idx === p.paras.length - 1 ? '20px' : '14px',
                       }}
                     >
                       {para}
@@ -672,15 +692,15 @@ export default function HomePage() {
                   <blockquote
                     style={{
                       borderLeft: `2px solid ${p.accent}`,
-                      paddingLeft: '14px',
-                      margin: '0 0 20px',
+                      paddingLeft: '16px',
+                      margin: '0 0 22px',
                     }}
                   >
                     <p
                       style={{
                         fontFamily: "'Cormorant Garamond', serif",
                         fontStyle: 'italic',
-                        fontSize: 'clamp(13.5px,1.2vw,15.5px)',
+                        fontSize: 'clamp(14.5px,1.3vw,17px)',
                         color: 'var(--text-bright)',
                         lineHeight: 1.7,
                       }}
@@ -690,16 +710,16 @@ export default function HomePage() {
                   </blockquote>
 
                   {p.list ? (
-                    <ul className="sw-pillar-list" style={{ listStyle: 'none', padding: 0, margin: 0, borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
+                    <ul className="sw-pillar-list" style={{ listStyle: 'none', padding: 0, margin: 0, borderTop: '1px solid var(--navy-border)', paddingTop: '18px' }}>
                       {p.list.map((item) => (
                         <li
                           key={item}
                           style={{
-                            fontSize: 'clamp(12px,1.05vw,13.5px)',
+                            fontSize: 'clamp(12.5px,1.1vw,14px)',
                             color: 'var(--text-dim)',
-                            lineHeight: 1.6,
-                            marginBottom: '8px',
-                            paddingLeft: '16px',
+                            lineHeight: 1.65,
+                            marginBottom: '9px',
+                            paddingLeft: '18px',
                             position: 'relative',
                           }}
                         >
@@ -709,13 +729,13 @@ export default function HomePage() {
                       ))}
                     </ul>
                   ) : (
-                    <div className="sw-pillar-stats" style={{ borderTop: '1px solid var(--navy-border)', paddingTop: '16px' }}>
+                    <div className="sw-pillar-stats" style={{ borderTop: '1px solid var(--navy-border)', paddingTop: '18px' }}>
                       {p.stats.map((s) => (
                         <div key={s.l}>
-                          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', fontWeight: 600, color: 'var(--text-bright)', lineHeight: 1 }}>
+                          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', fontWeight: 600, color: 'var(--text-bright)', lineHeight: 1 }}>
                             {s.n}
                           </div>
-                          <div style={{ fontSize: '10.5px', color: 'var(--text-dim)', marginTop: '4px' }}>{s.l}</div>
+                          <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '5px' }}>{s.l}</div>
                         </div>
                       ))}
                     </div>
