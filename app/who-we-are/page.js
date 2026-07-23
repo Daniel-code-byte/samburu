@@ -17,7 +17,7 @@ const TEAM_SLOTS = [
   },
   {
     slot: 3, pfpKey: 'man_9',
-    name: 'Jessica Namusu',
+    name: 'Jessica Namusu.',
     role: 'Co-Founder & Board Member',
     caption: 'Jessica Namusu is a Co Founder and Board member she is a legal professional with special interest in human rights, children\'s law, and International Humanitarian Law. Holding a Bachelor of Laws (LLB), her career is built on an in-depth knowledge of legal frameworks. Her commitment to social impact is reflected in her extensive work organizing events for social-economic empowerment.',
   },
