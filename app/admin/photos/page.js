@@ -7,8 +7,9 @@ export default function AdminPhotos() {
   const [dragging, setDragging] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [form, setForm] = useState({ title:'', caption:'', category:'Community' })
-  const [pending, setPending] = useState(null)
+  const [pending, setPending] = useState([]) // Changed to array
   const [msg, setMsg] = useState('')
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 })
   const fileRef = useRef()
 
   async function loadPhotos() {
@@ -21,28 +22,98 @@ export default function AdminPhotos() {
   function handleDrop(e) {
     e.preventDefault()
     setDragging(false)
-    const file = e.dataTransfer.files[0]
-    if (file && file.type.startsWith('image/')) setPending(file)
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'))
+    if (files.length > 0) {
+      setPending(prev => [...prev, ...files])
+      setMsg(`${files.length} photo(s) added to upload queue`)
+    }
   }
 
   function handleFileChange(e) {
-    const file = e.target.files[0]
-    if (file) setPending(file)
+    const files = Array.from(e.target.files).filter(file => file.type.startsWith('image/'))
+    if (files.length > 0) {
+      setPending(prev => [...prev, ...files])
+      setMsg(`${files.length} photo(s) added to upload queue`)
+    }
+    // Reset the input so the same file can be selected again
+    e.target.value = ''
+  }
+
+  function removePendingFile(index) {
+    setPending(prev => prev.filter((_, i) => i !== index))
+    if (pending.length === 1) setMsg('')
   }
 
   async function handleUpload() {
-    if (!pending) return
+    if (pending.length === 0) return
+    
     setUploading(true)
     setMsg('')
-    const { url, error: upErr } = await uploadPhoto(pending)
-    if (upErr || !url) { setMsg('Upload failed: ' + (upErr?.message || 'unknown error')); setUploading(false); return }
-    const { error: saveErr } = await savePhoto({ url, title: form.title, caption: form.caption, category: form.category })
-    if (saveErr) { setMsg('Save failed: ' + saveErr.message); setUploading(false); return }
-    setMsg('Photo uploaded successfully!')
-    setPending(null)
-    setForm({ title:'', caption:'', category:'Community' })
+    setUploadProgress({ current: 0, total: pending.length })
+    
+    let successCount = 0
+    let errorCount = 0
+    const errors = []
+
+    // Process each file sequentially
+    for (let i = 0; i < pending.length; i++) {
+      const file = pending[i]
+      
+      try {
+        // Generate a unique title for each photo if the form has no title
+        const photoTitle = form.title || file.name.replace(/\.[^/.]+$/, '')
+        const photoCaption = form.caption || ''
+        const photoCategory = form.category || 'Community'
+        
+        const { url, error: upErr } = await uploadPhoto(file)
+        if (upErr || !url) {
+          errorCount++
+          errors.push(`${file.name}: ${upErr?.message || 'Upload failed'}`)
+          setUploadProgress({ current: i + 1, total: pending.length })
+          continue
+        }
+        
+        const { error: saveErr } = await savePhoto({ 
+          url, 
+          title: photoTitle, 
+          caption: photoCaption, 
+          category: photoCategory 
+        })
+        
+        if (saveErr) {
+          errorCount++
+          errors.push(`${file.name}: ${saveErr.message}`)
+        } else {
+          successCount++
+        }
+        
+        setUploadProgress({ current: i + 1, total: pending.length })
+      } catch (err) {
+        errorCount++
+        errors.push(`${file.name}: ${err.message}`)
+        setUploadProgress({ current: i + 1, total: pending.length })
+      }
+    }
+
+    // Show final status
+    if (successCount > 0 && errorCount === 0) {
+      setMsg(`✅ Successfully uploaded ${successCount} photo(s)!`)
+    } else if (successCount > 0 && errorCount > 0) {
+      setMsg(`⚠️ ${successCount} uploaded, ${errorCount} failed. Check console for details.`)
+      console.error('Upload errors:', errors)
+    } else {
+      setMsg(`❌ All ${errorCount} upload(s) failed. Check console for details.`)
+      console.error('Upload errors:', errors)
+    }
+
+    // Reset state
+    setPending([])
+    setUploadProgress({ current: 0, total: 0 })
     setUploading(false)
     loadPhotos()
+    
+    // Optionally clear the form
+    setForm({ title:'', caption:'', category:'Community' })
   }
 
   async function handleDelete(id) {
@@ -50,6 +121,9 @@ export default function AdminPhotos() {
     await deletePhoto(id)
     loadPhotos()
   }
+
+  // Calculate total size
+  const totalSize = pending.reduce((acc, file) => acc + file.size, 0)
 
   return (
     <div>
@@ -60,7 +134,7 @@ export default function AdminPhotos() {
 
       {/* UPLOAD */}
       <div className="admin-card">
-        <h3 style={{fontFamily:'Playfair Display,serif',color:'var(--brown)',fontSize:'18px',marginBottom:'20px'}}>Upload New Photo</h3>
+        <h3 style={{fontFamily:'Playfair Display,serif',color:'var(--brown)',fontSize:'18px',marginBottom:'20px'}}>Upload New Photos</h3>
 
         <div
           className={`dropzone${dragging ? ' active' : ''}`}
@@ -69,46 +143,143 @@ export default function AdminPhotos() {
           onDrop={handleDrop}
           onClick={()=>fileRef.current.click()}
         >
-          {pending ? (
+          {pending.length > 0 ? (
             <div>
-              <p style={{color:'var(--brown)',fontWeight:600}}>📎 {pending.name}</p>
-              <p style={{fontSize:'13px',marginTop:'4px',color:'var(--text-light)'}}>Ready to upload · {(pending.size/1024/1024).toFixed(2)} MB</p>
+              <p style={{color:'var(--brown)',fontWeight:600}}>📎 {pending.length} photo(s) ready to upload</p>
+              <p style={{fontSize:'13px',marginTop:'4px',color:'var(--text-light)'}}>
+                Total: {(totalSize/1024/1024).toFixed(2)} MB
+              </p>
+              {uploading && (
+                <div style={{marginTop:'10px'}}>
+                  <div style={{background:'#f0f0f0',borderRadius:'4px',height:'6px',overflow:'hidden'}}>
+                    <div style={{
+                      background:'var(--amber)',
+                      height:'100%',
+                      width:`${(uploadProgress.current / uploadProgress.total) * 100}%`,
+                      transition:'width 0.3s'
+                    }}></div>
+                  </div>
+                  <p style={{fontSize:'12px',marginTop:'4px'}}>
+                    {uploadProgress.current} of {uploadProgress.total} uploaded
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <div>
               <p style={{fontSize:'36px',marginBottom:'8px'}}>📷</p>
-              <p><span>Click to browse</span> or drag & drop an image here</p>
-              <p style={{fontSize:'13px',color:'var(--text-light)',marginTop:'6px'}}>JPG, PNG, WebP up to 10MB</p>
+              <p><span>Click to browse</span> or drag & drop multiple images here</p>
+              <p style={{fontSize:'13px',color:'var(--text-light)',marginTop:'6px'}}>JPG, PNG, WebP up to 10MB each</p>
             </div>
           )}
-          <input ref={fileRef} type="file" accept="image/*" style={{display:'none'}} onChange={handleFileChange} />
+          <input 
+            ref={fileRef} 
+            type="file" 
+            accept="image/*" 
+            multiple // Added multiple attribute
+            style={{display:'none'}} 
+            onChange={handleFileChange} 
+          />
         </div>
 
-        {pending && (
-          <div style={{marginTop:'20px',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'16px',alignItems:'end'}}>
-            <div className="form-group" style={{marginBottom:0}}>
-              <label>Photo Title</label>
-              <input className="form-input" value={form.title} onChange={e=>setForm(p=>({...p,title:e.target.value}))} placeholder="e.g. Community Health Day" />
+        {pending.length > 0 && (
+          <>
+            {/* Pending files list */}
+            <div style={{marginTop:'16px'}}>
+              <p style={{fontSize:'14px',fontWeight:600,color:'var(--brown)',marginBottom:'8px'}}>
+                Files to upload:
+              </p>
+              <div style={{maxHeight:'150px',overflowY:'auto',border:'1px solid var(--sand)',borderRadius:'4px',padding:'8px'}}>
+                {pending.map((file, index) => (
+                  <div key={index} style={{
+                    display:'flex',
+                    justifyContent:'space-between',
+                    alignItems:'center',
+                    padding:'4px 8px',
+                    borderBottom:'1px solid #f0f0f0',
+                    fontSize:'13px'
+                  }}>
+                    <span>{file.name}</span>
+                    <span style={{fontSize:'11px',color:'var(--text-light)'}}>
+                      {(file.size/1024/1024).toFixed(2)} MB
+                      {!uploading && (
+                        <button 
+                          onClick={() => removePendingFile(index)}
+                          style={{
+                            marginLeft:'12px',
+                            background:'none',
+                            border:'none',
+                            color:'#c0392b',
+                            cursor:'pointer',
+                            fontSize:'14px'
+                          }}
+                        >✕</button>
+                      )}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="form-group" style={{marginBottom:0}}>
-              <label>Caption</label>
-              <input className="form-input" value={form.caption} onChange={e=>setForm(p=>({...p,caption:e.target.value}))} placeholder="Short description" />
-            </div>
-            <div className="form-group" style={{marginBottom:0}}>
-              <label>Category</label>
-              <select className="form-select" value={form.category} onChange={e=>setForm(p=>({...p,category:e.target.value}))}>
-                {['Health','Women','Youth','Community','Team'].map(c=><option key={c}>{c}</option>)}
-              </select>
-            </div>
-          </div>
-        )}
 
-        {pending && (
-          <div style={{marginTop:'20px',display:'flex',gap:'12px',alignItems:'center'}}>
-            <button className="btn-amber" onClick={handleUpload} disabled={uploading}>{uploading ? 'Uploading...' : 'Upload Photo'}</button>
-            <button className="btn-outline" onClick={()=>setPending(null)} disabled={uploading}>Cancel</button>
-            {msg && <p style={{fontSize:'14px',color: msg.includes('success') ? '#166534' : '#c0392b'}}>{msg}</p>}
-          </div>
+            {/* Form fields - now applied to all photos */}
+            <div style={{marginTop:'20px',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'16px',alignItems:'end'}}>
+              <div className="form-group" style={{marginBottom:0}}>
+                <label>Photo Title (applied to all)</label>
+                <input 
+                  className="form-input" 
+                  value={form.title} 
+                  onChange={e=>setForm(p=>({...p,title:e.target.value}))} 
+                  placeholder="e.g. Community Health Day" 
+                />
+              </div>
+              <div className="form-group" style={{marginBottom:0}}>
+                <label>Caption (applied to all)</label>
+                <input 
+                  className="form-input" 
+                  value={form.caption} 
+                  onChange={e=>setForm(p=>({...p,caption:e.target.value}))} 
+                  placeholder="Short description" 
+                />
+              </div>
+              <div className="form-group" style={{marginBottom:0}}>
+                <label>Category (applied to all)</label>
+                <select 
+                  className="form-select" 
+                  value={form.category} 
+                  onChange={e=>setForm(p=>({...p,category:e.target.value}))}
+                >
+                  {['Health','Women','Youth','Community','Team'].map(c=><option key={c}>{c}</option>)}
+                </select>
+              </div>
+            </div>
+
+            {/* Action buttons */}
+            <div style={{marginTop:'20px',display:'flex',gap:'12px',alignItems:'center'}}>
+              <button 
+                className="btn-amber" 
+                onClick={handleUpload} 
+                disabled={uploading || pending.length === 0}
+              >
+                {uploading ? `Uploading ${uploadProgress.current}/${uploadProgress.total}...` : `Upload ${pending.length} Photo(s)`}
+              </button>
+              <button 
+                className="btn-outline" 
+                onClick={() => {
+                  if (pending.length > 0 && !confirm('Clear all pending photos?')) return
+                  setPending([])
+                  setMsg('')
+                }} 
+                disabled={uploading}
+              >
+                Clear All
+              </button>
+              {msg && (
+                <p style={{fontSize:'14px',color: msg.includes('✅') ? '#166534' : msg.includes('⚠️') ? '#b45309' : '#c0392b'}}>
+                  {msg}
+                </p>
+              )}
+            </div>
+          </>
         )}
       </div>
 
