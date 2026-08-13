@@ -121,17 +121,15 @@ export default function HomePage() {
       icon: '🧵',
       image: pillarImgs.wellbeing || FALLBACK_PILLARS.wellbeing,
       accent: 'var(--gold)',
-      title: 'Community Wellbeing & Heritage',
+      title: 'Cultural Heritage & Identity',
+      tagline: 'Passing on more than tradition.',
       paras: [
-        "In Samburu, wellbeing was never just the absence of illness — it was belonging: knowing your clan, your age-set, the beadwork pattern that marks your family, the stories that explain why the land looks the way it does. For a generation raised between the manyatta and the market town, much of that started to feel optional, then forgotten.",
-        "This pillar exists to make sure it isn't. We host heritage gatherings where elders and young people sit in the same circle — not as teacher and student, but as keepers of the same inheritance, each holding a piece the other has lost.",
+        'Every generation carries something worth preserving. We bring elders and young people together to share knowledge, celebrate identity, and keep Samburu culture alive for generations to come.',
       ],
-      quote:
-        "\"The braid pattern belonged to her grandmother, and her grandmother's grandmother before that. She had never learned it herself — there hadn't been time, or someone patient enough to show her. It took one heritage afternoon, four hours, and more laughter than either of them expected, for the pattern to pass hands again.\"",
       list: [
-        'Elders and youth gathering as equals, not instructors and students',
-        'Oral history, song, and beadwork passed hand to hand again',
-        'Pride in identity treated as part of healing, not separate from it',
+        'Shared stories and oral history',
+        'Traditional crafts and cultural practices',
+        'Stronger identity, stronger communities',
       ],
     },
     {
@@ -141,17 +139,11 @@ export default function HomePage() {
       image: pillarImgs.women || FALLBACK_PILLARS.women,
       accent: 'var(--sky, #2f86bd)',
       title: 'Women & Youth Empowerment',
+      tagline: 'Empowered women. Inspired youth.',
       paras: [
-        "Women in Samburu hold the social fabric together, often with little recognition — and young people stand between a pastoral heritage and a fast-changing world. We didn't want to keep treating these as separate stories, because in most households, they aren't. A mother's income and a daughter's education rise and fall together.",
-        "Through business literacy, micro-savings cooperatives, leadership mentorship, and vocational training — alongside practical support like reusable sanitary products — we help build the income, confidence, and community that make real freedom possible, for women and the young people watching them.",
+        'When women have the tools to thrive, families and communities grow stronger. We support women and young people with practical skills, leadership, financial literacy, and opportunities to build a better future.',
       ],
-      quote:
-        '"For years the maths was simple and nobody said it out loud: no pads meant no school, for up to a week, every month. The day we handed out reusable pads at Milimani Senior School, the girls didn\'t just take them politely — they held them over their heads like trophies. It was never really about the pads. It was about someone finally doing the maths with them, out loud, and fixing it."',
-      stats: [
-        { n: '40+', l: 'Women Trained' },
-        { n: '120+', l: 'Families Impacted' },
-        { n: '20+', l: 'Youth in Leadership' },
-      ],
+      list: [],
     },
     {
       num: 'Pillar Three',
@@ -160,16 +152,11 @@ export default function HomePage() {
       image: pillarImgs.sustainable || FALLBACK_PILLARS.sustainable,
       accent: 'var(--forest, #379764)',
       title: 'Sustainable Livelihoods',
+      tagline: 'A better living starts with a better choice.',
       paras: [
-        'For as long as anyone could remember, a bag of charcoal meant a tree came down first. It was the fastest way to turn a hillside into school fees — and we are not naive enough to think you can ask a family to stop feeding its children in the name of conservation. So instead, we asked a different question: what if the fuel didn\u2019t require the tree at all?',
-        'A circle of women now sits together most weeks, rolling waste plant matter into charcoal briquettes by hand, one small dark sphere at a time. It is slow, unglamorous work. It is also, quietly, one of the more hopeful things happening in Samburu right now.',
+        'Every family deserves an income that lasts. We help communities turn local ideas into sustainable livelihoods that protect natural resources, strengthen resilience, and create opportunities for future generations.',
       ],
-      quote: '"Nobody asked them to stop needing an income. We just asked what it could be made of instead."',
-      list: [
-        "Income that doesn't require cutting a single living tree",
-        'A fuel product made almost entirely from waste already on the ground',
-        "Work that fits around the rest of a woman's day, done in community",
-      ],
+      list: [],
     },
     {
       num: 'Pillar Four',
@@ -178,16 +165,11 @@ export default function HomePage() {
       image: pillarImgs.conservation || FALLBACK_PILLARS.conservation,
       accent: 'var(--earth, #b0591f)',
       title: 'Conservation & Stewardship',
+      tagline: 'A thriving landscape starts with its people.',
       paras: [
-        'The acacia woodlands and grasslands that fed generations of pastoralists are disappearing. Through community-led, indigenous-seedling tree planting — elders and young people working side by side — we give the land back to itself.',
+        'When communities care for the land, the land continues to care for them. We support local conservation efforts that restore ecosystems, strengthen resilience, and safeguard Samburu\u2019s natural heritage for generations to come.',
       ],
-      quote:
-        '"He came to a youth leadership camp expecting sports and left with thirty acacia seedlings, a plan for exactly where each one would go, and a mentor he still calls once a month. A year on, that hillside has shade again — the kind goats rest under, and grandmothers, and everyone who remembers when it wasn\u2019t there."',
-      stats: [
-        { n: '800+', l: 'Trees Planted' },
-        { n: '9', l: 'Acres Restored' },
-        { n: '3', l: 'Sites Active' },
-      ],
+      list: [],
     },
   ]
 
@@ -300,6 +282,15 @@ export default function HomePage() {
         }
         .sw-hero-dot.active {
           background: var(--gold);
+        }
+        .sw-partner-logo-frame {
+          background: #ffffff;
+          border-radius: 10px;
+          padding: 10px 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
         }
 
         @media (max-width: 980px) {
@@ -524,19 +515,19 @@ export default function HomePage() {
 
           <div>
             <p className="section-eyebrow">Our Founding Story</p>
-            <h2 className="section-title">We saw what was<br /><em>slipping away</em> — and chose to act</h2>
+            <h2 className="section-title">Our Community is our<br /><em>Future full of hope and pride</em></h2>
             <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '16px' }}>
-              This organisation was not born in a boardroom. It was born from grief, worry, and love — the kind that only comes from belonging somewhere.
+              This organisation was not born in a boardroom. It was born from grief, worry, and love, the kind that only comes from belonging somewhere.
             </p>
             <p style={{ fontSize: 'clamp(14px,1.4vw,17px)', color: 'var(--text-mid)', lineHeight: 1.85, marginBottom: '24px' }}>
-              We watched the art of community — long evenings under acacia trees, elders passing wisdom to the young — begin to erode. Young men were dying by suicide in numbers that should have shaken everyone. The hillsides that fed our ancestors' herds were going bare. So in 2024, we sat together, as neighbours and relatives, and asked the only question that mattered: <em style={{ color: 'var(--text-bright)' }}>what would it take for our communities to truly thrive again?</em>
+              We watched the art of community, long evenings under acacia trees, elders passing wisdom to the young, begin to erode. Young men were dying by suicide in numbers that should have shaken everyone. The hillsides that fed our ancestors' herds were going bare. So in 2024, we sat together, as neighbours and relatives, and asked the only question that mattered: <em style={{ color: 'var(--text-bright)' }}>what would it take for our communities to truly thrive again?</em>
             </p>
 
             <blockquote
               style={{
                 borderLeft: '3px solid var(--gold)',
                 paddingLeft: '20px',
-                margin: '0 0 24px',
+                margin: '0 0 32px',
               }}
             >
               <p
@@ -555,6 +546,43 @@ export default function HomePage() {
                 — Founders, Samburu Wellness &amp; Resilience
               </cite>
             </blockquote>
+
+            <div
+              style={{
+                background: 'linear-gradient(165deg, var(--navy-card) 0%, rgba(55,151,100,0.14) 150%)',
+                border: '1px solid var(--navy-border)',
+                borderRadius: '10px',
+                borderLeft: '3px solid var(--forest)',
+                padding: 'clamp(18px,2.2vw,26px)',
+                marginBottom: '24px',
+              }}
+            >
+              <h3
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: 'clamp(17px,1.8vw,21px)',
+                  fontWeight: 600,
+                  color: 'var(--text-bright)',
+                  marginBottom: '10px',
+                }}
+              >
+                Built by the community, for the community.
+              </h3>
+              <p style={{ fontSize: 'clamp(13.5px,1.2vw,15.5px)', color: 'var(--text-mid)', lineHeight: 1.8, marginBottom: '12px' }}>
+                Samburu Wellness &amp; Resilience was founded by local change makers who believed lasting solutions should come from within the community. We work alongside women, youth, elders, and partners to strengthen wellbeing, protect culture, and build resilient livelihoods.
+              </p>
+              <p
+                style={{
+                  fontSize: 'clamp(13px,1.15vw,15px)',
+                  fontWeight: 600,
+                  color: 'var(--gold)',
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                "Strong communities create lasting change."
+              </p>
+            </div>
 
             <a href="/who-we-are#team" className="btn-outline">Meet Our Team →</a>
           </div>
@@ -707,6 +735,19 @@ export default function HomePage() {
                     justifyContent: 'center',
                   }}
                 >
+                  <p
+                    style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontStyle: 'italic',
+                      fontSize: 'clamp(16px,1.6vw,20px)',
+                      color: p.accent,
+                      lineHeight: 1.4,
+                      marginBottom: '14px',
+                    }}
+                  >
+                    {p.tagline}
+                  </p>
+
                   {p.paras.map((para, idx) => (
                     <p
                       key={idx}
@@ -721,27 +762,7 @@ export default function HomePage() {
                     </p>
                   ))}
 
-                  <blockquote
-                    style={{
-                      borderLeft: `2px solid ${p.accent}`,
-                      paddingLeft: '16px',
-                      margin: '0 0 22px',
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontFamily: "'Cormorant Garamond', serif",
-                        fontStyle: 'italic',
-                        fontSize: 'clamp(14.5px,1.3vw,17px)',
-                        color: 'var(--text-bright)',
-                        lineHeight: 1.7,
-                      }}
-                    >
-                      {p.quote}
-                    </p>
-                  </blockquote>
-
-                  {p.list ? (
+                  {p.list && p.list.length > 0 && (
                     <ul className="sw-pillar-list" style={{ listStyle: 'none', padding: 0, margin: 0, borderTop: '1px solid var(--navy-border)', paddingTop: '18px' }}>
                       {p.list.map((item) => (
                         <li
@@ -760,17 +781,6 @@ export default function HomePage() {
                         </li>
                       ))}
                     </ul>
-                  ) : (
-                    <div className="sw-pillar-stats" style={{ borderTop: '1px solid var(--navy-border)', paddingTop: '18px' }}>
-                      {p.stats.map((s) => (
-                        <div key={s.l}>
-                          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', fontWeight: 600, color: 'var(--text-bright)', lineHeight: 1 }}>
-                            {s.n}
-                          </div>
-                          <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '5px' }}>{s.l}</div>
-                        </div>
-                      ))}
-                    </div>
                   )}
                 </div>
               </div>
@@ -883,11 +893,13 @@ export default function HomePage() {
                   textDecoration: 'none',
                 }}
               >
-                <img
-                  src={p.logo}
-                  alt={`${p.name} logo`}
-                  style={{ height: '44px', width: '90px', objectFit: 'contain', flexShrink: 0 }}
-                />
+                <div className="sw-partner-logo-frame">
+                  <img
+                    src={p.logo}
+                    alt={`${p.name} logo`}
+                    style={{ height: '52px', width: '110px', objectFit: 'contain', display: 'block' }}
+                  />
+                </div>
                 <div>
                   <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '17px', color: 'var(--text-bright)', fontWeight: 600 }}>{p.name}</div>
                   <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: 600, marginTop: '2px' }}>{p.tagline}</div>
